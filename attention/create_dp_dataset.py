@@ -1,4 +1,4 @@
-from dfg.DFG import DFG_python
+from dfg.DFG import DFG_python, DFG_java
 from dfg.utils import (remove_comments_and_docstrings,
                    tree_to_token_index,
                    index_to_code_token,
@@ -197,7 +197,12 @@ def get_dfg_adj(code_string, parser, lang = 'python'):
     for idx,(index,code) in enumerate(zip(tokens_index,code_tokens)):
         index_to_code[index]=(idx,code)
 
-    DFG, _ = DFG_python(root_node, index_to_code, {})
+    if lang == 'python':
+        DFG, _ = DFG_python(root_node, index_to_code, {})
+    elif lang == 'java':
+        DFG, _ = DFG_java(root_node, index_to_code, {})
+    else:
+        raise ValueError(f"Unsupported language: {lang}")
     DFG = sorted(DFG,key=lambda x:x[1])
 
     n = len(code_tokens)
@@ -217,7 +222,7 @@ def get_dfg_adj(code_string, parser, lang = 'python'):
     return dfg_adj, code_tokens
     
     
-def get_enteries_df(emb_file, code_file):
+def get_enteries_df(emb_file, code_file, parser, lang='python'):
     with open(emb_file, 'rb') as f:
         embeddings_info = pickle.load(f)
 
@@ -250,7 +255,7 @@ def get_enteries_df(emb_file, code_file):
         code_string = code['code']
         dfg_adj = None
         try:
-            dfg_adj, _ = get_dfg_adj(code_string, parser)
+            dfg_adj, _ = get_dfg_adj(code_string, parser, lang=lang)
         except:
             dfg_adj = None
             print('exception')
@@ -387,6 +392,25 @@ def save_dataset(train_index, test_index, dp_dir, task, model, embeddings = None
             f.write(f'{labels[-1]}')
 
 
+def build_parser(lang):
+    """Build a tree-sitter parser for the specified language."""
+    try:
+        # Try using the pre-built language package (e.g., tree-sitter-java, tree-sitter-python)
+        if lang == 'java':
+            from tree_sitter_java import language
+        elif lang == 'python':
+            from tree_sitter_python import language
+        else:
+            raise ValueError(f"Unsupported language: {lang}")
+    except ImportError:
+        raise ImportError(
+            f"Pre-built tree-sitter-{lang} package not found. "
+            f"Install it with: pip install tree-sitter-{lang}"
+        )
+    
+    parser = Parser(Language(language()))
+    return parser
+
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', required = True)
@@ -394,6 +418,7 @@ if __name__=='__main__':
     parser.add_argument('--create_data_dirs', action = 'store_true')
     parser.add_argument('--create_config_files', action = 'store_true')
     parser.add_argument('--save_dataset', action = 'store_true')
+    parser.add_argument('--lang', default='python', choices=['python', 'java'])
 
     args = parser.parse_args()
 
@@ -537,14 +562,11 @@ probing_cluster_path = results/{task}/{model}/{layer}/'''
                 
                 
         elif args.task == 'dfg':
-            PY_LANGUAGE = Language('build/my-languages.so', 'python')
-            parser = Parser() 
-            parser.set_language(PY_LANGUAGE)
-            lang = 'python'
+            ts_parser = build_parser(args.lang)
             print(f'Creating dataset for task: {args.task}')
             code_file = 'exp_data/exp_0.jsonl'
             emb_file = embeddings_file[0]
-            all_enteries = get_enteries_df(emb_file, code_file)
+            all_enteries = get_enteries_df(emb_file, code_file, ts_parser, lang=args.lang)
             split = ShuffleSplit(n_splits = 1, test_size = 0.2, random_state = 0)
             train_index, test_index = next(split.split(all_enteries))
             for i, model in enumerate(models):

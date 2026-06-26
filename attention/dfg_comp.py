@@ -1,4 +1,4 @@
-from dfg.DFG import DFG_python
+from dfg.DFG import DFG_python, DFG_java
 from dfg.utils import (remove_comments_and_docstrings,
                    tree_to_token_index,
                    index_to_code_token,
@@ -29,7 +29,13 @@ def get_dfg_adj(code_string, parser, lang = 'python'):
     for idx,(index,code) in enumerate(zip(tokens_index,code_tokens)):
         index_to_code[index]=(idx,code)
     
-    DFG, _ = DFG_python(root_node, index_to_code, {})
+    if lang == 'python':
+        DFG, _ = DFG_python(root_node, index_to_code, {})
+    elif lang == 'java':
+        DFG, _ = DFG_java(root_node, index_to_code, {})
+    else:
+        raise ValueError(f"Unsupported language: {lang}")
+        
     DFG = sorted(DFG,key=lambda x:x[1])
     
     n = len(code_tokens)
@@ -48,7 +54,7 @@ def get_dfg_adj(code_string, parser, lang = 'python'):
     
     return dfg_adj, code_tokens
 
-def save_dfg_stats(code_file, graph_loc, save_dir, layer, exp_name, parser):
+def save_dfg_stats(code_file, graph_loc, save_dir, layer, exp_name, parser, lang='python'):
     codes = load_codesearchnet(code_file)
     info_files = os.listdir(graph_loc)
     num_codes = len(info_files)
@@ -95,11 +101,17 @@ def save_dfg_stats(code_file, graph_loc, save_dir, layer, exp_name, parser):
             code_string = code['code']
             dfg_graph = None
             try:
-                dfg_graph, gcb_ct = get_dfg_adj(code_string, parser)
-            except:
+                dfg_graph, gcb_ct = get_dfg_adj(code_string, parser, lang=lang)
+            except Exception as e:
                 dfg_graph = None
-                print('exception')
-                pass
+                # Create the save directory if it doesn't exist so logging doesn't crash
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+                    
+                log_file_path = os.path.join(save_dir, 'dfg_skipped_files.log')
+                with open(log_file_path, "a") as log_file:
+                    log_file.write(f"Skipped {code['code_file']} | Reason: {type(e).__name__}\n")
+                continue # Safely skip to the next code snippet
 
             if dfg_graph is not None:
                 model_graphs = info['model_graphs']
@@ -151,6 +163,25 @@ def save_dfg_stats(code_file, graph_loc, save_dir, layer, exp_name, parser):
         json.dump(data,f)
                     
 
+def build_parser(lang):
+    import os
+    from tree_sitter import Language, Parser
+    
+    # Dynamically select the right grammar folder (tree-sitter-java or tree-sitter-python)
+    grammar_repo = f'tree-sitter-{lang}'
+    language_library = os.path.join('build', f'my-languages-{lang}.so')
+    
+    if not os.path.exists('build'):
+        os.mkdir('build')
+    if not os.path.exists(language_library):
+        Language.build_library(language_library, [grammar_repo])
+        
+    # Load the language and initialize the parser
+    language = Language(language_library, lang)
+    parser = Parser()
+    parser.set_language(language)
+    return parser
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--code_file', default = 'exp_data/exp_0.jsonl')
@@ -160,18 +191,17 @@ if __name__ == '__main__':
     parser.add_argument('--layer', default = -1, type=int)
     parser.add_argument('--all_layers', action='store_true')
     parser.add_argument('--num_layers', default=12, type=int)
+    parser.add_argument('--lang', default='python', choices=['python', 'java'])
     args = parser.parse_args()
     
-    PY_LANGUAGE = Language('build/my-languages.so', 'python')
-    parser = Parser() 
-    parser.set_language(PY_LANGUAGE)
+    ts_parser = build_parser(args.lang)
     
     if args.all_layers:
         for l in range(args.num_layers):
             print(f'Evaluating layer {l}...')
-            save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, l, args.exp_name, parser)
+            save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, l, args.exp_name, ts_parser, lang=args.lang)
     else:
-        save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, args.layer, args.exp_name, parser)        
+        save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, args.layer, args.exp_name, ts_parser, lang=args.lang)        
     
     
 

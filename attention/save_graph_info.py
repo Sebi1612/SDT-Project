@@ -1,17 +1,43 @@
+# pyright: reportMissingImports=false, reportMissingTypeStubs=false
 import os
 import argparse
-import numpy as np
-from tqdm import tqdm
-import json
-from tree_sitter import Language, Parser
 import pickle
 
+import torch
+from tqdm import tqdm
+from tree_sitter import Language, Parser
+
 from utils import load_codesearchnet
-from get_attention import *
-from graph_utils import *
-from transformers import RobertaModel, RobertaTokenizer, T5ForConditionalGeneration, RobertaForMaskedLM
-from transformers import PLBartTokenizer, PLBartForConditionalGeneration
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
+from get_attention import (
+    get_attention_codeT5,
+    get_attention_codeT5p,
+    get_attention_codeT5p_2b,
+    get_attention_codeT5p_2b_dec,
+    get_attention_codegen,
+    get_attention_codebert,
+    get_attention_graphcodebert,
+    get_attention_plbart,
+    get_attention_uniXcoder,
+)
+from graph_utils import get_ast_tokens_and_prog_graphs, tokens_to_graph, traverse_node
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM 
+
+
+def build_parser(lang, grammar_repo):
+    language_library = os.path.join('build', f'my-languages-{lang}.so')
+    if not os.path.exists(grammar_repo):
+        raise FileNotFoundError(
+            f"Tree-sitter grammar repository not found: {grammar_repo}. "
+            f"Clone the grammar repo for {lang} and pass it with --grammar_repo."
+        )
+
+    if not os.path.exists(language_library):
+        Language.build_library(language_library, [grammar_repo])
+
+    language = Language(language_library, lang)
+    parser = Parser()
+    parser.set_language(language)
+    return parser
 
 def save_attention_and_ast(args, parser):
     print(f'saving attention maps for {args.model} in directory {args.save_dir}')
@@ -87,10 +113,10 @@ def save_attention_and_ast(args, parser):
         model.to(device)
         
     if args.model == 'codegen':
-    	tokenizer = AutoTokenizer.from_pretrained(model_version['codegen'])
-    	model = AutoModelForCausalLM.from_pretrained(model_version['codegen'], output_attentions = True, trust_remote_code=True) 
-    	device = "cuda"
-    	model.to(device)  
+        tokenizer = AutoTokenizer.from_pretrained(model_version['codegen'])
+        model = AutoModelForCausalLM.from_pretrained(model_version['codegen'], output_attentions = True, trust_remote_code=True) 
+        device = "cuda"
+        model.to(device)  
     
     for code in tqdm(codes):
         filename = code['code_file']
@@ -159,7 +185,7 @@ def save_attention_and_ast(args, parser):
 
                 with open(graph_file, 'wb') as f:
                     pickle.dump(data_to_write, f) 
-            except:
+            except Exception:
                 print('There was an issue while getting ast graph')
 
 
@@ -175,16 +201,17 @@ if __name__ == '__main__':
     parser.add_argument('--save_dir', default = 'graph_info')
     parser.add_argument('--exp_name', required = False)
     parser.add_argument('--random', action = 'store_true')
+    parser.add_argument('--lang', default = 'python', choices = ['python', 'java'])
+    parser.add_argument('--grammar_repo', default = None)
     
     args = parser.parse_args()
-    
-    Language.build_library(
-      'build/my-languages.so', #build/c_lang.so
-      ['tree-sitter-python'] #['tree-sitter-c']
-    )
-    PY_LANGUAGE = Language('build/my-languages.so', 'python')
-    parser = Parser() 
-    parser.set_language(PY_LANGUAGE)
+
+    default_grammar_repos = {
+        'python': 'tree-sitter-python',
+        'java': 'tree-sitter-java',
+    }
+    grammar_repo = args.grammar_repo or default_grammar_repos[args.lang]
+    parser = build_parser(args.lang, grammar_repo)
     
     save_attention_and_ast(args, parser)
     

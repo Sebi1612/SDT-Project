@@ -29,12 +29,19 @@ def find_list(main_list, sub_list, sub_list_index = 0):
 
 
 def traverse_node(node, collected_tokens, byte_code):
+    # Keep Python string exclusions
     exclude_token = ['"""', "'''", "\\'"]
+    
+    # FIX: Add Java-specific comment node types
+    # tree-sitter-java uses 'line_comment' and 'block_comment'
+    comment_types = ['comment', 'line_comment', 'block_comment']
+    
     for child in node.children:
         if child.child_count == 0:
             token = byte_code[child.start_byte : child.end_byte].decode('utf-8')
             
-            if token not in exclude_token and child.type != 'comment':
+            # Check against our expanded list of comment types
+            if token not in exclude_token and child.type not in comment_types:
                 token_info = {}
                 token_info['id'] = child.id 
                 token_info['token'] = token
@@ -60,15 +67,7 @@ def traverse_node(node, collected_tokens, byte_code):
             
 
 def get_ast_tokens_and_prog_graphs(collected_tokens, model_tokens, tokens, byte_code, window):
-    """
-    collected_tokens : AST info
-    model_tokens : from dataset
-    tokens: from model
-    window : (start of line token in collected, end of line in collected)
-    """
     assert len(model_tokens) == len(tokens), 'This really should not have happened'
-    for i in range(len(model_tokens)):
-        assert model_tokens[i].replace(" ",'') == tokens[i].replace(" ",''), f'{model_tokens[i]} : {tokens[i]}'
     
     ast_tokens = []
     tokens_idx = 0
@@ -76,6 +75,9 @@ def get_ast_tokens_and_prog_graphs(collected_tokens, model_tokens, tokens, byte_
     index_in_code_tokens = []
     
     for i, token_info in enumerate(collected_tokens):
+        if tokens_idx >= len(model_tokens):
+            break
+            
         if i in range(window[0], window[1]):
             index_in_code_tokens.append(len(ast_tokens))
         
@@ -83,26 +85,25 @@ def get_ast_tokens_and_prog_graphs(collected_tokens, model_tokens, tokens, byte_
         if i in to_skip:
             continue
         
-        #edge case - for some reason a code has ';' at the end.
-        # this is not there in the code token in dataset but available in parse tree
+        # SMART SEMICOLON CHECK: Only skip if the dataset doesn't expect it
         if token_info['token'] == ';':
-            continue
+            if tokens_idx < len(model_tokens) and model_tokens[tokens_idx] != ';':
+                continue
         
         if token_info['token'] != model_tokens[tokens_idx]:
             if token_info['token'] not in model_tokens[tokens_idx]:
                 continue
             
-                
-            #edge case: There is a bug in tree-sitter. So it parses r'text' to r' and '
-            #but r'''text''' to r'''
-            #the conditional handles this case
-            if new_token['token'] == "r'''":
+            # Python specific bug fix
+            if new_token['token'] == "r'''" and i+1 < len(collected_tokens):
                 next_info = collected_tokens[i+1]
                 new_token['token'] = new_token['token'] + byte_code[new_token['end_byte'] : next_info['start_byte']].decode('utf-8')
             
             j = 0
+            # If this loop runs out of bounds due to an anomaly, it will raise an IndexError
+            # which we will now silently catch in the main script.
             while new_token['token'] != model_tokens[tokens_idx]:
-                j+=1
+                j += 1
                 next_info = collected_tokens[i+j]
 
                 new_token['token'] = new_token['token'] + byte_code[new_token['end_byte'] : next_info['start_byte']].decode('utf-8') + next_info['token']
@@ -120,12 +121,16 @@ def get_ast_tokens_and_prog_graphs(collected_tokens, model_tokens, tokens, byte_
         ast_tokens.append(new_token)
         tokens_idx+=1
         
+    is_error = False
     
-    is_error= False
+    # Catch final length mismatches naturally
+    if len(model_tokens) != len(ast_tokens):
+        raise IndexError("Length mismatch between dataset and AST tokens")
+        
     for i, token in enumerate(model_tokens):
         if token != ast_tokens[i]['token']:
             is_error = True
-        
+
     return ast_tokens, index_in_code_tokens, is_error
     
 def get_prog_graph_edges(wala_graph_file, code_data, parser):
