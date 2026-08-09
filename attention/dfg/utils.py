@@ -1,7 +1,8 @@
 import re
 from io import StringIO
-import  tokenize
-def remove_comments_and_docstrings(source,lang):
+import tokenize
+
+def remove_comments_and_docstrings(source, lang):
     if lang in ['python']:
         """
         Returns 'source' minus comments and docstrings.
@@ -36,14 +37,16 @@ def remove_comments_and_docstrings(source,lang):
             prev_toktype = token_type
             last_col = end_col
             last_lineno = end_line
-        temp=[]
+        temp = []
         for x in out.split('\n'):
-            if x.strip()!="":
+            if x.strip() != "":
                 temp.append(x)
         return '\n'.join(temp)
     elif lang in ['ruby']:
         return source
     else:
+        # This else-block naturally handles C-style comments (// and /* */)
+        # used by Java, Go, and JavaScript!
         def replacer(match):
             s = match.group(0)
             if s.startswith('/'):
@@ -54,45 +57,88 @@ def remove_comments_and_docstrings(source,lang):
             r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
             re.DOTALL | re.MULTILINE
         )
-        temp=[]
+        temp = []
         for x in re.sub(pattern, replacer, source).split('\n'):
-            if x.strip()!="":
+            if x.strip() != "":
                 temp.append(x)
         return '\n'.join(temp)
 
-def tree_to_token_index(root_node):
-    if (len(root_node.children)==0 or root_node.type=='string') and root_node.type!='comment':
-        return [(root_node.start_point,root_node.end_point)]
+def tree_to_token_index(
+    root_node,
+    include_comments=False,
+    atomic_string_literals=False,
+):
+    ignore_types = [
+        'comment', 'line_comment', 'block_comment',
+        'jsx_comment', 'html_comment', 'program', 'statement_block', 'string_fragment'
+    ]
+    if include_comments:
+        ignore_types = [
+            node_type for node_type in ignore_types
+            if node_type not in {
+                'comment', 'line_comment', 'block_comment',
+                'jsx_comment', 'html_comment',
+            }
+        ]
+
+    is_atomic_string = (
+        atomic_string_literals and root_node.type == 'string_literal'
+    )
+    if (
+        len(root_node.children) == 0
+        or root_node.type == 'string'
+        or is_atomic_string
+    ) and root_node.type not in ignore_types:
+        if root_node.start_point == root_node.end_point:
+            return []
+        return [(root_node.start_point, root_node.end_point)]
     else:
-        code_tokens=[]
+        code_tokens = []
         for child in root_node.children:
-            code_tokens+=tree_to_token_index(child)
+            code_tokens += tree_to_token_index(
+                child,
+                include_comments=include_comments,
+                atomic_string_literals=atomic_string_literals,
+            )
         return code_tokens
-    
-def tree_to_variable_index(root_node,index_to_code):
-    if (len(root_node.children)==0 or root_node.type=='string') and root_node.type!='comment':
-        index=(root_node.start_point,root_node.end_point)
-        _,code=index_to_code[index]
-        if root_node.type!=code:
-            return [(root_node.start_point,root_node.end_point)]
+
+def tree_to_variable_index(root_node, index_to_code):
+    ignore_types = [
+        'comment', 'line_comment', 'block_comment',
+        'jsx_comment', 'html_comment',
+        'program', 'statement_block', 'string_fragment'
+    ]
+
+    if (len(root_node.children) == 0 or root_node.type == 'string') and root_node.type not in ignore_types:
+        if root_node.start_point == root_node.end_point:
+            return []
+        index = (root_node.start_point, root_node.end_point)
+
+        # --- THE SAFETY GUARD TO PREVENT KEYERROR ---
+        if index not in index_to_code:
+            return []
+        # --------------------------------------------
+
+        _, code = index_to_code[index]
+        if root_node.type != code:
+            return [(root_node.start_point, root_node.end_point)]
         else:
             return []
     else:
-        code_tokens=[]
+        code_tokens = []
         for child in root_node.children:
-            code_tokens+=tree_to_variable_index(child,index_to_code)
-        return code_tokens    
+            code_tokens += tree_to_variable_index(child, index_to_code)
+        return code_tokens
 
-def index_to_code_token(index,code):
-    start_point=index[0]
-    end_point=index[1]
-    if start_point[0]==end_point[0]:
-        s=code[start_point[0]][start_point[1]:end_point[1]]
+def index_to_code_token(index, code):
+    start_point = index[0]
+    end_point = index[1]
+    if start_point[0] == end_point[0]:
+        s = code[start_point[0]][start_point[1]:end_point[1]]
     else:
-        s=""
-        s+=code[start_point[0]][start_point[1]:]
-        for i in range(start_point[0]+1,end_point[0]):
-            s+=code[i]
-        s+=code[end_point[0]][:end_point[1]]   
+        s = ""
+        s += code[start_point[0]][start_point[1]:]
+        for i in range(start_point[0] + 1, end_point[0]):
+            s += code[i]
+        s += code[end_point[0]][:end_point[1]]
     return s
-   

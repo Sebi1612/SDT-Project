@@ -12,22 +12,45 @@ from utils import merge_tokens_and_attention
 from unixcoder import UniXcoder
 
 
-def get_attention_codebert(data, device='cuda:0', random = False):
+def load_codebert_attention_model(device='cuda:0', random=False):
+    """Load CodeBERT once and configure it for deterministic inference."""
+    model_version = 'microsoft/codebert-base'
+    tokenizer = RobertaTokenizer.from_pretrained(model_version)
+
+    if random:
+        config = RobertaConfig.from_pretrained(
+            model_version,
+            output_attentions=True,
+        )
+        model = RobertaModel(config)
+    else:
+        model = RobertaModel.from_pretrained(
+            model_version,
+            output_attentions=True,
+        )
+
+    model.to(device)
+    model.eval()
+    return model, tokenizer
+
+
+def get_attention_codebert(
+    data,
+    device='cuda:0',
+    random=False,
+    model=None,
+    tokenizer=None,
+):
     """
     layer and head index starts from 1.
     """
     
-    model_version = 'microsoft/codebert-base'
-    model = RobertaModel.from_pretrained(model_version, output_attentions = True)
-    
-    if random: 
-        config = model.config
-        model = None
-        model = RobertaModel(config) 
-    
-    model.to(device)
-    
-    tokenizer = RobertaTokenizer.from_pretrained(model_version)
+    if (model is None) != (tokenizer is None):
+        raise ValueError('Provide both model and tokenizer, or neither')
+    if model is None:
+        model, tokenizer = load_codebert_attention_model(device, random=random)
+    else:
+        model.eval()
     
     raw_tokens  = data['code_tokens']
     code_tokens = tokenizer.tokenize(' '.join(raw_tokens))
@@ -38,7 +61,8 @@ def get_attention_codebert(data, device='cuda:0', random = False):
 
     inputs = inputs.to(device)
 
-    outputs = model(inputs)
+    with torch.inference_mode():
+        outputs = model(inputs)
 
     attention = outputs.attentions
 
@@ -275,4 +299,3 @@ def get_attention_codegen(data, model, tokenizer, device='cuda', random = False)
         print("invalid code")
         
     
-

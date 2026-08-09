@@ -696,7 +696,10 @@ def DFG_ruby(root_node,index_to_code,states):
         return sorted(DFG,key=lambda x:x[1]),states
 
 def DFG_go(root_node,index_to_code,states):
-    assignment=['assignment_statement',]
+    # Newer tree-sitter-go versions represent := declarations and range
+    # bindings with their own node types. They have the same left/right fields
+    # used by assignment_statement.
+    assignment=['assignment_statement','short_var_declaration','range_clause']
     def_statement=['var_spec']
     increment_statement=['inc_statement']
     if_statement=['if_statement','else']
@@ -1027,7 +1030,9 @@ def DFG_php(root_node,index_to_code,states):
 
 
 def DFG_javascript(root_node,index_to_code,states):
-    assignment=['assignment_pattern','augmented_assignment_expression']
+    # Newer tree-sitter-javascript versions use assignment_expression for
+    # ordinary assignments such as b = a.
+    assignment=['assignment_pattern','assignment_expression','augmented_assignment_expression']
     def_statement=['variable_declarator']
     increment_statement=['update_expression']
     if_statement=['if_statement','else']

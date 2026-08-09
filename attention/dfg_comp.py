@@ -1,208 +1,607 @@
-from dfg.DFG import DFG_python, DFG_java
-from dfg.utils import (remove_comments_and_docstrings,
-                   tree_to_token_index,
-                   index_to_code_token,
-                   tree_to_variable_index)
-from utils import load_codesearchnet, get_max_edges
-from graph_comp_utils import *
-
 import argparse
-from tree_sitter import Language, Parser
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
-import os
-from tqdm import tqdm
 import json
+import os
+import pickle
+
+import numpy as np
+from tqdm import tqdm
+from tree_sitter import Language, Parser
+
+from dfg.DFG import DFG_go, DFG_java, DFG_javascript, DFG_python
+from dfg.utils import (
+    index_to_code_token,
+    remove_comments_and_docstrings,
+    tree_to_token_index,
+)
+from utils import load_codesearchnet
 
 
-def get_dfg_adj(code_string, parser, lang = 'python'):
-    code_string = remove_comments_and_docstrings(code_string, lang)
+DEFAULT_THRESHOLDS = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
+
+
+class SafeDict(dict):
+    """Return an ignored sentinel for parser nodes absent from token indexes."""
+
+    def __missing__(self, key):
+        return (-1, '__IGNORED_TOKEN__')
+
+
+def align_dfg_to_tokens(dfg_adj, source_tokens, target_tokens):
+    """Project a DFG across equivalent tree-sitter/dataset token groupings."""
+    if source_tokens == target_tokens:
+        return dfg_adj, source_tokens
+
+    source_to_target = {}
+    source_index = 0
+    target_index = 0
+
+    while source_index < len(source_tokens) and target_index < len(target_tokens):
+        source_group = [source_index]
+        target_group = [target_index]
+        source_text = source_tokens[source_index]
+        target_text = target_tokens[target_index]
+
+        while source_text != target_text:
+            # CodeSearchNet Java represents a character literal such as '.' as
+            # two quote tokens and omits the character contents.
+            if (
+                len(source_group) == 1
+                and len(source_text) >= 2
+                and source_text[0] == source_text[-1] == "'"
+                and target_text == "'"
+                and target_index + 1 < len(target_tokens)
+                and target_tokens[target_index + 1] == "'"
+            ):
+                target_index += 1
+                target_group.append(target_index)
+                target_text = source_text
+                continue
+
+            if len(source_text) < len(target_text):
+                source_index += 1
+                if source_index >= len(source_tokens):
+                    raise ValueError(
+                        'Could not align tree-sitter tokens to dataset tokens'
+                    )
+                source_group.append(source_index)
+                source_text += source_tokens[source_index]
+            elif len(target_text) < len(source_text):
+                target_index += 1
+                if target_index >= len(target_tokens):
+                    raise ValueError(
+                        'Could not align tree-sitter tokens to dataset tokens'
+                    )
+                target_group.append(target_index)
+                target_text += target_tokens[target_index]
+            else:
+                raise ValueError(
+                    f'Token text differs: tree-sitter {source_text!r}, '
+                    f'dataset {target_text!r}'
+                )
+
+        for index in source_group:
+            source_to_target[index] = target_group
+
+        source_index += 1
+        target_index += 1
+
+    if source_index != len(source_tokens) or target_index != len(target_tokens):
+        raise ValueError('Token streams have different trailing content')
+
+    aligned_adj = np.zeros((len(target_tokens), len(target_tokens)))
+    source_rows, source_cols = np.nonzero(dfg_adj)
+    for source_row, source_col in zip(source_rows, source_cols):
+        for target_row in source_to_target[source_row]:
+            for target_col in source_to_target[source_col]:
+                aligned_adj[target_row, target_col] = dfg_adj[
+                    source_row,
+                    source_col,
+                ]
+
+    return aligned_adj, target_tokens
+
+
+def get_dfg_adj(
+    code_string,
+    parser,
+    lang='python',
+    expected_tokens=None,
+    typed=False,
+):
+    """Build a GraphCodeBERT-style DFG aligned to dataset tokens.
+
+    By default the result is binary for exact graph comparison. With
+    ``typed=True``, ComesFrom edges are 1 and ComputedFrom edges are -1,
+    matching the labels used by the repository's DirectProbe experiment.
+    """
+    include_comments = lang in {'java', 'go', 'javascript'}
+    if not include_comments:
+        code_string = remove_comments_and_docstrings(code_string, lang)
+
     tree = parser.parse(bytes(code_string, 'utf-8'))
     root_node = tree.root_node
-    tokens_index = tree_to_token_index(root_node)
-    
-    code_string = code_string.split('\n')
-    code_tokens=[index_to_code_token(x,code_string) for x in tokens_index]
-    
-    index_to_code={}
-    for idx,(index,code) in enumerate(zip(tokens_index,code_tokens)):
-        index_to_code[index]=(idx,code)
-    
-    if lang == 'python':
-        DFG, _ = DFG_python(root_node, index_to_code, {})
-    elif lang == 'java':
-        DFG, _ = DFG_java(root_node, index_to_code, {})
-    else:
-        raise ValueError(f"Unsupported language: {lang}")
-        
-    DFG = sorted(DFG,key=lambda x:x[1])
-    
-    n = len(code_tokens)
-    dfg_adj = np.zeros((n,n))
-    count = 0
-    
-    for edges in DFG:
+    if root_node.has_error:
+        raise ValueError('Tree-sitter reported a parse error')
+
+    token_indexes = tree_to_token_index(
+        root_node,
+        include_comments=include_comments,
+        atomic_string_literals=(lang == 'java'),
+    )
+    source_lines = code_string.split('\n')
+    code_tokens = [
+        index_to_code_token(index, source_lines) for index in token_indexes
+    ]
+    index_to_code = SafeDict()
+    for index, (token_index, token) in enumerate(
+        zip(token_indexes, code_tokens)
+    ):
+        index_to_code[token_index] = (index, token)
+
+    extractor = {
+        'python': DFG_python,
+        'java': DFG_java,
+        'go': DFG_go,
+        'javascript': DFG_javascript,
+    }.get(lang)
+    if extractor is None:
+        raise ValueError(f'Unsupported language: {lang}')
+    dfg, _ = extractor(root_node, index_to_code, {})
+
+    dfg_adj = np.zeros((len(code_tokens), len(code_tokens)))
+    for edges in sorted(dfg, key=lambda entry: entry[1]):
         row = edges[1]
-        cols = edges[-1]
-        if len(cols) != 0:
-            for col in cols:
-                count += 1
-                dfg_adj[row, col] = 1
-                
-    assert count == dfg_adj.sum()
-    
+        relation_value = -1 if typed and edges[2] == 'computedFrom' else 1
+        for column in edges[-1]:
+            if row >= 0 and column >= 0:
+                dfg_adj[row, column] = relation_value
+
+    # Remove zero-width parser artifacts. Explicit Go semicolons have a
+    # non-empty span and remain because CodeSearchNet includes them.
+    indexes_to_remove = [
+        index for index, token in enumerate(code_tokens) if token.strip() == ''
+    ]
+    if indexes_to_remove:
+        dfg_adj = np.delete(dfg_adj, indexes_to_remove, axis=0)
+        dfg_adj = np.delete(dfg_adj, indexes_to_remove, axis=1)
+        code_tokens = [
+            token
+            for index, token in enumerate(code_tokens)
+            if index not in indexes_to_remove
+        ]
+
+    if expected_tokens is not None:
+        dfg_adj, code_tokens = align_dfg_to_tokens(
+            dfg_adj,
+            code_tokens,
+            expected_tokens,
+        )
+
     return dfg_adj, code_tokens
 
-def save_dfg_stats(code_file, graph_loc, save_dir, layer, exp_name, parser, lang='python'):
-    codes = load_codesearchnet(code_file)
-    info_files = os.listdir(graph_loc)
-    num_codes = len(info_files)
-    
-    file_0 = info_files[0]
-    file_0 = os.path.join(graph_loc, file_0)
-    
-    with open(file_0, 'rb') as f:
-        info = pickle.load(f)
-    
-    model_graph = info['model_graphs']
-    num_layers = model_graph.shape[0]
-    num_heads = model_graph.shape[1]
-    
-    if layer >= num_layers or layer < -1:
-        raise f'Wrong layer index provided: {layer}'
-    
-    thresholds = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
-    
-    f_scores = {}
-    recall_values = {}
-    precision_values = {}
-    
-    for i in range(num_heads):
-        f_scores[i] = {}
-        recall_values[i] = {}
-        precision_values[i] = {}
-        for threshold in thresholds:
-            f_scores[i][threshold] = 0.0
-            recall_values[i][threshold] = 0.0
-            precision_values[i][threshold] = 0.0
-            
-    success = 0
-    for code in tqdm(codes):
-        info_file_name = os.path.join(graph_loc, code['code_file']+'.pkl')
-        if os.path.exists(info_file_name):
-            with open(info_file_name, 'rb') as f:
-                info = pickle.load(f)
 
-            info_tokens = info['code_tokens']
-            code_tokens = code['code_tokens']
-            assert info_tokens == code_tokens      
+def load_run_info(graph_loc, lang, code_file=None):
+    manifest_path = os.path.join(graph_loc, 'graph_manifest.json')
+    legacy_codes = None
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as manifest_file:
+            manifest = json.load(manifest_file)
+        if manifest.get('status') not in {None, 'complete'}:
+            raise ValueError(
+                f"Graph manifest is not complete: {manifest.get('status')!r}"
+            )
+        if manifest.get('lang') != lang:
+            raise ValueError(
+                f"Graph manifest language is {manifest.get('lang')!r}, "
+                f'but --lang is {lang!r}'
+            )
+        artifacts = manifest.get('artifacts', [])
+        selected_count = manifest.get('selected_num_codes')
+        model_name = manifest.get('model')
+    else:
+        if code_file is None:
+            raise ValueError('--code_file is required for legacy graph artifacts')
+        manifest = None
+        artifacts = sorted(
+            name for name in os.listdir(graph_loc) if name.endswith('.pkl')
+        )
+        selected_count = len(artifacts)
+        model_name = None
+        legacy_codes = load_codesearchnet(code_file)
+        print(
+            f'Warning: {manifest_path} does not exist; evaluating all '
+            f'{len(artifacts)} pickle files in the directory.'
+        )
 
-            code_string = code['code']
-            dfg_graph = None
+    if not artifacts:
+        raise ValueError(f'No graph artifacts found in {graph_loc}')
+
+    with open(os.path.join(graph_loc, artifacts[0]), 'rb') as graph_file:
+        first_artifact = pickle.load(graph_file)
+    model_graphs = first_artifact['model_graphs']
+    if model_graphs.ndim != 4:
+        raise ValueError(
+            f'Expected a four-dimensional attention tensor, got {model_graphs.shape}'
+        )
+
+    if not model_name:
+        model_name = os.path.basename(os.path.normpath(graph_loc))
+
+    return {
+        'manifest': manifest,
+        'manifest_path': manifest_path,
+        'artifacts': artifacts,
+        'selected_count': selected_count,
+        'model_name': model_name,
+        'language': lang,
+        'num_layers': model_graphs.shape[0],
+        'num_heads': model_graphs.shape[1],
+        'legacy_codes': legacy_codes,
+    }
+
+
+def resolve_legacy_source(artifact, legacy_codes):
+    matches = [
+        code
+        for code in legacy_codes
+        if code['code_file'] == artifact['file_name']
+        and code['code_tokens'] == artifact['code_tokens']
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"Expected one legacy dataset match, found {len(matches)}"
+        )
+    return matches[0]['code']
+
+
+def metrics_for_layers(model_graphs, dfg_graph, layers, thresholds):
+    """Compute original macro edge metrics for selected layers and all heads."""
+    layer_graphs = model_graphs[np.asarray(layers)]
+    truth = dfg_graph == 1
+    truth_count = truth.sum()
+    shape = (len(layers), model_graphs.shape[1], len(thresholds))
+    f_scores = np.zeros(shape, dtype=np.float64)
+    recalls = np.zeros(shape, dtype=np.float64)
+    precisions = np.zeros(shape, dtype=np.float64)
+
+    for threshold_index, threshold in enumerate(thresholds):
+        predictions = layer_graphs > threshold
+        true_positives = np.logical_and(
+            predictions,
+            truth[None, None, :, :],
+        ).sum(axis=(-2, -1))
+        predicted_count = predictions.sum(axis=(-2, -1))
+
+        precisions[:, :, threshold_index] = np.divide(
+            true_positives,
+            predicted_count,
+            out=np.zeros(true_positives.shape, dtype=np.float64),
+            where=predicted_count != 0,
+        )
+        if truth_count:
+            recalls[:, :, threshold_index] = true_positives / truth_count
+        precision_recall_sum = (
+            precisions[:, :, threshold_index]
+            + recalls[:, :, threshold_index]
+        )
+        f_scores[:, :, threshold_index] = np.divide(
+            2
+            * precisions[:, :, threshold_index]
+            * recalls[:, :, threshold_index],
+            precision_recall_sum,
+            out=np.zeros(true_positives.shape, dtype=np.float64),
+            where=precision_recall_sum != 0,
+        )
+
+    return f_scores, recalls, precisions
+
+
+def metric_array_to_dict(values, thresholds):
+    return {
+        head: {
+            threshold: float(values[head, threshold_index])
+            for threshold_index, threshold in enumerate(thresholds)
+        }
+        for head in range(values.shape[0])
+    }
+
+
+def evaluate_dfg_stats(
+    code_file,
+    graph_loc,
+    save_dir,
+    layers,
+    exp_name,
+    parser,
+    lang='python',
+    thresholds=None,
+):
+    """Align each DFG once, then evaluate every requested attention layer."""
+    thresholds = list(DEFAULT_THRESHOLDS if thresholds is None else thresholds)
+    if len(thresholds) != len(set(thresholds)):
+        raise ValueError('Threshold values must be unique')
+    if any(threshold < 0 for threshold in thresholds):
+        raise ValueError('Threshold values must be non-negative')
+
+    run_info = load_run_info(graph_loc, lang, code_file=code_file)
+    num_layers = run_info['num_layers']
+    num_heads = run_info['num_heads']
+    normalized_layers = [num_layers - 1 if layer == -1 else layer for layer in layers]
+    if len(normalized_layers) != len(set(normalized_layers)):
+        raise ValueError('Layer values must be unique')
+    for layer in normalized_layers:
+        if layer < 0 or layer >= num_layers:
+            raise ValueError(
+                f'Wrong layer index {layer}; expected 0 to {num_layers - 1}'
+            )
+
+    totals = [
+        np.zeros(
+            (len(normalized_layers), num_heads, len(thresholds)),
+            dtype=np.float64,
+        )
+        for _ in range(3)
+    ]
+    attempted = 0
+    aligned = 0
+    empty_dfgs = 0
+    total_dfg_edges = 0
+    total_dfg_density = 0.0
+    failures = []
+
+    for artifact_name in tqdm(run_info['artifacts']):
+        artifact_path = os.path.join(graph_loc, artifact_name)
+        with open(artifact_path, 'rb') as graph_file:
+            artifact = pickle.load(graph_file)
+        attempted += 1
+
+        code_tokens = artifact['code_tokens']
+        code_string = artifact.get('code')
+        if code_string is None:
             try:
-                dfg_graph, gcb_ct = get_dfg_adj(code_string, parser, lang=lang)
-            except Exception as e:
-                dfg_graph = None
-                # Create the save directory if it doesn't exist so logging doesn't crash
-                if not os.path.exists(save_dir):
-                    os.makedirs(save_dir)
-                    
-                log_file_path = os.path.join(save_dir, 'dfg_skipped_files.log')
-                with open(log_file_path, "a") as log_file:
-                    log_file.write(f"Skipped {code['code_file']} | Reason: {type(e).__name__}\n")
-                continue # Safely skip to the next code snippet
+                code_string = resolve_legacy_source(
+                    artifact,
+                    run_info['legacy_codes'],
+                )
+            except Exception as exc:
+                failures.append({
+                    'artifact': artifact_name,
+                    'file_name': artifact.get('file_name'),
+                    'reason': f'{type(exc).__name__}: {exc}',
+                })
+                continue
 
-            if dfg_graph is not None:
-                model_graphs = info['model_graphs']
-                layer_graph = model_graphs[layer]
+        try:
+            dfg_graph, dfg_tokens = get_dfg_adj(
+                code_string,
+                parser,
+                lang=lang,
+                expected_tokens=code_tokens,
+            )
+            model_graphs = artifact['model_graphs']
+            expected_shape = (
+                num_layers,
+                num_heads,
+                len(code_tokens),
+                len(code_tokens),
+            )
+            if model_graphs.shape != expected_shape:
+                raise ValueError(
+                    f'Attention shape {model_graphs.shape}, expected {expected_shape}'
+                )
+            if dfg_graph.shape != (len(code_tokens), len(code_tokens)):
+                raise ValueError(
+                    f'DFG shape {dfg_graph.shape}, expected '
+                    f'{(len(code_tokens), len(code_tokens))}'
+                )
+            if dfg_tokens != code_tokens:
+                raise ValueError('Aligned DFG tokens differ from dataset tokens')
+        except Exception as exc:
+            failures.append({
+                'artifact': artifact_name,
+                'sample_index': artifact.get('sample_index'),
+                'source_index': artifact.get('source_index'),
+                'file_name': artifact.get('file_name'),
+                'reason': f'{type(exc).__name__}: {exc}',
+            })
+            continue
 
-                if layer_graph[0].shape == dfg_graph.shape:
-                    success += 1
-                    for i, head in enumerate(layer_graph):
-                        for threshold in thresholds:
-                            thr_head = get_max_edges(head, mode = 'threshold', threshold = threshold)
-                            f_scr = f_score(thr_head, dfg_graph)
-                            recall_value = recall(thr_head, dfg_graph)
-                            precision_value = precision(thr_head, dfg_graph)
-                            f_scores[i][threshold] += f_scr
-                            recall_values[i][threshold] += recall_value
-                            precision_values[i][threshold] += precision_value
+        program_metrics = metrics_for_layers(
+            model_graphs,
+            dfg_graph,
+            normalized_layers,
+            thresholds,
+        )
+        for total, program_metric in zip(totals, program_metrics):
+            total += program_metric
 
-                        
-    for i in range(num_heads):
-        for threshold in thresholds:
-            f_scores[i][threshold] /= success
-            recall_values[i][threshold] /= success
-            precision_values[i][threshold] /= success          
-            
-    model_name = graph_loc.split('/')[-1]
-    if model_name == '':
-        model_name = graph_loc.split('/')[-2]
-        
-    if  not os.path.exists(save_dir):
-        os.mkdir(save_dir)
-        
+        edge_count = int(dfg_graph.sum())
+        total_dfg_edges += edge_count
+        total_dfg_density += edge_count / dfg_graph.size if dfg_graph.size else 0
+        empty_dfgs += edge_count == 0
+        aligned += 1
+
+    if aligned == 0:
+        raise ValueError(
+            'No valid aligned DFGs were found. Check the graph directory, '
+            'language, parser, and token alignment.'
+        )
+
+    averaged = [total / aligned for total in totals]
+    alignment_rate = aligned / attempted if attempted else 0.0
+    selected_count = run_info['selected_count']
+    end_to_end_rate = (
+        aligned / selected_count if selected_count else alignment_rate
+    )
+
     output_dir = os.path.join(save_dir, 'dfg')
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-        
     if exp_name is not None:
         output_dir = os.path.join(output_dir, exp_name)
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
-            
-    data_name = f'{model_name}_layer_{layer}.json'
-    data = {
-        'fscore' : f_scores,
-        'recall' : recall_values,
-        'precision': precision_values
-    }
-    
-    with open(os.path.join(output_dir, data_name), 'w') as f:
-        json.dump(data,f)
-                    
+    os.makedirs(output_dir, exist_ok=True)
+
+    model_name = run_info['model_name']
+    failure_path = os.path.join(output_dir, f'{model_name}_dfg_failures.json')
+    with open(failure_path, 'w') as failure_file:
+        json.dump(failures, failure_file, indent=2)
+
+    outputs = []
+    for layer_index, layer in enumerate(normalized_layers):
+        f_scores, recalls, precisions = [
+            metric_array_to_dict(values[layer_index], thresholds)
+            for values in averaged
+        ]
+        output = {
+            'fscore': f_scores,
+            'recall': recalls,
+            'precision': precisions,
+            'model': model_name,
+            'language': lang,
+            'layer': layer,
+            'num_layers': num_layers,
+            'num_heads': num_heads,
+            'thresholds': thresholds,
+            'num_aligned': aligned,
+            'num_attempted': attempted,
+            'alignment_rate': alignment_rate,
+            'num_selected': selected_count,
+            'end_to_end_alignment_rate': end_to_end_rate,
+            'num_graph_generation_failures': selected_count - attempted,
+            'num_dfg_failures': len(failures),
+            'num_empty_dfgs': empty_dfgs,
+            'mean_dfg_edges': total_dfg_edges / aligned,
+            'mean_dfg_density': total_dfg_density / aligned,
+            'graph_manifest': os.path.abspath(run_info['manifest_path']),
+            'dfg_failure_file': os.path.abspath(failure_path),
+        }
+        output_path = os.path.join(
+            output_dir,
+            f'{model_name}_layer_{layer}.json',
+        )
+        with open(output_path, 'w') as output_file:
+            json.dump(output, output_file, indent=2)
+        outputs.append(output)
+
+        print(
+            f'[DFG EVALUATION COMPLETE] Layer {layer} | Aligned '
+            f'{aligned}/{attempted} artifacts ({alignment_rate:.2%}) | '
+            f'End-to-end {aligned}/{selected_count} ({end_to_end_rate:.2%})'
+        )
+
+    return outputs
+
+
+def save_dfg_stats(
+    code_file,
+    graph_loc,
+    save_dir,
+    layer,
+    exp_name,
+    parser,
+    lang='python',
+    thresholds=None,
+):
+    """Backward-compatible single-layer entry point."""
+    return evaluate_dfg_stats(
+        code_file,
+        graph_loc,
+        save_dir,
+        [layer],
+        exp_name,
+        parser,
+        lang=lang,
+        thresholds=thresholds,
+    )[0]
+
 
 def build_parser(lang):
-    import os
-    from tree_sitter import Language, Parser
-    
-    # Dynamically select the right grammar folder (tree-sitter-java or tree-sitter-python)
     grammar_repo = f'tree-sitter-{lang}'
     language_library = os.path.join('build', f'my-languages-{lang}.so')
-    
-    if not os.path.exists('build'):
-        os.mkdir('build')
+    os.makedirs('build', exist_ok=True)
+
+    language_libraries = [language_library]
+    if lang == 'python':
+        language_libraries.insert(
+            0,
+            os.path.join('attention', 'build', 'my-languages.so'),
+        )
+
+    load_errors = []
+    for candidate in language_libraries:
+        if not os.path.exists(candidate):
+            continue
+        try:
+            language = Language(candidate, lang)
+            parser = Parser()
+            parser.set_language(language)
+            return parser
+        except ValueError as exc:
+            load_errors.append(f'{candidate}: {exc}')
+
+    if not os.path.exists(grammar_repo):
+        raise FileNotFoundError(
+            f'Tree-sitter grammar repository not found: {grammar_repo}'
+        )
     if not os.path.exists(language_library):
         Language.build_library(language_library, [grammar_repo])
-        
-    # Load the language and initialize the parser
-    language = Language(language_library, lang)
-    parser = Parser()
-    parser.set_language(language)
-    return parser
+
+    try:
+        language = Language(language_library, lang)
+        parser = Parser()
+        parser.set_language(language)
+        return parser
+    except ValueError as exc:
+        load_errors.append(f'{language_library}: {exc}')
+        raise RuntimeError(
+            f'No compatible tree-sitter library found for {lang}: '
+            + '; '.join(load_errors)
+        ) from exc
+
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--code_file', default = 'exp_data/exp_0.jsonl')
-    parser.add_argument('--graph_loc', required = True)
-    parser.add_argument('--save_dir', required = True)
-    parser.add_argument('--exp_name', required = False)
-    parser.add_argument('--layer', default = -1, type=int)
-    parser.add_argument('--all_layers', action='store_true')
-    parser.add_argument('--num_layers', default=12, type=int)
-    parser.add_argument('--lang', default='python', choices=['python', 'java'])
-    args = parser.parse_args()
-    
-    ts_parser = build_parser(args.lang)
-    
+    cli_parser = argparse.ArgumentParser()
+    cli_parser.add_argument('--code_file', default='exp_data/exp_0.jsonl')
+    cli_parser.add_argument('--graph_loc', required=True)
+    cli_parser.add_argument('--save_dir', required=True)
+    cli_parser.add_argument('--exp_name')
+    cli_parser.add_argument('--layer', default=-1, type=int)
+    cli_parser.add_argument('--all_layers', action='store_true')
+    cli_parser.add_argument('--num_layers', type=int)
+    cli_parser.add_argument(
+        '--lang',
+        default='python',
+        choices=['python', 'java', 'go', 'javascript'],
+    )
+    cli_parser.add_argument(
+        '--thresholds',
+        nargs='+',
+        type=float,
+        default=DEFAULT_THRESHOLDS,
+        help='Attention thresholds; defaults to the original Python grid.',
+    )
+    args = cli_parser.parse_args()
+
+    tree_sitter_parser = build_parser(args.lang)
+    run_info = load_run_info(args.graph_loc, args.lang, code_file=args.code_file)
     if args.all_layers:
-        for l in range(args.num_layers):
-            print(f'Evaluating layer {l}...')
-            save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, l, args.exp_name, ts_parser, lang=args.lang)
+        if (
+            args.num_layers is not None
+            and args.num_layers != run_info['num_layers']
+        ):
+            raise ValueError(
+                f'--num_layers={args.num_layers} does not match the '
+                f"{run_info['num_layers']} layers stored in the artifacts"
+            )
+        selected_layers = list(range(run_info['num_layers']))
     else:
-        save_dfg_stats(args.code_file, args.graph_loc, args.save_dir, args.layer, args.exp_name, ts_parser, lang=args.lang)        
-    
-    
+        selected_layers = [args.layer]
 
-
+    evaluate_dfg_stats(
+        args.code_file,
+        args.graph_loc,
+        args.save_dir,
+        selected_layers,
+        args.exp_name,
+        tree_sitter_parser,
+        lang=args.lang,
+        thresholds=args.thresholds,
+    )

@@ -1,1 +1,22 @@
-attention/exp_data/java_full.jsonl
+# Full downloaded datasets are local inputs. The sampled exp_*.jsonl files may
+# be versioned so experiments remain reproducible.
+attention/exp_data/*_full.jsonl
+
+# Python/runtime caches and locally compiled parser libraries.
+__pycache__/
+*.py[cod]
+build/*.so
+
+# Generated experiment artifacts. Existing historical artifacts that are
+# already tracked remain tracked; new runs stay local.
+graph_info/
+dfg_results/
+structural_probe/
+analysis_results/
+DirectProbe/pilot_100/
+attention/exp_data/pilot_100/
+
+# Only the minimal, pinned parser sources required by Language.build_library
+# are versioned for Go and JavaScript; local full grammar clones stay ignored.
+tree-sitter-go/
+tree-sitter-javascript/
