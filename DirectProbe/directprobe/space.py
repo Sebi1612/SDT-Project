@@ -10,6 +10,7 @@
 # Last modified: 2021-04-08 09:30:46
 
 import logging
+import os
 from typing import List, Tuple
 
 from sklearn.preprocessing import StandardScaler
@@ -28,6 +29,11 @@ from directprobe.clusters import Cluster
 Tensor = torch.Tensor
 
 logger = logging.getLogger(__name__)
+
+
+def worker_count(default=30):
+    """Allow small pilot runs to avoid process-spawn overhead."""
+    return max(1, int(os.environ.get('DIRECTPROBE_N_JOBS', default)))
 
 
 class Space:
@@ -202,7 +208,7 @@ class Space:
             data.append((X1, X2))
 
         # logger.info('Solving {a} LP...'.format(a=str(len(data))))
-        results = Parallel(n_jobs=30, prefer='processes', verbose=0,
+        results = Parallel(n_jobs=worker_count(), prefer='processes', verbose=0,
                            batch_size='auto')(
             delayed(self.solver)(X1, X2) for X1, X2 in data)
 
@@ -240,6 +246,10 @@ class Space:
         model.addConstr(XX2 @ W <= Y2)
         model.setObjective(0, GRB.MINIMIZE)
         model.setParam('OutputFlag', False)
+        # DirectProbe already parallelizes LPs with joblib.  Keep each tiny
+        # Gurobi model single-threaded to avoid workers multiplying into severe
+        # nested oversubscription on paper-scale datasets.
+        model.setParam('Threads', 1)
         model.setParam('FeasibilityTol', 1e-4)
 
         # Optimize model

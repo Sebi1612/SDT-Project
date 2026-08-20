@@ -7,6 +7,7 @@ import numpy as np
 from tqdm import tqdm
 from tree_sitter import Language, Parser
 
+from comment_preprocessing import strip_comments
 from dfg.DFG import DFG_go, DFG_java, DFG_javascript, DFG_python
 from dfg.utils import (
     index_to_code_token,
@@ -15,8 +16,18 @@ from dfg.utils import (
 )
 from utils import load_codesearchnet
 
-
-DEFAULT_THRESHOLDS = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
+from experiment_protocol import (
+    DEFAULT_BOOTSTRAP_SAMPLES,
+    DEFAULT_BOOTSTRAP_SEED,
+    DEFAULT_CONFIDENCE_LEVEL,
+    DEFAULT_PRIMARY_THRESHOLD,
+    DEFAULT_THRESHOLDS,
+    bootstrap_mean_ci,
+    confidence_intervals_to_dict,
+    protocol_metadata,
+    threshold_index,
+    write_protocol,
+)
 
 
 class SafeDict(dict):
@@ -112,11 +123,15 @@ def get_dfg_adj(
 
     By default the result is binary for exact graph comparison. With
     ``typed=True``, ComesFrom edges are 1 and ComputedFrom edges are -1,
-    matching the labels used by the repository's DirectProbe experiment.
+    matching the labels emitted by each repository extractor for DirectProbe.
+    The extractors do not assign these labels identically to equivalent source
+    constructs, so signed labels must not be compared across languages.
     """
-    include_comments = lang in {'java', 'go', 'javascript'}
-    if not include_comments:
+    include_comments = False
+    if lang == 'python':
         code_string = remove_comments_and_docstrings(code_string, lang)
+    else:
+        code_string, _ = strip_comments(code_string, parser)
 
     tree = parser.parse(bytes(code_string, 'utf-8'))
     root_node = tree.root_node
@@ -125,7 +140,7 @@ def get_dfg_adj(
 
     token_indexes = tree_to_token_index(
         root_node,
-        include_comments=include_comments,
+        include_comments=False,
         atomic_string_literals=(lang == 'java'),
     )
     source_lines = code_string.split('\n')
@@ -315,6 +330,10 @@ def evaluate_dfg_stats(
     parser,
     lang='python',
     thresholds=None,
+    primary_threshold=DEFAULT_PRIMARY_THRESHOLD,
+    bootstrap_samples=DEFAULT_BOOTSTRAP_SAMPLES,
+    confidence_level=DEFAULT_CONFIDENCE_LEVEL,
+    bootstrap_seed=DEFAULT_BOOTSTRAP_SEED,
 ):
     """Align each DFG once, then evaluate every requested attention layer."""
     thresholds = list(DEFAULT_THRESHOLDS if thresholds is None else thresholds)
@@ -322,6 +341,7 @@ def evaluate_dfg_stats(
         raise ValueError('Threshold values must be unique')
     if any(threshold < 0 for threshold in thresholds):
         raise ValueError('Threshold values must be non-negative')
+    primary_index = threshold_index(thresholds, primary_threshold)
 
     run_info = load_run_info(graph_loc, lang, code_file=code_file)
     num_layers = run_info['num_layers']
@@ -348,6 +368,8 @@ def evaluate_dfg_stats(
     total_dfg_edges = 0
     total_dfg_density = 0.0
     failures = []
+    program_results = []
+    program_records = []
 
     for artifact_name in tqdm(run_info['artifacts']):
         artifact_path = os.path.join(graph_loc, artifact_name)
@@ -414,6 +436,15 @@ def evaluate_dfg_stats(
         )
         for total, program_metric in zip(totals, program_metrics):
             total += program_metric
+        program_results.append(tuple(
+            metric[:, :, primary_index] for metric in program_metrics
+        ))
+        program_records.append({
+            'artifact': artifact_name,
+            'sample_index': artifact.get('sample_index'),
+            'source_index': artifact.get('source_index'),
+            'file_name': artifact.get('file_name'),
+        })
 
         edge_count = int(dfg_graph.sum())
         total_dfg_edges += edge_count
@@ -444,6 +475,66 @@ def evaluate_dfg_stats(
     with open(failure_path, 'w') as failure_file:
         json.dump(failures, failure_file, indent=2)
 
+    metric_names = ('fscore', 'recall', 'precision')
+    program_arrays = {
+        name: np.stack([
+            result[metric_index]
+            for result in program_results
+        ])
+        for metric_index, name in enumerate(metric_names)
+    }
+    confidence_limits = {}
+    for metric_name, values in program_arrays.items():
+        confidence_limits[metric_name] = bootstrap_mean_ci(
+            values,
+            num_resamples=bootstrap_samples,
+            confidence_level=confidence_level,
+            seed=bootstrap_seed,
+        )
+
+    layer_label = '-'.join(str(layer) for layer in normalized_layers)
+    program_metrics_path = os.path.join(
+        output_dir, f'{model_name}_layers_{layer_label}_program_metrics.npz'
+    )
+    np.savez_compressed(
+        program_metrics_path,
+        **program_arrays,
+        artifact=np.asarray([record['artifact'] for record in program_records]),
+        sample_index=np.asarray(
+            [
+                -1 if record['sample_index'] is None else record['sample_index']
+                for record in program_records
+            ],
+            dtype=np.int64,
+        ),
+        source_index=np.asarray(
+            [
+                -1 if record['source_index'] is None else record['source_index']
+                for record in program_records
+            ],
+            dtype=np.int64,
+        ),
+        file_name=np.asarray(
+            [
+                '' if record['file_name'] is None else record['file_name']
+                for record in program_records
+            ]
+        ),
+        layers=np.asarray(normalized_layers, dtype=np.int64),
+        primary_threshold=np.asarray(primary_threshold),
+    )
+    protocol = protocol_metadata(
+        'dfg_attention_overlap',
+        model=model_name,
+        language=lang,
+        primary_threshold=primary_threshold,
+        thresholds=thresholds,
+        bootstrap_samples=bootstrap_samples,
+        confidence_level=confidence_level,
+        bootstrap_seed=bootstrap_seed,
+    )
+    protocol_path = write_protocol(output_dir, protocol)
+
     outputs = []
     for layer_index, layer in enumerate(normalized_layers):
         f_scores, recalls, precisions = [
@@ -460,6 +551,23 @@ def evaluate_dfg_stats(
             'num_layers': num_layers,
             'num_heads': num_heads,
             'thresholds': thresholds,
+            'primary_threshold': primary_threshold,
+            'primary_threshold_confidence_intervals': {
+                name: confidence_intervals_to_dict(
+                    confidence_limits[name][0][layer_index]
+                    if confidence_limits[name][0] is not None else None,
+                    confidence_limits[name][1][layer_index]
+                    if confidence_limits[name][1] is not None else None,
+                )
+                for name in metric_names
+            },
+            'bootstrap': {
+                'unit': 'program',
+                'method': 'percentile',
+                'samples': bootstrap_samples,
+                'confidence_level': confidence_level,
+                'seed': bootstrap_seed,
+            },
             'num_aligned': aligned,
             'num_attempted': attempted,
             'alignment_rate': alignment_rate,
@@ -472,6 +580,8 @@ def evaluate_dfg_stats(
             'mean_dfg_density': total_dfg_density / aligned,
             'graph_manifest': os.path.abspath(run_info['manifest_path']),
             'dfg_failure_file': os.path.abspath(failure_path),
+            'program_metrics_file': os.path.abspath(program_metrics_path),
+            'evaluation_protocol': protocol_path,
         }
         output_path = os.path.join(
             output_dir,
@@ -499,6 +609,10 @@ def save_dfg_stats(
     parser,
     lang='python',
     thresholds=None,
+    primary_threshold=DEFAULT_PRIMARY_THRESHOLD,
+    bootstrap_samples=DEFAULT_BOOTSTRAP_SAMPLES,
+    confidence_level=DEFAULT_CONFIDENCE_LEVEL,
+    bootstrap_seed=DEFAULT_BOOTSTRAP_SEED,
 ):
     """Backward-compatible single-layer entry point."""
     return evaluate_dfg_stats(
@@ -510,6 +624,10 @@ def save_dfg_stats(
         parser,
         lang=lang,
         thresholds=thresholds,
+        primary_threshold=primary_threshold,
+        bootstrap_samples=bootstrap_samples,
+        confidence_level=confidence_level,
+        bootstrap_seed=bootstrap_seed,
     )[0]
 
 
@@ -578,6 +696,18 @@ if __name__ == '__main__':
         default=DEFAULT_THRESHOLDS,
         help='Attention thresholds; defaults to the original Python grid.',
     )
+    cli_parser.add_argument(
+        '--primary_threshold', type=float, default=DEFAULT_PRIMARY_THRESHOLD
+    )
+    cli_parser.add_argument(
+        '--bootstrap_samples', type=int, default=DEFAULT_BOOTSTRAP_SAMPLES
+    )
+    cli_parser.add_argument(
+        '--confidence_level', type=float, default=DEFAULT_CONFIDENCE_LEVEL
+    )
+    cli_parser.add_argument(
+        '--bootstrap_seed', type=int, default=DEFAULT_BOOTSTRAP_SEED
+    )
     args = cli_parser.parse_args()
 
     tree_sitter_parser = build_parser(args.lang)
@@ -604,4 +734,8 @@ if __name__ == '__main__':
         tree_sitter_parser,
         lang=args.lang,
         thresholds=args.thresholds,
+        primary_threshold=args.primary_threshold,
+        bootstrap_samples=args.bootstrap_samples,
+        confidence_level=args.confidence_level,
+        bootstrap_seed=args.bootstrap_seed,
     )

@@ -14,6 +14,7 @@ Analyzing functions.
 """
 
 import logging
+import os
 from typing import List, Tuple
 from tqdm import tqdm
 from joblib import Parallel, delayed
@@ -24,6 +25,11 @@ from directprobe.distanceQ import DistanceQ
 from directprobe.space import Space
 
 logger = logging.getLogger(__name__)
+
+
+def worker_count(default):
+    """Allow small pilot runs to avoid process-spawn overhead."""
+    return max(1, int(os.environ.get('DIRECTPROBE_N_JOBS', default)))
 
 
 class Analyzer:
@@ -65,7 +71,7 @@ class Analyzer:
                 vecs = q.fix_embeddings[indexs]
                 vecs = vecs.cpu().numpy()
                 data.append((vecs, vec))
-            diss = Parallel(n_jobs=30, prefer='processes', verbose=0,
+            diss = Parallel(n_jobs=worker_count(30), prefer='processes', verbose=0,
                             batch_size='auto')(
                 delayed(Space.point2hull)(X1, X2) for X1, X2 in data)
 
@@ -110,7 +116,7 @@ class Analyzer:
         labels = [(i, clusters[i].major_label, j, clusters[j].major_label)
                   for i, j in indexs]
 
-        diss = Parallel(n_jobs=10, prefer='processes', verbose=0,
+        diss = Parallel(n_jobs=worker_count(10), prefer='processes', verbose=0,
                         batch_size=1)(
             delayed(Space.hull2hull)(X1, X2) for X1, X2 in data)
         return diss, labels

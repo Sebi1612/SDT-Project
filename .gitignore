@@ -20,3 +20,5 @@ attention/exp_data/pilot_100/
 # are versioned for Go and JavaScript; local full grammar clones stay ignored.
 tree-sitter-go/
 tree-sitter-javascript/
+
+DirectProbe/final_3000/data/**/codebert/embeddings/

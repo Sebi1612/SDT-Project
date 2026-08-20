@@ -1,0 +1,71 @@
+{
+  "status": "in_progress",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "workers": 10,
+  "timeout_seconds": 43200,
+  "required_solver": "gurobi",
+  "runs": [
+    {
+      "status": "complete",
+      "language": "go",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 8049.780383683741,
+      "workers": 10,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/codebert/5",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 408,
+        "3": 1194,
+        "2": 792,
+        "1": 6
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1623,
+      "mean_intercluster_distance": 6.10575,
+      "maximum_intercluster_distance": 18.0178,
+      "accuracy": 0.9066666666666666,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8733333333333333,
+        "Sibling": 0.94
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 6409.004773020744,
+      "workers": 10,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/codebert/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 407,
+        "2": 1147,
+        "1": 793,
+        "3": 53
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.2243,
+      "mean_intercluster_distance": 4.67995,
+      "maximum_intercluster_distance": 15.1209,
+      "accuracy": 0.9183333333333333,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.87,
+        "Sibling": 0.9666666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    }
+  ]
+}

@@ -6,7 +6,15 @@ import pickle
 import numpy as np
 
 
-def validate(graph_dir, expected_count=None):
+def validate(
+    graph_dir,
+    expected_count=None,
+    expected_model=None,
+    expected_language=None,
+    require_deterministic=False,
+    require_parser_provenance=False,
+    minimum_coverage=None,
+):
     manifest_path = os.path.join(graph_dir, 'graph_manifest.json')
     with open(manifest_path) as manifest_file:
         manifest = json.load(manifest_file)
@@ -27,6 +35,42 @@ def validate(graph_dir, expected_count=None):
             f"selected_num_codes is {manifest.get('selected_num_codes')}, "
             f'expected {expected_count}'
         )
+    if expected_model is not None and manifest.get('model') != expected_model:
+        errors.append(
+            f"manifest model is {manifest.get('model')!r}, "
+            f'expected {expected_model!r}'
+        )
+    if (
+        expected_model == 'codebert'
+        and manifest.get('model_version') != 'microsoft/codebert-base'
+    ):
+        errors.append(
+            f"CodeBERT model version is {manifest.get('model_version')!r}, "
+            "expected 'microsoft/codebert-base'"
+        )
+    if expected_language is not None and manifest.get('lang') != expected_language:
+        errors.append(
+            f"manifest language is {manifest.get('lang')!r}, "
+            f'expected {expected_language!r}'
+        )
+    if require_deterministic:
+        if manifest.get('inference_mode') is not True:
+            errors.append('manifest does not confirm inference_mode=true')
+        if manifest.get('random_model') is not False:
+            errors.append('manifest does not confirm random_model=false')
+        if manifest.get('seed') is None:
+            errors.append('manifest does not record a random seed')
+        if not manifest.get('model_version'):
+            errors.append('manifest does not record a model version')
+    if require_parser_provenance:
+        for field in (
+            'tree_sitter_version',
+            'tree_sitter_language_library',
+            'tree_sitter_language_library_sha256',
+            'grammar_repo',
+        ):
+            if not manifest.get(field):
+                errors.append(f'manifest does not record {field}')
 
     for artifact_name in artifacts:
         artifact_path = os.path.join(graph_dir, artifact_name)
@@ -70,10 +114,32 @@ def validate(graph_dir, expected_count=None):
     )
     selected = manifest.get('selected_num_codes', 0)
     coverage = len(artifacts) / selected if selected else 0.0
+    if minimum_coverage is not None:
+        if not 0 <= minimum_coverage <= 1:
+            errors.append('minimum_coverage must be between 0 and 1')
+        elif coverage < minimum_coverage:
+            errors.append(
+                f'graph coverage is {coverage:.2%}, below required '
+                f'{minimum_coverage:.2%}'
+            )
     report = {
         'graph_dir': os.path.abspath(graph_dir),
         'language': manifest.get('lang'),
         'model': manifest.get('model'),
+        'model_version': manifest.get('model_version'),
+        'random_model': manifest.get('random_model'),
+        'seed': manifest.get('seed'),
+        'inference_mode': manifest.get('inference_mode'),
+        'torch_version': manifest.get('torch_version'),
+        'transformers_version': manifest.get('transformers_version'),
+        'tree_sitter_version': manifest.get('tree_sitter_version'),
+        'tree_sitter_language_library': manifest.get(
+            'tree_sitter_language_library'
+        ),
+        'tree_sitter_language_library_sha256': manifest.get(
+            'tree_sitter_language_library_sha256'
+        ),
+        'grammar_repo': manifest.get('grammar_repo'),
         'status': manifest.get('status'),
         'selected': selected,
         'artifacts': len(artifacts),
@@ -92,5 +158,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--graph_dir', required=True)
     parser.add_argument('--expected_count', type=int)
+    parser.add_argument('--expected_model')
+    parser.add_argument(
+        '--expected_language',
+        choices=['python', 'java', 'go', 'javascript'],
+    )
+    parser.add_argument('--require_deterministic', action='store_true')
+    parser.add_argument('--require_parser_provenance', action='store_true')
+    parser.add_argument('--minimum_coverage', type=float)
     args = parser.parse_args()
-    raise SystemExit(0 if validate(args.graph_dir, args.expected_count) else 1)
+    raise SystemExit(0 if validate(
+        args.graph_dir,
+        args.expected_count,
+        args.expected_model,
+        args.expected_language,
+        args.require_deterministic,
+        args.require_parser_provenance,
+        args.minimum_coverage,
+    ) else 1)

@@ -1,0 +1,654 @@
+{
+  "status": "complete",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "workers": 4,
+  "timeout_seconds": 1800,
+  "runs": [
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance",
+      "layer": 0,
+      "duration_seconds": 5.303611949086189,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance/config_codebert_0.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance/codebert/0",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "4": 40,
+        "1": 40,
+        "3": 40,
+        "2": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.3829,
+      "mean_intercluster_distance": 0.6978,
+      "maximum_intercluster_distance": 1.1358,
+      "accuracy": 0.34,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.2,
+        "4": 0.3,
+        "5": 0.4,
+        "6": 0.2
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance",
+      "layer": 5,
+      "duration_seconds": 5.269978508353233,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance/codebert/5",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "3": 40,
+        "1": 40,
+        "2": 40,
+        "4": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.6732,
+      "mean_intercluster_distance": 2.1498800000000005,
+      "maximum_intercluster_distance": 2.7842,
+      "accuracy": 0.44,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.7,
+        "3": 0.4,
+        "4": 0.3,
+        "5": 0.4,
+        "6": 0.4
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance",
+      "layer": 9,
+      "duration_seconds": 5.237009912729263,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance/codebert/9",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "1": 40,
+        "3": 40,
+        "0": 40,
+        "2": 40,
+        "4": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.0597,
+      "mean_intercluster_distance": 2.6500399999999997,
+      "maximum_intercluster_distance": 3.3114,
+      "accuracy": 0.4,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.4,
+        "4": 0.2,
+        "5": 0.5,
+        "6": 0.3
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance",
+      "layer": 12,
+      "duration_seconds": 5.285412207245827,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance/config_codebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance/codebert/12",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "2": 40,
+        "0": 40,
+        "3": 40,
+        "1": 40,
+        "4": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.4839,
+      "mean_intercluster_distance": 1.94291,
+      "maximum_intercluster_distance": 2.6056,
+      "accuracy": 0.42,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.5,
+        "4": 0.3,
+        "5": 0.4,
+        "6": 0.3
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance_id",
+      "layer": 0,
+      "duration_seconds": 5.317621164023876,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance_id/config_codebert_0.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance_id/codebert/0",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "1": 40,
+        "3": 40,
+        "4": 40,
+        "2": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.8791,
+      "mean_intercluster_distance": 1.11293,
+      "maximum_intercluster_distance": 1.4084,
+      "accuracy": 0.32,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.5,
+        "3": 0.6,
+        "4": 0.1,
+        "5": 0.1,
+        "6": 0.3
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance_id",
+      "layer": 5,
+      "duration_seconds": 5.31604477763176,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance_id/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance_id/codebert/5",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "3": 40,
+        "4": 40,
+        "1": 40,
+        "2": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.3104,
+      "mean_intercluster_distance": 2.6576500000000003,
+      "maximum_intercluster_distance": 3.0002,
+      "accuracy": 0.46,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.7,
+        "4": 0.4,
+        "5": 0.2,
+        "6": 0.4
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance_id",
+      "layer": 9,
+      "duration_seconds": 5.27776413410902,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance_id/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance_id/codebert/9",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "4": 40,
+        "1": 40,
+        "3": 40,
+        "2": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.7042,
+      "mean_intercluster_distance": 3.0176299999999996,
+      "maximum_intercluster_distance": 3.4305,
+      "accuracy": 0.52,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.9,
+        "4": 0.5,
+        "5": 0.2,
+        "6": 0.4
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "distance_id",
+      "layer": 12,
+      "duration_seconds": 5.283765748143196,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/distance_id/config_codebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/distance_id/codebert/12",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 40,
+        "4": 40,
+        "3": 40,
+        "2": 40,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.8858,
+      "mean_intercluster_distance": 2.1317000000000004,
+      "maximum_intercluster_distance": 2.5056,
+      "accuracy": 0.48,
+      "num_test": 50,
+      "per_label_accuracy": {
+        "2": 0.6,
+        "3": 0.9,
+        "4": 0.4,
+        "5": 0.1,
+        "6": 0.4
+      },
+      "per_label_test_count": {
+        "2": 10,
+        "3": 10,
+        "4": 10,
+        "5": 10,
+        "6": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings",
+      "layer": 0,
+      "duration_seconds": 7.154097616672516,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings/config_codebert_0.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings/codebert/0",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "0": 40,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.0405,
+      "mean_intercluster_distance": 1.0405,
+      "maximum_intercluster_distance": 1.0405,
+      "accuracy": 0.55,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.6,
+        "Sibling": 0.5
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 7.162558540701866,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings/codebert/5",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.7504,
+      "mean_intercluster_distance": 2.7504,
+      "maximum_intercluster_distance": 2.7504,
+      "accuracy": 0.55,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.5,
+        "Sibling": 0.6
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 7.299349062144756,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings/codebert/9",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "0": 40,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 3.359,
+      "mean_intercluster_distance": 3.359,
+      "maximum_intercluster_distance": 3.359,
+      "accuracy": 0.45,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.3,
+        "Sibling": 0.6
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 7.249157316982746,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings/config_codebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings/codebert/12",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "0": 40,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.1956,
+      "mean_intercluster_distance": 2.1956,
+      "maximum_intercluster_distance": 2.1956,
+      "accuracy": 0.6,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.5,
+        "Sibling": 0.7
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings_id",
+      "layer": 0,
+      "duration_seconds": 7.226353690028191,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings_id/config_codebert_0.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings_id/codebert/0",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.0877,
+      "mean_intercluster_distance": 1.0877,
+      "maximum_intercluster_distance": 1.0877,
+      "accuracy": 0.55,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.5,
+        "Sibling": 0.6
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings_id",
+      "layer": 5,
+      "duration_seconds": 7.20788561552763,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings_id/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings_id/codebert/5",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.6158,
+      "mean_intercluster_distance": 2.6158,
+      "maximum_intercluster_distance": 2.6158,
+      "accuracy": 0.65,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.7,
+        "Sibling": 0.6
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings_id",
+      "layer": 9,
+      "duration_seconds": 7.207836650311947,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings_id/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings_id/codebert/9",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 3.0428,
+      "mean_intercluster_distance": 3.0428,
+      "maximum_intercluster_distance": 3.0428,
+      "accuracy": 0.6,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.7,
+        "Sibling": 0.5
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "siblings_id",
+      "layer": 12,
+      "duration_seconds": 7.2119424268603325,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/siblings_id/config_codebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/siblings_id/codebert/12",
+      "num_clusters": 2,
+      "cluster_sizes": {
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.0092,
+      "mean_intercluster_distance": 2.0092,
+      "maximum_intercluster_distance": 2.0092,
+      "accuracy": 0.65,
+      "num_test": 20,
+      "per_label_accuracy": {
+        "NotSibling": 0.6,
+        "Sibling": 0.7
+      },
+      "per_label_test_count": {
+        "NotSibling": 10,
+        "Sibling": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "dfg",
+      "layer": 0,
+      "duration_seconds": 7.527201488614082,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/dfg/config_codebert_0.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/dfg/codebert/0",
+      "num_clusters": 3,
+      "cluster_sizes": {
+        "2": 40,
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 1.284,
+      "mean_intercluster_distance": 1.5049,
+      "maximum_intercluster_distance": 1.7677,
+      "accuracy": 0.4,
+      "num_test": 30,
+      "per_label_accuracy": {
+        "ComesFrom": 0.5,
+        "ComputedFrom": 0.3,
+        "NoEdge": 0.4
+      },
+      "per_label_test_count": {
+        "ComesFrom": 10,
+        "ComputedFrom": 10,
+        "NoEdge": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "dfg",
+      "layer": 5,
+      "duration_seconds": 7.5155157297849655,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/dfg/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/dfg/codebert/5",
+      "num_clusters": 3,
+      "cluster_sizes": {
+        "2": 40,
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 3.2262,
+      "mean_intercluster_distance": 4.262833333333333,
+      "maximum_intercluster_distance": 5.7797,
+      "accuracy": 0.7333333333333333,
+      "num_test": 30,
+      "per_label_accuracy": {
+        "ComesFrom": 0.9,
+        "ComputedFrom": 0.7,
+        "NoEdge": 0.6
+      },
+      "per_label_test_count": {
+        "ComesFrom": 10,
+        "ComputedFrom": 10,
+        "NoEdge": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "dfg",
+      "layer": 9,
+      "duration_seconds": 7.444648735225201,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/dfg/config_codebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/dfg/codebert/9",
+      "num_clusters": 3,
+      "cluster_sizes": {
+        "2": 40,
+        "0": 40,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 3.1743,
+      "mean_intercluster_distance": 4.527333333333334,
+      "maximum_intercluster_distance": 6.425,
+      "accuracy": 0.6333333333333333,
+      "num_test": 30,
+      "per_label_accuracy": {
+        "ComesFrom": 0.9,
+        "ComputedFrom": 0.5,
+        "NoEdge": 0.5
+      },
+      "per_label_test_count": {
+        "ComesFrom": 10,
+        "ComputedFrom": 10,
+        "NoEdge": 10
+      }
+    },
+    {
+      "status": "complete",
+      "language": "python",
+      "task": "dfg",
+      "layer": 12,
+      "duration_seconds": 7.428776748478413,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/config_files/python/dfg/config_codebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/pilot_100_gurobi/results/python/dfg/codebert/12",
+      "num_clusters": 3,
+      "cluster_sizes": {
+        "2": 40,
+        "1": 40,
+        "0": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 2.1821,
+      "mean_intercluster_distance": 2.8113333333333332,
+      "maximum_intercluster_distance": 3.6061,
+      "accuracy": 0.7,
+      "num_test": 30,
+      "per_label_accuracy": {
+        "ComesFrom": 0.8,
+        "ComputedFrom": 0.7,
+        "NoEdge": 0.6
+      },
+      "per_label_test_count": {
+        "ComesFrom": 10,
+        "ComputedFrom": 10,
+        "NoEdge": 10
+      }
+    }
+  ],
+  "num_complete": 20,
+  "num_failed": 0
+}

@@ -1,0 +1,41 @@
+{
+  "status": "in_progress",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "workers": 10,
+  "timeout_seconds": 43200,
+  "required_solver": "gurobi",
+  "runs": [
+    {
+      "status": "complete",
+      "language": "javascript",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 8915.866095788777,
+      "workers": 10,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_codebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/codebert/5",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 901,
+        "1": 441,
+        "2": 715,
+        "4": 299,
+        "3": 44
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 1.0037500000000001,
+      "maximum_intercluster_distance": 2.1831,
+      "accuracy": 0.86,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.7966666666666666,
+        "Sibling": 0.9233333333333333
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    }
+  ]
+}

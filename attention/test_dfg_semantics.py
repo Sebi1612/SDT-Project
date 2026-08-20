@@ -35,6 +35,13 @@ class DFGSemanticsTest(unittest.TestCase):
         self.assertTrue(np.isin(adjacency, [0, 1]).all())
         return adjacency, tokens
 
+    def typed_graph(self, language, code):
+        adjacency, tokens = get_dfg_adj(
+            code, self.parsers[language], lang=language, typed=True
+        )
+        self.assertTrue(np.isin(adjacency, [-1, 0, 1]).all())
+        return adjacency, tokens
+
     def assert_edge(
         self,
         adjacency,
@@ -127,6 +134,44 @@ class DFGSemanticsTest(unittest.TestCase):
         self.assert_edge(adjacency, tokens, 'b', 0, '2', 0)
         self.assert_edge(adjacency, tokens, 'b', 1, 'a', 1)
         self.assert_edge(adjacency, tokens, 'a', 1, 'a', 0)
+
+    def test_computed_value_depends_on_every_identifier_operand(self):
+        examples = {
+            'python': 'def f(x):\n    y = x\n    z = y + x',
+            'java': 'void f(int x){ int y=x; int z=y+x; }',
+            'go': 'func f(x int){ y := x; z := y+x; _ = z }',
+            'javascript': 'function f(x){ let y=x; let z=y+x; }',
+        }
+        for language, code in examples.items():
+            with self.subTest(language=language):
+                adjacency, tokens = self.graph(language, code)
+                self.assert_edge(adjacency, tokens, 'z', 0, 'y', 1)
+                self.assert_edge(adjacency, tokens, 'z', 0, 'x', 2)
+
+    def test_binary_graph_is_absolute_native_typed_graph(self):
+        examples = {
+            'python': 'def f(x):\n    y = x',
+            'java': 'void f(int x){ int y=x; }',
+            'go': 'func f(x int){ y := x; _ = y }',
+            'javascript': 'function f(x){ let y=x; }',
+        }
+        native_declaration_labels = {
+            'python': -1,
+            'java': 1,
+            'go': -1,
+            'javascript': 1,
+        }
+        for language, code in examples.items():
+            with self.subTest(language=language):
+                binary, tokens = self.graph(language, code)
+                typed, typed_tokens = self.typed_graph(language, code)
+                self.assertEqual(tokens, typed_tokens)
+                np.testing.assert_array_equal(binary, np.abs(typed))
+                y = occurrence(tokens, 'y', 0)
+                x = occurrence(tokens, 'x', 1)
+                self.assertEqual(
+                    typed[y, x], native_declaration_labels[language]
+                )
 
     def test_update_expression_has_self_dependency(self):
         for language, code in (

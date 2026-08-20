@@ -2,6 +2,7 @@
 import os
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import pickle
 import random
@@ -52,7 +53,7 @@ def build_parser(lang, grammar_repo):
             language = Language(candidate, lang)
             parser = Parser()
             parser.set_language(language)
-            return parser
+            return parser, candidate
         except ValueError as exc:
             load_errors.append(f'{candidate}: {exc}')
 
@@ -63,7 +64,7 @@ def build_parser(lang, grammar_repo):
         language = Language(language_library, lang)
         parser = Parser()
         parser.set_language(language)
-        return parser
+        return parser, language_library
     except ValueError as exc:
         load_errors.append(f'{language_library}: {exc}')
         raise RuntimeError(
@@ -183,6 +184,10 @@ def save_attention_and_ast(args, parser):
     # still contains artifacts from an earlier run.
     with open(args.code_file, 'rb') as code_file_handle:
         code_file_sha256 = hashlib.sha256(code_file_handle.read()).hexdigest()
+    with open(args.parser_library, 'rb') as parser_library_handle:
+        parser_library_sha256 = hashlib.sha256(
+            parser_library_handle.read()
+        ).hexdigest()
 
     manifest = {
         'status': 'in_progress',
@@ -196,6 +201,10 @@ def save_attention_and_ast(args, parser):
         'device': args.device,
         'torch_version': torch.__version__,
         'transformers_version': transformers.__version__,
+        'tree_sitter_version': importlib.metadata.version('tree-sitter'),
+        'tree_sitter_language_library': os.path.abspath(args.parser_library),
+        'tree_sitter_language_library_sha256': parser_library_sha256,
+        'grammar_repo': os.path.abspath(args.grammar_repo),
         'inference_mode': True,
         'requested_num_codes': args.num_codes,
         'selected_num_codes': len(codes),
@@ -278,7 +287,7 @@ def save_attention_and_ast(args, parser):
                 root_node,
                 collected_tokens,
                 byte_code,
-                include_comments=args.lang in {'java', 'go', 'javascript'},
+                include_comments=False,
             )
             try:
                 ast_info, _, is_error = get_ast_tokens_and_prog_graphs(collected_tokens, code_tokens, tokens, byte_code, (0,0))
@@ -376,6 +385,8 @@ if __name__ == '__main__':
     'javascript': 'tree-sitter-javascript',
 }
     grammar_repo = args.grammar_repo or default_grammar_repos[args.lang]
-    parser = build_parser(args.lang, grammar_repo)
+    parser, parser_library = build_parser(args.lang, grammar_repo)
+    args.parser_library = parser_library
+    args.grammar_repo = grammar_repo
 
     save_attention_and_ast(args, parser)

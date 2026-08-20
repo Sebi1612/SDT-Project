@@ -28,6 +28,38 @@ hidden representations are saved beforehand.
 
 ### Attention Analysis
 We provide various splits of randomly sampled 3000 codes in `exp_data/`. We performed our experiments with `exp_0.jsonl`, but any other set of codes should work and give similar results.
+
+For the multilingual CodeBERT Section 3.2 pilot, run the following from the
+repository root:
+
+```
+python attention/run_section_3_2.py \
+  --languages python java go javascript \
+  --device cuda:0
+```
+
+The runner validates that each pilot contains exactly 100 programs with fewer
+than 500 CodeBERT subtokens. It then generates attention/AST artifacts,
+requires complete artifact coverage, evaluates AST and DFG precision, recall,
+and F-score over the paper's threshold grid, calculates the paper-compatible
+legacy NetworkX GED estimate per node at 0.05, and writes paper-style best-head
+summaries. Graph artifacts are separated under
+`graph_info/pilot_100/<language>/codebert`; results are separated under
+`analysis_results/attention_pilot_100/<language>`.
+Legacy GED results are stored under `similarity_legacy`; the newer exact
+fixed-node edge distance remains available separately under `similarity`.
+Pass `--also_run_fixed_ged` to calculate and summarize both modes in one run.
+For Python, the runner also compares the 100-program curves with the stored
+3,000-program CodeBERT results in `attention/graph_comparision` and writes
+`python_reference_comparison.json`, comparison CSV files, and overlay plots.
+If graph artifacts already exist, rerun only the analyses with:
+
+```
+python attention/run_section_3_2.py \
+  --languages python \
+  --skip_graph_generation
+```
+
 In `attention/` directory,
 
 1. To save attention maps, run
@@ -58,10 +90,17 @@ In `attention/` directory,
 4. For similarity analysis with GED, run
 
 	```
-	python similarity.py --graphs_dir graph_info/exp0/[model_name] --save_dir graph_comparision --exp_name exp_0 --all_layers
+	python similarity.py --graphs_dir graph_info/exp0/[model_name] --save_dir graph_comparision --exp_name exp_0 --all_layers --distance_mode legacy
 	``` 
-	If `model_name` is plbart, also pass `--num_layers 6`. If the code split used is not `exp_0.jsonl`, pass the one that is used with `--code_file`. The results are stores in 
-	`graph_comparision/similarity/exp_0`.
+	If `model_name` is plbart, also pass `--num_layers 6`. If the code split used is not `exp_0.jsonl`, pass the one that is used with `--code_file`. Paper-compatible legacy results are stored in
+	`graph_comparision/similarity_legacy/exp_0`. The legacy mode intentionally
+	reproduces the first candidate yielded by NetworkX's
+	`optimize_graph_edit_distance`, as used by the original project; it is an
+	estimate and not guaranteed to be the globally minimal GED. Use
+	`--distance_mode fixed` for the newer exact fixed-node edge distance, stored
+	separately in `graph_comparision/similarity/exp_0`. The paper environment
+	declared NetworkX 3.0; every legacy run records the installed NetworkX version
+	and warns on a version mismatch so the Python reference run can validate it.
 
 	Calculation of Graph Edit Distance can take a lot of time, ~10 hours for each layer of one model.
 

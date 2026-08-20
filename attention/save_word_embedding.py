@@ -1,4 +1,6 @@
 import argparse
+import hashlib
+import json
 import os
 import pickle
 import torch
@@ -15,6 +17,8 @@ from unixcoder import UniXcoder
 from tree_sitter import Language, Parser
 
 from utils import load_codesearchnet
+from dfg_comp import build_parser
+from graph_utils import get_ast_tokens_and_prog_graphs, traverse_node
 
 def get_model_and_tokenizer(model, model_version = None):
     valid_models = ['codebert', 'graphcodebert', 'unixcoder', 'codet5', 'plbart', 'coderl', 'codet5p_2b', 'codet5p_220', 'codet5p_770', 'codet5_musu', 'codet5_lntp', 'codegen', 'codet5p_2b_dec']
@@ -177,6 +181,251 @@ def merge_hidden_repr(hidden_states, tokenized_tokens, code_tokens, start_index 
         seq_len = len(modified_code_tokens)
         all_hidden_states = torch.stack([all_hidden_states[:, mask == m, :].mean(dim = 1) for m in range(seq_len)], dim = 1)
     return all_hidden_states.cpu().detach().numpy()
+
+
+def _node_paths(root_node):
+    """Map tree-sitter node IDs to root-to-node paths for exact distances."""
+    paths = {}
+
+    def visit(node, path):
+        current = path + (node.id,)
+        paths[node.id] = current
+        for child in node.children:
+            visit(child, current)
+
+    visit(root_node, ())
+    return paths
+
+
+def _base_node_id(node_id):
+    return node_id[0] if isinstance(node_id, tuple) else node_id
+
+
+def aligned_ast_structure(code, code_tokens, tree_sitter_parser, lang):
+    """Create token types and pairwise tree distances on artifact token nodes."""
+    byte_code = code.encode('utf-8')
+    tree = tree_sitter_parser.parse(byte_code)
+    if tree.root_node.has_error:
+        raise ValueError('Tree-sitter reported a parse error')
+
+    collected = []
+    traverse_node(
+        tree.root_node,
+        collected,
+        byte_code,
+        include_comments=False,
+    )
+    ast_info, _, is_error = get_ast_tokens_and_prog_graphs(
+        collected, code_tokens, code_tokens, byte_code, (0, 0)
+    )
+    if is_error or [info['token'] for info in ast_info] != code_tokens:
+        raise ValueError('AST tokens do not exactly match dataset tokens')
+
+    paths = _node_paths(tree.root_node)
+    token_node_ids = []
+    for info in ast_info:
+        ids = {
+            _base_node_id(item['id'])
+            for item in collected
+            if item['start_byte'] >= info['start_byte']
+            and item['end_byte'] <= info['end_byte']
+            and _base_node_id(item['id']) in paths
+        }
+        if not ids:
+            base_id = _base_node_id(info['id'])
+            if base_id not in paths:
+                raise ValueError(f'Could not locate AST node for token {info["token"]!r}')
+            ids = {base_id}
+        token_node_ids.append(sorted(ids))
+
+    def node_distance(first, second):
+        a = paths[first]
+        b = paths[second]
+        common = 0
+        for left, right in zip(a, b):
+            if left != right:
+                break
+            common += 1
+        return len(a) + len(b) - 2 * common
+
+    size = len(ast_info)
+    distances = np.zeros((size, size), dtype=np.int16)
+    for row in range(size):
+        for column in range(row + 1, size):
+            distance = min(
+                node_distance(first, second)
+                for first in token_node_ids[row]
+                for second in token_node_ids[column]
+            )
+            distances[row, column] = distance
+            distances[column, row] = distance
+
+    token_info = [
+        {
+            'token': info['token'],
+            'type': info['type'],
+            'start_byte': info['start_byte'],
+            'end_byte': info['end_byte'],
+        }
+        for info in ast_info
+    ]
+    return distances, token_info
+
+
+def load_codebert_hidden_model(device):
+    model_version = 'microsoft/codebert-base'
+    tokenizer = RobertaTokenizer.from_pretrained(model_version)
+    model = RobertaModel.from_pretrained(
+        model_version, output_hidden_states=True
+    ).to(device)
+    model.eval()
+    return model, tokenizer, model_version
+
+
+def merge_codebert_hidden_states(hidden_states, subtokens, code_tokens):
+    """Average CodeBERT subtokens into the same lexical nodes as graph artifacts."""
+    normalized = [token.replace(' ', '') for token in code_tokens]
+    groups = []
+    token_index = 0
+    accumulated = ''
+    current = []
+    for subtoken_index, subtoken in enumerate(subtokens):
+        piece = subtoken.lstrip('Ġ')
+        accumulated += piece
+        current.append(subtoken_index)
+        if token_index >= len(normalized):
+            raise ValueError('Tokenizer produced trailing subtokens')
+        if accumulated == normalized[token_index]:
+            groups.append(current)
+            current = []
+            accumulated = ''
+            token_index += 1
+    if current or token_index != len(normalized):
+        raise ValueError(
+            f'Subtoken alignment stopped at token {token_index}/{len(normalized)}'
+        )
+
+    # hidden_states contains embedding layer 0 plus all 12 transformer layers.
+    stacked = torch.stack([state[0, 1:-1, :] for state in hidden_states])
+    merged = torch.stack(
+        [stacked[:, indexes, :].mean(dim=1) for indexes in groups], dim=1
+    )
+    return merged.detach().cpu().numpy().astype(np.float32, copy=False)
+
+
+def save_codebert_embeddings(args, tree_sitter_parser):
+    if args.device.startswith('cuda') and not torch.cuda.is_available():
+        raise RuntimeError(
+            f'Requested --device {args.device!r}, but CUDA is unavailable'
+        )
+    if not args.graph_loc:
+        raise ValueError('--graph_loc is required for deterministic CodeBERT extraction')
+
+    graph_manifest_path = os.path.join(args.graph_loc, 'graph_manifest.json')
+    with open(graph_manifest_path) as handle:
+        graph_manifest = json.load(handle)
+    if graph_manifest.get('status') != 'complete':
+        raise ValueError('Graph manifest is not complete')
+    if graph_manifest.get('lang') != args.lang:
+        raise ValueError('Graph manifest language does not match --lang')
+    artifacts = list(graph_manifest['artifacts'])
+    if args.num_codes is not None:
+        artifacts = artifacts[:args.num_codes]
+
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
+    model, tokenizer, model_version = load_codebert_hidden_model(args.device)
+
+    output_dir = os.path.join(args.save_dir, args.lang)
+    if args.exp_name:
+        output_dir = os.path.join(output_dir, args.exp_name)
+    output_dir = os.path.join(output_dir, args.model)
+    os.makedirs(output_dir, exist_ok=True)
+
+    with open(graph_manifest_path, 'rb') as handle:
+        graph_manifest_sha256 = hashlib.sha256(handle.read()).hexdigest()
+    manifest = {
+        'status': 'in_progress',
+        'model': args.model,
+        'model_version': model_version,
+        'language': args.lang,
+        'seed': args.seed,
+        'device': args.device,
+        'inference_mode': True,
+        'graph_manifest': os.path.abspath(graph_manifest_path),
+        'graph_manifest_sha256': graph_manifest_sha256,
+        'num_requested': len(artifacts),
+        'artifacts': [],
+        'failures': [],
+    }
+    manifest_path = os.path.join(output_dir, 'embedding_manifest.json')
+
+    def write_manifest():
+        temporary = manifest_path + '.tmp'
+        with open(temporary, 'w') as handle:
+            json.dump(manifest, handle, indent=2)
+        os.replace(temporary, manifest_path)
+
+    write_manifest()
+    for artifact_name in tqdm(artifacts):
+        try:
+            with open(os.path.join(args.graph_loc, artifact_name), 'rb') as handle:
+                graph = pickle.load(handle)
+            code_tokens = graph['code_tokens']
+            subtokens = tokenizer.tokenize(' '.join(code_tokens))
+            tokens = [tokenizer.cls_token] + subtokens + [tokenizer.sep_token]
+            input_ids = torch.tensor(
+                [tokenizer.convert_tokens_to_ids(tokens)], device=args.device
+            )
+            with torch.inference_mode():
+                outputs = model(input_ids=input_ids)
+            hidden_repr = merge_codebert_hidden_states(
+                outputs.hidden_states, subtokens, code_tokens
+            )
+            tree_dist, code_token_info = aligned_ast_structure(
+                graph['code'], code_tokens, tree_sitter_parser, args.lang
+            )
+            if hidden_repr.shape[:2] != (13, len(code_tokens)):
+                raise ValueError(
+                    f'Hidden shape {hidden_repr.shape}, expected '
+                    f'(13, {len(code_tokens)}, 768)'
+                )
+            if tree_dist.shape != (len(code_tokens), len(code_tokens)):
+                raise ValueError('Tree-distance shape does not match tokens')
+
+            output_name = artifact_name
+            output_path = os.path.join(output_dir, output_name)
+            payload = {
+                'hidden_repr': hidden_repr,
+                'tree_dist': tree_dist,
+                'code_token_info': code_token_info,
+                'code_tokens': code_tokens,
+                'code_file': graph.get('file_name'),
+                'sample_index': graph.get('sample_index'),
+                'source_index': graph.get('source_index'),
+                'source_graph_artifact': artifact_name,
+                'language': args.lang,
+            }
+            with open(output_path, 'wb') as handle:
+                pickle.dump(payload, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            manifest['artifacts'].append(output_name)
+        except Exception as exc:
+            manifest['failures'].append({
+                'source_graph_artifact': artifact_name,
+                'reason': f'{type(exc).__name__}: {exc}',
+            })
+        write_manifest()
+
+    manifest['status'] = 'complete'
+    manifest['num_saved'] = len(manifest['artifacts'])
+    manifest['num_failures'] = len(manifest['failures'])
+    write_manifest()
+    print(
+        f'[HIDDEN STATES COMPLETE] {args.lang} | '
+        f"{manifest['num_saved']}/{len(artifacts)} artifacts | {manifest_path}"
+    )
+    return manifest
         
 
 def get_lca_info(node, walk_path, curr_depth, depth, is_code_token, code_token_info, byte_code):
@@ -465,32 +714,32 @@ def save_word_embeddings(args, save_dir):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model', required=True)
-    parser.add_argument('--code_file', default='exp_data/exp_0.jsonl')
-    parser.add_argument('--num_codes', default=None, type=int)
-    parser.add_argument('--save_dir', default='structural_probe')
-    parser.add_argument('--exp_name', required=False)
-    parser.add_argument('--device', default='cuda')
-    args = parser.parse_args()
+    cli = argparse.ArgumentParser()
+    cli.add_argument('--model', required=True)
+    cli.add_argument('--code_file', default='attention/exp_data/exp_0.jsonl')
+    cli.add_argument('--graph_loc')
+    cli.add_argument('--num_codes', default=None, type=int)
+    cli.add_argument('--save_dir', default='structural_probe')
+    cli.add_argument('--exp_name')
+    cli.add_argument('--device', default='cuda')
+    cli.add_argument('--seed', default=0, type=int)
+    cli.add_argument(
+        '--lang',
+        default='python',
+        choices=['python', 'java', 'go', 'javascript'],
+    )
+    args = cli.parse_args()
 
-    if not os.path.exists('build/'):
-           Language.build_library(
-              'build/my-languages.so',
-              ['tree-sitter-python']
-           )
-
-    PY_LANGUAGE = Language('build/my-languages.so', 'python')
-    parser = Parser()
-    parser.set_language(PY_LANGUAGE)
-
-    save_dir = args.save_dir
-    if not os.path.exists(save_dir):
-        os.mkdir(save_dir)
-    if args.exp_name is not None:
-        save_dir = os.path.join(save_dir, args.exp_name)
-        if not os.path.exists(save_dir):
-            os.mkdir(save_dir)
-
-    save_word_embeddings(args, save_dir)
-
+    tree_sitter_parser = build_parser(args.lang)
+    if args.model == 'codebert':
+        save_codebert_embeddings(args, tree_sitter_parser)
+    else:
+        # Preserve the repository's legacy model paths until each is migrated
+        # to the manifest-backed extraction protocol.
+        legacy_dir = args.save_dir
+        os.makedirs(legacy_dir, exist_ok=True)
+        if args.exp_name:
+            legacy_dir = os.path.join(legacy_dir, args.exp_name)
+            os.makedirs(legacy_dir, exist_ok=True)
+        globals()['parser'] = tree_sitter_parser
+        save_word_embeddings(args, legacy_dir)
