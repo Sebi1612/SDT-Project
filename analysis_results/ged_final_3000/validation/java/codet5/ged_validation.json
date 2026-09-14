@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "valid": true,
+  "language": "java",
+  "model": "codet5",
+  "layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "expected_programs": 3000,
+  "distance_mode": "legacy",
+  "results_directory": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5/attention/similarity_legacy/codet5",
+  "errors": [],
+  "validated_utc": "2026-09-07T18:35:30.122319+00:00",
+  "summary": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5/attention/section_3_2_summary.json"
+}

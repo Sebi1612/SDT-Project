@@ -1,0 +1,944 @@
+{
+  "status": "complete",
+  "purpose": "storage-bounded DirectProbe dataset preparation",
+  "created_utc": "2026-08-26T10:07:10.913157+00:00",
+  "models": [
+    "graphcodebert",
+    "codet5"
+  ],
+  "languages": [
+    "java",
+    "go",
+    "javascript"
+  ],
+  "tasks": [
+    "distance",
+    "distance_id",
+    "siblings",
+    "siblings_id",
+    "dfg"
+  ],
+  "layers": [
+    5,
+    9,
+    12
+  ],
+  "expected_programs": 3000,
+  "runs": {
+    "java/graphcodebert": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:07:10.913442+00:00",
+      "language": "java",
+      "model": "graphcodebert",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/java/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/java/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 449.88114877045155,
+          "finished_utc": "2026-08-26T10:14:40.795223+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.043401256203651,
+          "finished_utc": "2026-08-26T10:14:49.874561+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "java",
+          "model": "graphcodebert",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/distance/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.897267334163189,
+          "paper_program_cap": 160,
+          "used_program_cap": 240,
+          "attempted_program_caps": [
+            160,
+            240
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "java",
+          "model": "graphcodebert",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/distance_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.530561052262783,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "java",
+          "model": "graphcodebert",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/siblings/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 4.909986272454262,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "java",
+          "model": "graphcodebert",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/siblings_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.067680485546589,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "java",
+          "model": "graphcodebert",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/dfg/graphcodebert/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 11.869991295039654,
+          "paper_program_cap": 130,
+          "used_program_cap": 1040,
+          "attempted_program_caps": [
+            130,
+            195,
+            260,
+            390,
+            650,
+            1040
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:17:39.023295+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488844191,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    },
+    "java/codet5": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:17:39.023775+00:00",
+      "language": "java",
+      "model": "codet5",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/java/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/java/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 403.55297047644854,
+          "finished_utc": "2026-08-26T10:24:22.583391+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.04080506414175,
+          "finished_utc": "2026-08-26T10:24:31.658344+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "java",
+          "model": "codet5",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/distance/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.81856444478035,
+          "paper_program_cap": 160,
+          "used_program_cap": 240,
+          "attempted_program_caps": [
+            160,
+            240
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "java",
+          "model": "codet5",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/distance_id/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.477393709123135,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "java",
+          "model": "codet5",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/siblings/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 4.852402843534946,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "java",
+          "model": "codet5",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/siblings_id/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.014011979103088,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "java",
+          "model": "codet5",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/java/dfg/codet5/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 11.63000988215208,
+          "paper_program_cap": 130,
+          "used_program_cap": 1040,
+          "attempted_program_caps": [
+            130,
+            195,
+            260,
+            390,
+            650,
+            1040
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:25:37.128033+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488161121,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    },
+    "go/graphcodebert": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:25:37.128632+00:00",
+      "language": "go",
+      "model": "graphcodebert",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/go/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/go/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 404.27294824272394,
+          "finished_utc": "2026-08-26T10:32:21.408211+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 10.232453316450119,
+          "finished_utc": "2026-08-26T10:32:31.675190+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "go",
+          "model": "graphcodebert",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/distance/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.161219038069248,
+          "paper_program_cap": 160,
+          "used_program_cap": 320,
+          "attempted_program_caps": [
+            160,
+            240,
+            320
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "go",
+          "model": "graphcodebert",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/distance_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.826818637549877,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "go",
+          "model": "graphcodebert",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/siblings/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 4.926349855959415,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "go",
+          "model": "graphcodebert",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/siblings_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 5.877557873725891,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "go",
+          "model": "graphcodebert",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/dfg/graphcodebert/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.223853573203087,
+          "paper_program_cap": 130,
+          "used_program_cap": 195,
+          "attempted_program_caps": [
+            130,
+            195
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:33:21.978542+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31491163684,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    },
+    "go/codet5": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:33:21.979278+00:00",
+      "language": "go",
+      "model": "codet5",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/go/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/go/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 373.7096261680126,
+          "finished_utc": "2026-08-26T10:39:35.695552+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 10.246888525784016,
+          "finished_utc": "2026-08-26T10:39:45.977736+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "go",
+          "model": "codet5",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/distance/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.9783496633172035,
+          "paper_program_cap": 160,
+          "used_program_cap": 320,
+          "attempted_program_caps": [
+            160,
+            240,
+            320
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "go",
+          "model": "codet5",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/distance_id/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.802465468645096,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "go",
+          "model": "codet5",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/siblings/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 4.949334494769573,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "go",
+          "model": "codet5",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/siblings_id/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 5.938367061316967,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "go",
+          "model": "codet5",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/go/dfg/codet5/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.221637547016144,
+          "paper_program_cap": 130,
+          "used_program_cap": 195,
+          "attempted_program_caps": [
+            130,
+            195
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:40:36.221029+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31490613761,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    },
+    "javascript/graphcodebert": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:40:36.221911+00:00",
+      "language": "javascript",
+      "model": "graphcodebert",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/javascript/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/javascript/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 508.32048960775137,
+          "finished_utc": "2026-08-26T10:49:04.549010+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 13.336029514670372,
+          "finished_utc": "2026-08-26T10:49:17.919106+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "graphcodebert",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/distance/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.448891885578632,
+          "paper_program_cap": 160,
+          "used_program_cap": 240,
+          "attempted_program_caps": [
+            160,
+            240
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "graphcodebert",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/distance_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 9.761363841593266,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "graphcodebert",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/siblings/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 5.137511000037193,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "graphcodebert",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/siblings_id/graphcodebert/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 6.567489139735699,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "graphcodebert",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/dfg/graphcodebert/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.12956952303648,
+          "paper_program_cap": 130,
+          "used_program_cap": 195,
+          "attempted_program_caps": [
+            130,
+            195
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:50:11.262616+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42876507804,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    },
+    "javascript/codet5": {
+      "status": "complete",
+      "started_utc": "2026-08-26T10:50:11.263666+00:00",
+      "language": "javascript",
+      "model": "codet5",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/directprobe_stage_final_3000/javascript/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/directprobe_stage_final_3000/javascript/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 509.6065994873643,
+          "finished_utc": "2026-08-26T10:58:40.876598+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 14.341671913862228,
+          "finished_utc": "2026-08-26T10:58:55.255240+00:00"
+        }
+      },
+      "tasks": {
+        "distance": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "codet5",
+          "task": "distance",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/distance/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.979639396071434,
+          "paper_program_cap": 160,
+          "used_program_cap": 240,
+          "attempted_program_caps": [
+            160,
+            240
+          ]
+        },
+        "distance_id": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "codet5",
+          "task": "distance_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/distance_id/codet5/dataset_manifest.json",
+          "num_examples": 6500,
+          "num_train": 5200,
+          "num_test": 1300,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 10.579594150185585,
+          "paper_program_cap": 450,
+          "used_program_cap": 675,
+          "attempted_program_caps": [
+            450,
+            675
+          ]
+        },
+        "siblings": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "codet5",
+          "task": "siblings",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/siblings/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 5.526167139410973,
+          "paper_program_cap": 100,
+          "used_program_cap": 100,
+          "attempted_program_caps": [
+            100
+          ]
+        },
+        "siblings_id": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "codet5",
+          "task": "siblings_id",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/siblings_id/codet5/dataset_manifest.json",
+          "num_examples": 3000,
+          "num_train": 2400,
+          "num_test": 600,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 7.060178346931934,
+          "paper_program_cap": 300,
+          "used_program_cap": 300,
+          "attempted_program_caps": [
+            300
+          ]
+        },
+        "dfg": {
+          "status": "complete",
+          "language": "javascript",
+          "model": "codet5",
+          "task": "dfg",
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/data/javascript/dfg/codet5/dataset_manifest.json",
+          "num_examples": 4500,
+          "num_train": 3600,
+          "num_test": 900,
+          "layers": [
+            5,
+            9,
+            12
+          ],
+          "errors": [],
+          "valid": true,
+          "duration_seconds": 8.78776689618826,
+          "paper_program_cap": 130,
+          "used_program_cap": 195,
+          "attempted_program_caps": [
+            130,
+            195
+          ]
+        }
+      },
+      "finished_utc": "2026-08-26T10:59:53.284597+00:00",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42875908412,
+      "permanent_directprobe_data": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000",
+      "reextraction_required_for": [
+        "GED",
+        "new probing layers"
+      ]
+    }
+  },
+  "failed_utc": "2026-08-26T10:14:52.191445+00:00",
+  "reason": "RuntimeError: Command failed with exit code 1; see DirectProbe/final_3000/preparation_logs/java/graphcodebert/create_distance.log\nstarted_utc=2026-08-26T10:14:49.875027+00:00\ncommand=[\"/home/abhinav/miniconda3/envs/attention/bin/python\", \"attention/create_multilingual_dp.py\", \"--task\", \"distance\", \"--lang\", \"java\", \"--model\", \"graphcodebert\", \"--embedding_dir\", \"structural_probe/directprobe_stage_final_3000/java/graphcodebert\", \"--graph_dir\", \"graph_info/directprobe_stage_final_3000/java/graphcodebert\", \"--output_root\", \"DirectProbe/final_3000\", \"--layers\", \"5\", \"9\", \"12\", \"--target_per_label\", \"1300\", \"--max_programs\", \"160\", \"--require_target\", \"--seed\", \"0\"]\nTraceback (most recent call last):\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/create_multilingual_dp.py\", line 506, in <module>\n    main()\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/create_multilingual_dp.py\", line 490, in main\n    generate_task(\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/create_multilingual_dp.py\", line 353, in generate_task\n    raise ValueError(\nValueError: Target 1300/label was not met with 160 programs; candidate counts: {'2': 1063, '3': 3603, '4': 5455, '5': 8887, '6': 11256}\n\nfinished_utc=2026-08-26T10:14:52.191211+00:00\nduration_seconds=2.3162119537591934\nexit_code=1\n",
+  "finished_utc": "2026-08-26T10:59:53.285805+00:00",
+  "num_complete": 6,
+  "total_purged_bytes": 211711198973
+}

@@ -1,0 +1,486 @@
+{
+  "status": "complete",
+  "paper_section": "3.2",
+  "model": "codebert",
+  "language": "go",
+  "primary_threshold": 0.05,
+  "num_layers": 12,
+  "num_heads": 12,
+  "expected_programs": 3000,
+  "ged_status": "included",
+  "ged_mode": "legacy",
+  "ged_method": "legacy_networkx_optimize_first_candidate",
+  "ged_paper_comparable": true,
+  "ged_results_directory": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/go/similarity_legacy/codebert",
+  "ged_provenance": {
+    "networkx_version": "3.2.1",
+    "paper_reference_networkx_version": "3.0",
+    "networkx_version_matches_declared_paper_environment": false
+  },
+  "head_selection": "highest macro-mean F-score independently for AST and DFG; smallest zero-based head index breaks ties",
+  "ged_head_selection": "lowest macro-mean GED per node independently for each code graph; smallest zero-based head index breaks ties",
+  "outputs": {
+    "overlap_csv": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/go/section_3_2_summary_overlap.csv",
+    "overlap_plot": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/go/section_3_2_summary_overlap.png",
+    "ged_csv": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/go/section_3_2_summary_ged.csv",
+    "ged_plot": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/go/section_3_2_summary_ged.png"
+  },
+  "layers": [
+    {
+      "layer_index": 0,
+      "layer_number_one_based": 1,
+      "overlap": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.29806717836679014,
+          "precision": 0.24840851280838527,
+          "recall": 0.3824494748299528,
+          "iou": 0.17564040808938153
+        },
+        "dfg": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "fscore": 0.1086371598388782,
+          "precision": 0.06291127985631347,
+          "recall": 0.5763338138974975
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "ged_per_node": 2.5194457086799704
+        },
+        "ast_wo_identifiers": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "ged_per_node": 1.29628332473898
+        },
+        "dfg": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "ged_per_node": 0.3854607344444675
+        }
+      }
+    },
+    {
+      "layer_index": 1,
+      "layer_number_one_based": 2,
+      "overlap": {
+        "ast": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "fscore": 0.31587950722658886,
+          "precision": 0.34084693740687516,
+          "recall": 0.30024639632647565,
+          "iou": 0.1880318518570468
+        },
+        "dfg": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.15825130777381521,
+          "precision": 0.09689121251071314,
+          "recall": 0.5339238720157659
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 3,
+          "head_number_one_based": 4,
+          "ged_per_node": 2.4855307664070545
+        },
+        "ast_wo_identifiers": {
+          "head_index": 5,
+          "head_number_one_based": 6,
+          "ged_per_node": 1.1765050709546399
+        },
+        "dfg": {
+          "head_index": 5,
+          "head_number_one_based": 6,
+          "ged_per_node": 0.2535956328296473
+        }
+      }
+    },
+    {
+      "layer_index": 2,
+      "layer_number_one_based": 3,
+      "overlap": {
+        "ast": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "fscore": 0.29205482537118205,
+          "precision": 0.37536011667708713,
+          "recall": 0.24354827386028757,
+          "iou": 0.17142436603633412
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.10686433650070865,
+          "precision": 0.0610212545435681,
+          "recall": 0.5440663228828456
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "ged_per_node": 2.510188578142887
+        },
+        "ast_wo_identifiers": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "ged_per_node": 1.3113250327907453
+        },
+        "dfg": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "ged_per_node": 0.7127198408337259
+        }
+      }
+    },
+    {
+      "layer_index": 3,
+      "layer_number_one_based": 4,
+      "overlap": {
+        "ast": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "fscore": 0.3186843938348969,
+          "precision": 0.5187079856550985,
+          "recall": 0.23327095448237006,
+          "iou": 0.19075291759386565
+        },
+        "dfg": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "fscore": 0.10274138113004165,
+          "precision": 0.05780709896340993,
+          "recall": 0.582420187124985
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "ged_per_node": 2.428959163573161
+        },
+        "ast_wo_identifiers": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "ged_per_node": 1.2146467972310329
+        },
+        "dfg": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "ged_per_node": 0.36170921894384955
+        }
+      }
+    },
+    {
+      "layer_index": 4,
+      "layer_number_one_based": 5,
+      "overlap": {
+        "ast": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "fscore": 0.33459598091459936,
+          "precision": 0.44684041788928996,
+          "recall": 0.27423585493703484,
+          "iou": 0.20181629727594289
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.13676855277966093,
+          "precision": 0.08155660293512883,
+          "recall": 0.5451049017847144
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "ged_per_node": 2.646224236678823
+        },
+        "ast_wo_identifiers": {
+          "head_index": 5,
+          "head_number_one_based": 6,
+          "ged_per_node": 1.4810905200625997
+        },
+        "dfg": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "ged_per_node": 0.9345756207260252
+        }
+      }
+    },
+    {
+      "layer_index": 5,
+      "layer_number_one_based": 6,
+      "overlap": {
+        "ast": {
+          "head_index": 8,
+          "head_number_one_based": 9,
+          "fscore": 0.35825536665607843,
+          "precision": 0.37675844987911145,
+          "recall": 0.3492446485477591,
+          "iou": 0.21904371525251265
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.13364689873290617,
+          "precision": 0.0780153465208318,
+          "recall": 0.6011193899379956
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 3,
+          "head_number_one_based": 4,
+          "ged_per_node": 2.49165745418966
+        },
+        "ast_wo_identifiers": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "ged_per_node": 1.227641570791023
+        },
+        "dfg": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "ged_per_node": 0.30692127241536743
+        }
+      }
+    },
+    {
+      "layer_index": 6,
+      "layer_number_one_based": 7,
+      "overlap": {
+        "ast": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "fscore": 0.34388115118780765,
+          "precision": 0.43496772522129884,
+          "recall": 0.2892168838149079,
+          "iou": 0.20851234143262126
+        },
+        "dfg": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.13342600978406793,
+          "precision": 0.07862832238156246,
+          "recall": 0.5654478543660642
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "ged_per_node": 2.6210508680823628
+        },
+        "ast_wo_identifiers": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "ged_per_node": 1.4406903089990604
+        },
+        "dfg": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "ged_per_node": 1.1857326973549542
+        }
+      }
+    },
+    {
+      "layer_index": 7,
+      "layer_number_one_based": 8,
+      "overlap": {
+        "ast": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "fscore": 0.36551867483789,
+          "precision": 0.4476557570925433,
+          "recall": 0.31450958544077373,
+          "iou": 0.22441580177398585
+        },
+        "dfg": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.07399786957763654,
+          "precision": 0.041312607916532275,
+          "recall": 0.47525010033760273
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "ged_per_node": 2.62300527447626
+        },
+        "ast_wo_identifiers": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "ged_per_node": 1.5139452060546768
+        },
+        "dfg": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "ged_per_node": 1.1287120424477612
+        }
+      }
+    },
+    {
+      "layer_index": 8,
+      "layer_number_one_based": 9,
+      "overlap": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.2894444711978708,
+          "precision": 0.351173659263116,
+          "recall": 0.25202613206646146,
+          "iou": 0.17022976359738254
+        },
+        "dfg": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "fscore": 0.016582382118637235,
+          "precision": 0.01089577024193485,
+          "recall": 0.038201676523251175
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "ged_per_node": 2.560537246815264
+        },
+        "ast_wo_identifiers": {
+          "head_index": 8,
+          "head_number_one_based": 9,
+          "ged_per_node": 1.170752501245725
+        },
+        "dfg": {
+          "head_index": 8,
+          "head_number_one_based": 9,
+          "ged_per_node": 0.36529704568364857
+        }
+      }
+    },
+    {
+      "layer_index": 9,
+      "layer_number_one_based": 10,
+      "overlap": {
+        "ast": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.24351217850203496,
+          "precision": 0.40828583533933793,
+          "recall": 0.1755488863740372,
+          "iou": 0.13908594487148146
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.05537967103090595,
+          "precision": 0.04055387978468389,
+          "recall": 0.11773353259751275
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "ged_per_node": 2.429459693379604
+        },
+        "ast_wo_identifiers": {
+          "head_index": 3,
+          "head_number_one_based": 4,
+          "ged_per_node": 1.2656608205743465
+        },
+        "dfg": {
+          "head_index": 3,
+          "head_number_one_based": 4,
+          "ged_per_node": 0.3956275464616098
+        }
+      }
+    },
+    {
+      "layer_index": 10,
+      "layer_number_one_based": 11,
+      "overlap": {
+        "ast": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.2176433191050893,
+          "precision": 0.27637068353717154,
+          "recall": 0.18427817093086613,
+          "iou": 0.12273299310336076
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.11157075990071845,
+          "precision": 0.06720695493740919,
+          "recall": 0.42316750578551554
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "ged_per_node": 2.6931218479698065
+        },
+        "ast_wo_identifiers": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "ged_per_node": 1.1450547890805252
+        },
+        "dfg": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "ged_per_node": 0.30341575481609107
+        }
+      }
+    },
+    {
+      "layer_index": 11,
+      "layer_number_one_based": 12,
+      "overlap": {
+        "ast": {
+          "head_index": 5,
+          "head_number_one_based": 6,
+          "fscore": 0.22811327801271208,
+          "precision": 0.20819530789122973,
+          "recall": 0.2592479580085248,
+          "iou": 0.12915895172991962
+        },
+        "dfg": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.03007444796422372,
+          "precision": 0.022270856344995135,
+          "recall": 0.06793023066887449
+        }
+      },
+      "minimum_ged_per_node": {
+        "ast": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "ged_per_node": 2.7293557568578906
+        },
+        "ast_wo_identifiers": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "ged_per_node": 1.1516229120264574
+        },
+        "dfg": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "ged_per_node": 0.23627325246097416
+        }
+      }
+    }
+  ]
+}

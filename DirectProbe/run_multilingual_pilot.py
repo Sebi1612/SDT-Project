@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -90,6 +91,7 @@ def run_matrix(
     timeout,
     required_solver=None,
     manifest_name='directprobe_run_manifest.json',
+    quarantine_incomplete=False,
 ):
     dp_dir = Path(dp_dir).resolve()
     pilot_root = Path(pilot_root).resolve()
@@ -122,6 +124,7 @@ def run_matrix(
     total = len(languages) * len(models) * len(tasks) * len(layers)
     completed = 0
     failures = []
+    recovery_run = time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())
 
     for language in languages:
         for model in models:
@@ -168,8 +171,40 @@ def run_matrix(
                         )
                         continue
                     if result_dir.exists() and any(result_dir.iterdir()):
-                        raise RuntimeError(
-                            f'Incomplete non-empty result directory: {result_dir}'
+                        if not quarantine_incomplete:
+                            raise RuntimeError(
+                                'Incomplete non-empty result directory: '
+                                f'{result_dir}'
+                            )
+                        relative = result_dir.relative_to(pilot_root)
+                        archive_dir = (
+                            pilot_root / 'interrupted_results_archive'
+                            / recovery_run / relative
+                        )
+                        if archive_dir.exists():
+                            archive_dir = archive_dir.with_name(
+                                archive_dir.name + f'_{time.time_ns()}'
+                            )
+                        archive_dir.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.move(str(result_dir), str(archive_dir))
+                        recovery = {
+                            'language': language,
+                            'model': model,
+                            'task': task,
+                            'layer': layer,
+                            'source': str(result_dir),
+                            'archive': str(archive_dir),
+                            'recovered_utc': time.strftime(
+                                '%Y-%m-%dT%H:%M:%SZ', time.gmtime()
+                            ),
+                        }
+                        manifest.setdefault(
+                            'quarantined_incomplete_results', []
+                        ).append(recovery)
+                        write_manifest(manifest_path, manifest)
+                        print(
+                            '[QUARANTINE] incomplete result moved to '
+                            f'{archive_dir}'
                         )
 
                     started = time.monotonic()
@@ -297,6 +332,14 @@ def main():
         '--manifest_name', default='directprobe_run_manifest.json',
         help='Separate manifests allow safe language-level parallel runners.',
     )
+    cli.add_argument(
+        '--quarantine_incomplete',
+        action='store_true',
+        help=(
+            'Move an interrupted non-empty result directory into a timestamped '
+            'archive and rerun that configuration.'
+        ),
+    )
     args = cli.parse_args()
     manifest = run_matrix(
         args.dp_dir,
@@ -309,6 +352,7 @@ def main():
         args.timeout,
         args.required_solver,
         args.manifest_name,
+        args.quarantine_incomplete,
     )
     print(
         f"[DIRECTPROBE MATRIX COMPLETE] {manifest['num_complete']} complete, "

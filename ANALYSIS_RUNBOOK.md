@@ -323,6 +323,42 @@ The exact fixed-node edge distance is also available with
 `--distance_mode fixed`, but save it separately and do not compare it directly
 with the paper's legacy GED numbers.
 
+### 7.1 Requested final multilingual GED queue
+
+The final requested GED scope is CodeBERT, GraphCodeBERT, and CodeT5 for Java,
+Go, and JavaScript: 9 model/language cohorts and 108 layer jobs.  The queue
+retains only one artifact cohort at a time and runs its 12 layers concurrently
+in isolated shard directories.  Isolation is required because `similarity.py`
+writes cohort-level filenames in addition to the layer-specific JSON file.
+After all shards validate, the queue merges them into the normal Section 3.2
+`similarity_legacy` directory, regenerates the summary, validates full
+3,000-program coverage, and removes only the manifest-listed temporary pickle
+files.
+
+The detached run is launched with:
+
+```bash
+tmux new-session -d -s sdt-ged \
+  "cd /home/abhinav/sdt_project/dev-sebastian && \
+   exec /home/abhinav/miniconda3/envs/attention/bin/python \
+   attention/run_requested_ged_watchdog.py \
+   --python /home/abhinav/miniconda3/envs/attention/bin/python \
+   --workers 12"
+```
+
+Status and logs are stored under `analysis_results/ged_final_3000/`:
+
+- `ged_watchdog_manifest.json`: detached watchdog and restart attempts;
+- `ged_queue_manifest.json`: active cohort and per-layer status;
+- `logs/<language>/<model>/`: extraction, layer-attempt, and summary logs;
+- `shards/<language>/<model>/layer_<n>/`: isolated resumable layer outputs;
+- `validation/<language>/<model>/ged_validation.json`: final cohort checks.
+
+GED uses NetworkX and does not invoke Gurobi.  Each layer process has
+BLAS/OpenMP threading capped at one, the nine cohorts are sequential, and a
+layer is retried at most three times.  The queue pauses before a new cohort
+when less than 80 GB of memory or 60 GB of disk is available.
+
 ## 8. DirectProbe hidden-representation analysis
 
 DirectProbe needs both retained graph and embedding `.pkl` files. Build one
@@ -436,3 +472,115 @@ Do not use a result in aggregate analysis until all applicable checks pass:
 
 The JSON manifests are the authoritative provenance record. PNG files alone
 are not sufficient evidence that a run completed correctly.
+
+## 11. Active Python replication and requested DirectProbe schedule
+
+The 2026-08-26 schedule adds a full 3,000-program Python recomputation for the
+same six models already analyzed in Java, Go and JavaScript. It runs only AST
+and DFG attention overlap plus the representative qualitative t-SNE analyses;
+GED and DirectProbe are excluded from the Python comparison. Each recomputed
+Python overlap curve is compared with the corresponding stored paper curve by
+`attention/compare_python_reference.py --skip_ged`.
+
+The original storage-bounded sequential Python queue was:
+
+```bash
+"$PYTHON_BIN" attention/run_requested_analysis_queue.py
+```
+
+Adapter probing-data preparation is now complete. For the Python-only rerun,
+use the faster bounded three-lane queue in a durable host session:
+
+```bash
+tmux new-session -d -s sdt-python-analysis -c "$REPO_ROOT" \
+  "$PYTHON_BIN" attention/run_parallel_python_analysis.py
+```
+
+This runs CodeBERT in one lane and the five adapter models in two historically
+balanced lanes. It permits at most three model cohorts and 12 CPU threads at
+once, requires at least 150 GB free before starting, and retains the 55 GB
+per-model disk guard. The adapter runner uses `--dataset_pattern exp_0.jsonl`,
+so the established Python cohort is read directly without copying it. Once all
+Python manifests pass, the queue refreshes:
+
+- `analysis_results/aggregate/final_3000_summary.json` and its CSV tables;
+- `analysis_results/multilingual_code_llm_results.ipynb`;
+- the manuscript figures; and
+- `analysis_results/manuscript/figures/generated_four_language_results.tex`.
+
+Live Python status is recorded in
+`analysis_results/background_runs/python_analysis_queue.json`, with lane logs
+under `analysis_results/background_runs/python_analysis_logs/`.
+
+One cohort record contains a Python-2 `exec` expression that the bundled
+tree-sitter grammar represents with an error-recovery node. The pipeline keeps
+the source record unchanged and accepts recovery only after the recovered AST
+leaf stream aligns exactly with every CodeSearchNet token. Manifests record it
+under `parse_recoveries`; it is not counted as an extraction failure.
+
+The DirectProbe target count is held fixed at the paper-style 1,300 or 1,500
+examples per label. The listed paper program caps are tried first. If a model's
+tokenization/alignment does not expose enough examples inside that cap, the
+preparation runner expands only the number of programs searched until the same
+per-label target is met. The dataset and preparation manifests record the
+paper cap, every attempted cap, and the cap actually used. This policy is
+necessary for cross-model probing: for example, GraphCodeBERT/Java yielded
+only 1,063 distance-2 candidates in the first 160 programs and met the fixed
+1,300 target at a cap of 240.
+
+The requested probing matrix is exactly three models (`codebert`,
+`graphcodebert`, `codet5`) by three added languages (`java`, `go`,
+`javascript`) by five tasks by three hidden states (`5`, `9`, `12`): 135
+configurations. Four CodeBERT sibling configurations already have valid Gurobi
+outputs, leaving 131 solver configurations. The queue command is:
+
+```bash
+"$PYTHON_BIN" DirectProbe/run_requested_probe_queue.py
+```
+
+This wrapper supplies the project-local licence to every child solver process:
+
+```text
+GRB_LICENSE_FILE=/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic
+```
+
+It does not modify any global Gurobi configuration. The five tasks are five
+independent concurrent lanes. Within each lane, model/language/layer
+configurations remain sequential. Joblib is capped at four workers per lane,
+so at most five configurations and 20 DirectProbe workers run concurrently.
+Each Gurobi LP and each BLAS/OpenMP process is capped at one thread, and each
+configuration has a 48-hour timeout. Both top-level queues use a positive nice
+value. Host measurements of the first four-worker configuration showed about
+5 GiB aggregate RSS and about 1.4 CPU cores of average use. Five lanes should
+therefore stay around 25--40 GiB RAM and well below the server's 64 CPU cores,
+including reasonable task-to-task variation. Model-level parallelism is not
+enabled initially so the server retains substantial headroom.
+
+Live status is recorded in:
+
+- `analysis_results/background_runs/analysis_queue.json`;
+- `DirectProbe/final_3000/requested_probing_parallel_queue_manifest.json`;
+- `DirectProbe/final_3000/directprobe_run_manifest_<task>_codebert_requested.json`;
+- `DirectProbe/final_3000/directprobe_run_manifest_<task>_adapters_requested.json`.
+
+The preparation/Python queue is expected to take roughly 5--8 hours based on
+the completed adapter timings. DirectProbe is much less predictable. The four
+finished 3,000-program sibling runs took 1.8--2.5 hours each with ten workers,
+and distance tasks can be harder. With five task lanes, each lane contains at
+most 27 sequential configurations rather than one queue containing all 131.
+The planning horizon is now 7--14 days. The extreme 48-hour-timeout ceiling is
+54 days for a full 27-configuration lane, but that would require every item in
+the slowest lane to reach its timeout. Re-estimate after the first complete
+CodeBERT result in each task lane; only if the measured projection misses the
+deadline should model-level parallelism be added.
+
+### Storage cleanup performed before this schedule
+
+The 15 CodeBERT DirectProbe datasets (three languages by five tasks) were
+validated for layers 5, 9 and 12 together with their configs and permanent
+attention/t-SNE outputs. The manifest-scoped cleanup then removed only 18,000
+source `.pkl` tensors (105,839,423,206 bytes) from the three CodeBERT graph and
+embedding cohorts. The cleanup record is
+`DirectProbe/final_3000/codebert_source_cleanup_manifest.json`. The permanent
+results and DirectProbe datasets remain intact. A future CodeBERT GED analysis
+or a new probing dataset using other token pairs would require re-extraction.

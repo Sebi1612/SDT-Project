@@ -57,6 +57,11 @@ MODEL_SPECS: Dict[str, ModelSpec] = {
         expected_transformer_layers=6,
         expected_attention_heads=12,
         expected_hidden_size=768,
+        # The shared cohort was selected with the paper's CodeBERT-token
+        # cutoff. PLBART tokenizes one retained Python program to 501 pieces;
+        # with its two special tokens this still fits within the common
+        # 512-position inference window and must not reduce cross-model coverage.
+        paper_max_subtokens=510,
     ),
     "codet5p_220": ModelSpec(
         name="codet5p_220",

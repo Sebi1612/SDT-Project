@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "valid": true,
+  "language": "java",
+  "model": "codebert",
+  "layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "expected_programs": 3000,
+  "distance_mode": "legacy",
+  "results_directory": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/java/similarity_legacy/codebert",
+  "errors": [],
+  "validated_utc": "2026-09-02T04:28:56.561291+00:00",
+  "summary": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/java/section_3_2_summary.json"
+}

@@ -1,0 +1,51 @@
+{
+  "protocol_version": "structural_attention_v1",
+  "analysis": "ast_dfg_legacy_networkx_ged",
+  "model": "codet5",
+  "language": "java",
+  "model_extraction_validated_for": [
+    "codebert"
+  ],
+  "supported_languages": [
+    "python",
+    "java",
+    "go",
+    "javascript"
+  ],
+  "primary_threshold": 0.05,
+  "threshold_predicate": "attention > threshold",
+  "averaging": "macro mean over programs",
+  "bootstrap_unit": "program",
+  "bootstrap_method": "percentile",
+  "bootstrap_samples": 1000,
+  "confidence_level": 0.95,
+  "bootstrap_seed": 0,
+  "graph_direction": "directed",
+  "parser_failures": "excluded and reported in coverage counts",
+  "empty_dfgs": "included as valid zero-edge graphs",
+  "identifier_policy": "tree-sitter type contains 'identifier'",
+  "dfg_relation_policy": "binary edges for attention evaluation; typed labels, when requested separately, are native to each GraphCodeBERT extractor",
+  "typed_dfg_cross_language_comparison_supported": false,
+  "known_limitations": [
+    "GraphCodeBERT DFG state is name-based and does not fully model lexical scope shadowing.",
+    "Passing alignment validates token identity and graph shape, not complete semantic correctness for every language construct."
+  ],
+  "threshold_sweep": [
+    0.05
+  ],
+  "distance_mode": "legacy",
+  "distance": "first candidate yielded by networkx.optimize_graph_edit_distance",
+  "distance_normalization": "first candidate divided by nodes",
+  "paper_compatible": true,
+  "networkx_version": "3.2.1",
+  "paper_reference_networkx_version": "3.0",
+  "networkx_version_matches_declared_paper_environment": false,
+  "node_labels": "dataset tokens disambiguated with the historical make_nodes_unique function",
+  "node_match": "node attribute 'name' equality",
+  "edge_costs": {
+    "deletion": 1,
+    "insertion": 1,
+    "substitution": 0
+  },
+  "known_methodological_limitation": "The first yielded value is a legacy GED estimate and is not guaranteed to be the globally minimal graph edit distance."
+}

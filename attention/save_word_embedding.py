@@ -205,8 +205,6 @@ def aligned_ast_structure(code, code_tokens, tree_sitter_parser, lang):
     """Create token types and pairwise tree distances on artifact token nodes."""
     byte_code = code.encode('utf-8')
     tree = tree_sitter_parser.parse(byte_code)
-    if tree.root_node.has_error:
-        raise ValueError('Tree-sitter reported a parse error')
 
     collected = []
     traverse_node(

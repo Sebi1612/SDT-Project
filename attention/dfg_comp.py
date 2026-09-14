@@ -112,6 +112,88 @@ def align_dfg_to_tokens(dfg_adj, source_tokens, target_tokens):
     return aligned_adj, target_tokens
 
 
+def align_dfg_to_python_spans(
+    dfg_adj,
+    token_indexes,
+    code_string,
+    root_node,
+    target_tokens,
+):
+    """Project Python DFG nodes using the AST/token alignment used at extraction.
+
+    CodeSearchNet's Python token stream omits function docstrings and optional
+    semicolons, but can retain equivalent strings in other statement contexts.
+    Removing text before parsing changes source positions and cannot reproduce
+    those distinctions reliably.  The extraction pipeline already proves an
+    exact mapping from parser spans to dataset tokens, so reuse that mapping
+    here and discard only DFG nodes outside the retained spans.
+    """
+    from graph_utils import get_ast_tokens_and_prog_graphs, traverse_node
+
+    byte_code = code_string.encode('utf-8')
+    collected = []
+    traverse_node(
+        root_node,
+        collected,
+        byte_code,
+        include_comments=False,
+    )
+    target_info, _, is_error = get_ast_tokens_and_prog_graphs(
+        collected,
+        target_tokens,
+        target_tokens,
+        byte_code,
+        (0, 0),
+    )
+    if is_error or [item['token'] for item in target_info] != target_tokens:
+        raise ValueError(
+            'Could not reproduce exact Python AST/dataset token alignment'
+        )
+
+    line_starts = []
+    cursor = 0
+    for line in code_string.splitlines(keepends=True):
+        line_starts.append(cursor)
+        cursor += len(line.encode('utf-8'))
+    if not line_starts:
+        line_starts.append(0)
+
+    def absolute_byte(point):
+        row, column = point
+        return line_starts[row] + column
+
+    source_to_target = {}
+    target_index = 0
+    for source_index, (start_point, end_point) in enumerate(token_indexes):
+        start_byte = absolute_byte(start_point)
+        end_byte = absolute_byte(end_point)
+        while (
+            target_index < len(target_info)
+            and target_info[target_index]['end_byte'] <= start_byte
+        ):
+            target_index += 1
+        if target_index >= len(target_info):
+            break
+        target = target_info[target_index]
+        if (
+            target['start_byte'] <= start_byte
+            and end_byte <= target['end_byte']
+        ):
+            source_to_target[source_index] = target_index
+
+    aligned_adj = np.zeros((len(target_tokens), len(target_tokens)))
+    source_rows, source_cols = np.nonzero(dfg_adj)
+    for source_row, source_col in zip(source_rows, source_cols):
+        target_row = source_to_target.get(int(source_row))
+        target_col = source_to_target.get(int(source_col))
+        if target_row is not None and target_col is not None:
+            aligned_adj[target_row, target_col] = dfg_adj[
+                source_row,
+                source_col,
+            ]
+    return aligned_adj, target_tokens
+
+
 def get_dfg_adj(
     code_string,
     parser,
@@ -128,14 +210,15 @@ def get_dfg_adj(
     constructs, so signed labels must not be compared across languages.
     """
     include_comments = False
-    if lang == 'python':
-        code_string = remove_comments_and_docstrings(code_string, lang)
-    else:
-        code_string, _ = strip_comments(code_string, parser)
+    if expected_tokens is None:
+        if lang == 'python':
+            code_string = remove_comments_and_docstrings(code_string, lang)
+        else:
+            code_string, _ = strip_comments(code_string, parser)
 
     tree = parser.parse(bytes(code_string, 'utf-8'))
     root_node = tree.root_node
-    if root_node.has_error:
+    if root_node.has_error and expected_tokens is None:
         raise ValueError('Tree-sitter reported a parse error')
 
     token_indexes = tree_to_token_index(
@@ -186,11 +269,25 @@ def get_dfg_adj(
         ]
 
     if expected_tokens is not None:
-        dfg_adj, code_tokens = align_dfg_to_tokens(
-            dfg_adj,
-            code_tokens,
-            expected_tokens,
-        )
+        if lang == 'python':
+            retained_indexes = [
+                token_index
+                for index, token_index in enumerate(token_indexes)
+                if index not in indexes_to_remove
+            ]
+            dfg_adj, code_tokens = align_dfg_to_python_spans(
+                dfg_adj,
+                retained_indexes,
+                code_string,
+                root_node,
+                expected_tokens,
+            )
+        else:
+            dfg_adj, code_tokens = align_dfg_to_tokens(
+                dfg_adj,
+                code_tokens,
+                expected_tokens,
+            )
 
     return dfg_adj, code_tokens
 

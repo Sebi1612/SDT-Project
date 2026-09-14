@@ -1,6 +1,74 @@
 # Analysis results obtained so far
 
-Snapshot date: 2026-08-20
+Snapshot date: 2026-09-14
+
+## Final requested DirectProbe and GED results
+
+The requested DirectProbe and paper-compatible legacy GED computations are
+complete. The publishable result package deliberately contains the compact raw
+solver outputs, per-program GED arrays, summaries, configurations, and
+provenance manifests. Multi-gigabyte embedding matrices, extracted attention
+pickle files, temporary GED shards, progress logs, and interrupted-run
+archives are reproducible intermediates and are not published in Git.
+
+DirectProbe covers CodeBERT, GraphCodeBERT, and CodeT5 for Java, Go, and
+JavaScript at hidden states 5, 9, and 12. All five tasks (`siblings`,
+`siblings_id`, `dfg`, `distance`, and `distance_id`) are complete: 135/135
+configurations. The canonical files are under
+`DirectProbe/final_3000/results/<language>/<task>/<model>/<layer>/`; each
+configuration contains `clusters.txt`, `prediction.txt`, `dis.txt`, and
+`log.txt`. The final queue and watchdog manifests are stored beside that
+directory, and every solver log records Gurobi use.
+
+GED covers the same three models and added languages at every transformer
+layer: 9/9 cohorts and 108/108 layer jobs. Every cohort evaluated all 3,000
+programs and passed its final validation with no error. Canonical CodeBERT GED
+results are under
+`analysis_results/attention_final_3000/<language>/similarity_legacy/codebert/`.
+GraphCodeBERT and CodeT5 results are under
+`analysis_results/final_3000_multimodel/<language>/<model>/attention/similarity_legacy/<model>/`.
+Each canonical directory contains all 12 layer JSON files, the merged
+`program_metrics_threshold_0.05.npz`, the similarity manifest, and evaluation
+protocol. The corresponding `section_3_2_summary*` files include the GED
+tables and plots. Completion records are under
+`analysis_results/ged_final_3000/validation/`, with the top-level status in
+`analysis_results/ged_final_3000/ged_queue_manifest.json`.
+
+The committed GED outputs reproduce the historical first candidate from
+NetworkX `optimize_graph_edit_distance` and record the installed NetworkX
+version (3.2.1) alongside the paper-declared version (3.0). They should be
+described as paper-compatible legacy GED estimates, not globally minimal exact
+GED values.
+
+## 2026-08-26 active extension
+
+A resource-bounded background schedule now targets two additions:
+
+1. full 3,000-program Python AST/DFG overlap and representative t-SNE for the
+   same six models as the added-language comparison, with GED and probing
+   excluded and every overlap curve checked against the stored paper output;
+2. DirectProbe for CodeBERT, GraphCodeBERT and CodeT5 in Java, Go and
+   JavaScript, using all five tasks at hidden states 5, 9 and 12.
+
+The authoritative live manifests are
+[`analysis_results/background_runs/python_analysis_queue.json`](analysis_results/background_runs/python_analysis_queue.json)
+and
+[`DirectProbe/final_3000/requested_probing_parallel_queue_manifest.json`](DirectProbe/final_3000/requested_probing_parallel_queue_manifest.json).
+Do not count a scheduled item as a result until its nested validation/solver
+manifest says `complete`.
+
+The five probing tasks now run as concurrent lanes, with four workers per lane
+and model/language/layer configurations sequential inside each lane. This caps
+the queue at five configurations and 20 DirectProbe workers concurrently. The
+current planning horizon is 7--14 days rather than the earlier fully serial
+5--10-week estimate.
+
+Adapter dataset preparation keeps the requested balanced label counts fixed.
+When a model exposes too few aligned candidates within the paper's initial
+program cap, only the search cap is expanded and the actual cap is recorded.
+The first validated case was GraphCodeBERT/Java: distance required 240 instead
+of 160 programs and identifier-distance required 675 instead of 450; both
+still contain exactly 1,300 examples per label.
 
 This document inventories the results currently present in the repository. A
 result is called **complete** only when its manifest and every expected output
@@ -26,12 +94,14 @@ manifest reports `status=complete`, `num_complete=15`, no failed run, and
 outputs were saved. See
 [`analysis_results/final_3000_multimodel/run_manifest.json`](analysis_results/final_3000_multimodel/run_manifest.json).
 
-At this snapshot, the retained adapter outputs occupy about 205 MB. The much
-larger retained CodeBERT intermediates occupy about 68 GB under
-`graph_info/final_3000` and about 32 GB across the three
-`structural_probe/<language>/final_3000` directories. The partly generated
-DirectProbe datasets/results occupy about 11 GB. These are `du`-reported sizes
-and may differ slightly from filesystem allocation totals.
+At the original snapshot, the retained adapter outputs occupied about 205 MB
+and the CodeBERT intermediates occupied roughly 100 GB. On 2026-08-26, after
+all 15 CodeBERT DirectProbe datasets and permanent attention/t-SNE outputs
+were validated, 18,000 manifest-listed graph/embedding tensors totaling
+105,839,423,206 bytes were removed. The cleanup record is
+[`DirectProbe/final_3000/codebert_source_cleanup_manifest.json`](DirectProbe/final_3000/codebert_source_cleanup_manifest.json).
+The generated DirectProbe datasets remain; future CodeBERT GED or new probing
+pair selection would require re-extraction.
 
 Together with the three CodeBERT runs, the repository therefore contains 18
 complete 3,000-program model/language combinations. Every saved AST layer file

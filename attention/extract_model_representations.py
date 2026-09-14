@@ -84,8 +84,7 @@ def safe_artifact_name(sample_index: int, file_name: str) -> str:
 def ast_artifacts(code: str, code_tokens: List[str], parser):
     byte_code = code.encode("utf-8")
     tree = parser.parse(byte_code)
-    if tree.root_node.has_error:
-        raise ValueError("Tree-sitter reported a parse error")
+    parser_recovered = tree.root_node.has_error
     collected = []
     traverse_node(
         tree.root_node,
@@ -103,7 +102,7 @@ def ast_artifacts(code: str, code_tokens: List[str], parser):
     ast_tokens = [info["token"] for info in ast_info]
     if is_error or ast_tokens != code_tokens:
         raise ValueError("AST tokens do not exactly match dataset tokens")
-    return ast_tokens, tokens_to_graph(ast_info)
+    return ast_tokens, tokens_to_graph(ast_info), parser_recovered
 
 
 def base_manifests(args, adapter, parser_library, selected, dataset_size):
@@ -145,6 +144,8 @@ def base_manifests(args, adapter, parser_library, selected, dataset_size):
     # dfg_comp.py uses the older key spelling.
     graph["lang"] = args.lang
     hidden = {**common, "artifacts": [], "failures": []}
+    graph["parse_recoveries"] = []
+    hidden["parse_recoveries"] = []
     hidden["graph_manifest"] = os.path.abspath(
         os.path.join(args.graph_output_dir, "graph_manifest.json")
     )
@@ -198,7 +199,7 @@ def extract(args):
         artifact_name = safe_artifact_name(sample_index, file_name)
         try:
             code_tokens = list(code["code_tokens"])
-            ast_tokens, ast_graph = ast_artifacts(
+            ast_tokens, ast_graph, parser_recovered = ast_artifacts(
                 code["code"], code_tokens, parser
             )
             output = adapter.extract(code_tokens)
@@ -245,6 +246,18 @@ def extract(args):
             )
             graph_manifest["artifacts"].append(artifact_name)
             embedding_manifest["artifacts"].append(artifact_name)
+            if parser_recovered:
+                recovery = {
+                    "sample_index": sample_index,
+                    "source_index": source_index,
+                    "file_name": file_name,
+                    "reason": (
+                        "Tree-sitter error recovery accepted after exact "
+                        "dataset-token alignment"
+                    ),
+                }
+                graph_manifest["parse_recoveries"].append(recovery)
+                embedding_manifest["parse_recoveries"].append(recovery)
         except Exception as exc:
             failure = {
                 "sample_index": sample_index,
@@ -264,11 +277,17 @@ def extract(args):
     graph_manifest["status"] = "complete"
     graph_manifest["num_saved"] = len(graph_manifest["artifacts"])
     graph_manifest["num_failures"] = len(graph_manifest["failures"])
+    graph_manifest["num_parse_recoveries"] = len(
+        graph_manifest["parse_recoveries"]
+    )
     atomic_json(graph_manifest_path, graph_manifest)
 
     embedding_manifest["status"] = "complete"
     embedding_manifest["num_saved"] = len(embedding_manifest["artifacts"])
     embedding_manifest["num_failures"] = len(embedding_manifest["failures"])
+    embedding_manifest["num_parse_recoveries"] = len(
+        embedding_manifest["parse_recoveries"]
+    )
     embedding_manifest["graph_manifest_sha256"] = sha256_file(
         graph_manifest_path
     )

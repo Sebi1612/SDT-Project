@@ -210,6 +210,7 @@ def save_attention_and_ast(args, parser):
         'selected_num_codes': len(codes),
         'artifacts': [],
         'failures': [],
+        'parse_recoveries': [],
     }
 
     manifest_path = os.path.join(save_dir, 'graph_manifest.json')
@@ -227,21 +228,7 @@ def save_attention_and_ast(args, parser):
         code_string = code['code']
         byte_code = bytes(code_string, 'utf-8')
         tree = parser.parse(byte_code)
-        if tree.root_node.has_error:
-            reason = 'Tree-sitter reported a parse error'
-            manifest['failures'].append({
-                'sample_index': sample_index,
-                'source_index': code.get('pilot_source_index', sample_index),
-                'file_name': filename,
-                'stage': 'parse',
-                'reason': reason,
-            })
-            print(
-                f"There was an issue while getting ast graph for "
-                f"sample {sample_index} ({filename}): {reason}"
-            )
-            write_manifest()
-            continue
+        parser_recovered = tree.root_node.has_error
 
         function_args['data'] = code
         function_args['random'] = args.random
@@ -323,6 +310,18 @@ def save_attention_and_ast(args, parser):
                     pickle.dump(data_to_write, f)
 
                 manifest['artifacts'].append(artifact_name)
+                if parser_recovered:
+                    manifest['parse_recoveries'].append({
+                        'sample_index': sample_index,
+                        'source_index': code.get(
+                            'pilot_source_index', sample_index
+                        ),
+                        'file_name': filename,
+                        'reason': (
+                            'Tree-sitter error recovery accepted after exact '
+                            'dataset-token alignment'
+                        ),
+                    })
             except Exception as exc:
                 manifest['failures'].append({
                     'sample_index': sample_index,
@@ -348,6 +347,9 @@ def save_attention_and_ast(args, parser):
         write_manifest()
 
     manifest['status'] = 'complete'
+    manifest['num_saved'] = len(manifest['artifacts'])
+    manifest['num_failures'] = len(manifest['failures'])
+    manifest['num_parse_recoveries'] = len(manifest['parse_recoveries'])
     write_manifest()
 
     print(

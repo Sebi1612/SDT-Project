@@ -284,7 +284,11 @@ def run_one(args, language, model, run_manifest, environment):
         )
 
     spec = get_model_spec(model)
-    code_file = Path(args.dataset_root) / f"{language}.jsonl"
+    try:
+        dataset_name = args.dataset_pattern.format(language=language)
+    except (KeyError, IndexError, ValueError) as exc:
+        raise ValueError(f"Invalid --dataset_pattern: {exc}") from exc
+    code_file = Path(args.dataset_root) / dataset_name
     graph_dir = Path(args.graph_stage_root) / language / model
     embedding_dir = Path(args.embedding_stage_root) / language / model
     results_dir = Path(args.results_root) / language / model
@@ -386,6 +390,51 @@ def run_one(args, language, model, run_manifest, environment):
             ],
         ),
     ]
+    if language == "python" and args.compare_python_reference:
+        phases.insert(
+            -1,
+            (
+                "python_reference_comparison",
+                [
+                    python,
+                    "attention/compare_python_reference.py",
+                    "--pilot_summary",
+                    str(attention_dir / "section_3_2_summary.json"),
+                    "--reference_root",
+                    str(Path(args.python_reference_root)),
+                    "--output",
+                    str(attention_dir / "python_reference_comparison.json"),
+                    "--skip_ged",
+                ],
+            ),
+        )
+
+    representations_reused = False
+    try:
+        extraction_validation = validate_complete_extraction(
+            graph_dir,
+            embedding_dir,
+            model,
+            language,
+            args.expected_programs,
+        )
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+        extraction_validation = None
+    else:
+        representations_reused = True
+        phases = phases[2:]
+        record["representations_reused"] = True
+        record["resumed_utc"] = utc_now()
+        atomic_json(
+            results_dir / "extraction_validation.json",
+            extraction_validation,
+        )
+        atomic_json(args.run_manifest, run_manifest)
+        print(
+            f"[RESUME] {key}: reusing the validated paired "
+            f"{args.expected_programs}-artifact cohort",
+            flush=True,
+        )
 
     try:
         for phase, command in phases:
@@ -396,7 +445,7 @@ def run_one(args, language, model, run_manifest, environment):
                 "finished_utc": utc_now(),
             }
             atomic_json(args.run_manifest, run_manifest)
-            if phase == "validate_representations":
+            if phase == "validate_representations" and not representations_reused:
                 extraction_validation = validate_complete_extraction(
                     graph_dir,
                     embedding_dir,
@@ -433,6 +482,8 @@ def run_one(args, language, model, run_manifest, environment):
             "purged_bytes": graph_bytes + embedding_bytes,
             "reextraction_required_for": ["GED", "DirectProbe"],
         })
+        record.pop("reason", None)
+        record.pop("failed_utc", None)
         atomic_json(args.run_manifest, run_manifest)
         print(
             f"[STAGE COMPLETE] {key}; purged "
@@ -455,6 +506,14 @@ def main():
     cli.add_argument("--languages", nargs="+", default=DEFAULT_LANGUAGES)
     cli.add_argument("--dataset_root", default="attention/exp_data/final_3000")
     cli.add_argument(
+        "--dataset_pattern",
+        default="{language}.jsonl",
+        help=(
+            "Filename pattern inside --dataset_root. This allows the final "
+            "Python cohort to use exp_0.jsonl without copying it."
+        ),
+    )
+    cli.add_argument(
         "--graph_stage_root", default="graph_info/staged_final_3000"
     )
     cli.add_argument(
@@ -472,6 +531,18 @@ def main():
     cli.add_argument("--device", default="cpu")
     cli.add_argument("--minimum_free_gb", type=float, default=35.0)
     cli.add_argument("--omp_threads", type=int, default=4)
+    cli.add_argument(
+        "--compare_python_reference",
+        action="store_true",
+        help=(
+            "For Python, compare the recomputed overlap curves with the "
+            "stored 3,000-program paper outputs. GED remains skipped."
+        ),
+    )
+    cli.add_argument(
+        "--python_reference_root",
+        default="attention/graph_comparision",
+    )
     args = cli.parse_args()
 
     args.run_manifest = str(Path(args.run_manifest))
@@ -490,6 +561,8 @@ def main():
             "python": sys.executable,
             "models": args.models,
             "languages": args.languages,
+            "dataset_root": str(Path(args.dataset_root).resolve()),
+            "dataset_pattern": args.dataset_pattern,
             "expected_programs": args.expected_programs,
             "representative_tsne": {
                 "layer": args.tsne_layer,
@@ -498,6 +571,7 @@ def main():
                 "iterations": 50000,
             },
             "excluded": ["CodeGen", "GED", "DirectProbe solver runs"],
+            "python_reference_comparison": args.compare_python_reference,
             "runs": {},
         }
     atomic_json(args.run_manifest, run_manifest)
@@ -535,6 +609,10 @@ def main():
     run_manifest["total_phase_duration_seconds"] = sum(
         phase_durations.values()
     )
+    for record in run_manifest["runs"].values():
+        if record.get("status") == "complete":
+            record.pop("reason", None)
+            record.pop("failed_utc", None)
     atomic_json(args.run_manifest, run_manifest)
     print(
         f"[ALL STAGED ANALYSES COMPLETE] {run_manifest['num_complete']} runs",

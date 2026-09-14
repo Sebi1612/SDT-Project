@@ -1,0 +1,3 @@
+(0-ComputedFrom, 1-NoEdge): 0.9625
+(0-ComputedFrom, 2-ComesFrom): 1.5085
+(1-NoEdge, 2-ComesFrom): 0.3754

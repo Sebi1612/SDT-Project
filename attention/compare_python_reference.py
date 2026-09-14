@@ -1,4 +1,4 @@
-"""Compare a Python pilot with the paper's stored 3,000-program results."""
+"""Compare a recomputed Python run with the paper's stored results."""
 
 import argparse
 import csv
@@ -79,7 +79,7 @@ def save_comparison_plots(
     pilot_layers,
     reference_layers,
     output_path,
-    pilot_label='Pilot',
+    pilot_label='Recomputed run',
     include_ged=True,
 ):
     base = os.path.splitext(output_path)[0]
@@ -237,11 +237,17 @@ def compare(pilot_summary_path, reference_root, output_path, skip_ged=False):
     base = os.path.splitext(output_path)[0]
     overlap_csv = base + '_overlap.csv'
     ged_csv = base + '_ged.csv'
+    expected_programs = pilot.get('expected_programs')
+    run_label = (
+        f'Recomputed {expected_programs:,}-program run'
+        if isinstance(expected_programs, int)
+        else 'Recomputed run'
+    )
     overlap_plot, ged_plot = save_comparison_plots(
         pilot_layers,
         reference_layers,
         output_path,
-        pilot_label=f"{pilot.get('expected_programs') or 'Sampled'}-program pilot",
+        pilot_label=run_label,
         include_ged=not skip_ged,
     )
     with open(overlap_csv, 'w', newline='') as handle:
@@ -256,7 +262,7 @@ def compare(pilot_summary_path, reference_root, output_path, skip_ged=False):
 
     output = {
         'status': 'complete',
-        'purpose': 'Python pilot sanity check against stored paper results',
+        'purpose': 'Python recomputation check against stored paper results',
         'model': model,
         'primary_threshold': threshold,
         'pilot_ged_mode': pilot.get('ged_mode'),
@@ -266,6 +272,7 @@ def compare(pilot_summary_path, reference_root, output_path, skip_ged=False):
         'ged_comparison_status': 'skipped' if skip_ged else 'included',
         'pilot_summary': os.path.abspath(pilot_summary_path),
         'pilot_expected_programs': pilot.get('expected_programs'),
+        'candidate_run_label': run_label,
         'reference_root': os.path.abspath(reference_root),
         'reference_dataset': 'CodeSearchNet Python test subset exp_0.jsonl',
         'reference_dataset_rows': 3000,
@@ -274,11 +281,11 @@ def compare(pilot_summary_path, reference_root, output_path, skip_ged=False):
             'failures may have been excluded by the original scripts'
         ),
         'interpretation': (
-            'This is a descriptive sampling sanity check, not an equivalence '
-            'test. Compare curve direction, order of magnitude, correlation, '
-            'and absolute differences; exact agreement is not expected from '
-            'a pilot. GED is compared only when the pilot uses the '
-            'paper-compatible legacy NetworkX mode.'
+            'This is a descriptive reproducibility check, not a statistical '
+            'equivalence test. Compare curve direction, magnitude, '
+            'correlation, and absolute differences. GED is compared only '
+            'when the candidate uses the paper-compatible legacy NetworkX '
+            'mode.'
         ),
         'aggregate_curve_comparison': aggregate,
         'outputs': {

@@ -1,0 +1,18 @@
+{
+  "status": "complete",
+  "started_utc": "2026-09-01T10:54:50.552097+00:00",
+  "pid": 1917741,
+  "workers": 12,
+  "max_queue_attempts": 20,
+  "queue_manifest": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/ged_queue_manifest.json",
+  "attempts": [
+    {
+      "attempt": 1,
+      "started_utc": "2026-09-01T10:54:50.552365+00:00",
+      "finished_utc": "2026-09-10T08:40:42.311504+00:00",
+      "exit_code": 0,
+      "queue_status": "complete"
+    }
+  ],
+  "finished_utc": "2026-09-10T08:40:42.311538+00:00"
+}

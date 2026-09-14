@@ -1,0 +1,252 @@
+{
+  "status": "complete",
+  "started_utc": "2026-08-29T09:13:27.274889+00:00",
+  "pid": 1838294,
+  "target_concurrent_distance_configurations": 6,
+  "workers_per_configuration": 4,
+  "maximum_directprobe_workers": 24,
+  "gurobi_threads_per_lp": 1,
+  "minimum_available_memory_gib_to_launch": 80.0,
+  "minimum_free_disk_gb_to_launch": 50.0,
+  "timeout_seconds_per_configuration": 172800,
+  "maximum_attempts_per_configuration": 3,
+  "license_scope": "child-process environment only",
+  "license_file": "/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic",
+  "legacy_handoff": {
+    "runner_pid": 1814264,
+    "runner_stopped": true,
+    "active_pid": 1834150,
+    "active_configuration": "go/codebert/distance/L12",
+    "active": false,
+    "status": "finished",
+    "finished_utc": "2026-08-31T11:15:18.878162+00:00"
+  },
+  "initial_complete": 5,
+  "runs": {
+    "java/graphcodebert/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1838299,
+      "return_code": 0,
+      "duration_seconds": 47124.15089045465,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_graphcodebert_5_attempt1.log",
+      "finished_utc": "2026-08-29T22:18:51.427867+00:00"
+    },
+    "java/graphcodebert/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1838400,
+      "return_code": 0,
+      "duration_seconds": 46481.39269668609,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_graphcodebert_9_attempt1.log",
+      "finished_utc": "2026-08-29T22:08:18.722455+00:00"
+    },
+    "java/graphcodebert/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1838487,
+      "return_code": 0,
+      "duration_seconds": 64258.721726328135,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_graphcodebert_12_attempt1.log",
+      "finished_utc": "2026-08-30T03:04:46.104412+00:00"
+    },
+    "java/codet5/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1838574,
+      "return_code": 0,
+      "duration_seconds": 50599.005504496396,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_codet5_5_attempt1.log",
+      "finished_utc": "2026-08-29T23:17:16.440293+00:00"
+    },
+    "java/codet5/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1838682,
+      "return_code": 0,
+      "duration_seconds": 90709.6935139969,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_codet5_9_attempt1.log",
+      "finished_utc": "2026-08-30T10:25:57.181090+00:00"
+    },
+    "java/codet5/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1851408,
+      "return_code": 0,
+      "duration_seconds": 65070.95655687153,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/java_codet5_12_attempt1.log",
+      "finished_utc": "2026-08-30T16:12:49.681391+00:00"
+    },
+    "go/graphcodebert/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1851437,
+      "return_code": 0,
+      "duration_seconds": 70645.80386080593,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_graphcodebert_5_attempt1.log",
+      "finished_utc": "2026-08-30T17:56:17.233695+00:00"
+    },
+    "go/graphcodebert/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1851476,
+      "return_code": 0,
+      "duration_seconds": 36193.315622113645,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_graphcodebert_9_attempt1.log",
+      "finished_utc": "2026-08-30T09:20:29.757847+00:00"
+    },
+    "go/graphcodebert/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1851585,
+      "return_code": 0,
+      "duration_seconds": 25376.455994985998,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_graphcodebert_12_attempt1.log",
+      "finished_utc": "2026-08-30T10:07:42.562316+00:00"
+    },
+    "go/codet5/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1852611,
+      "return_code": 0,
+      "duration_seconds": 32343.825150348246,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_codet5_5_attempt1.log",
+      "finished_utc": "2026-08-30T18:19:33.585052+00:00"
+    },
+    "go/codet5/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1853331,
+      "return_code": 0,
+      "duration_seconds": 45411.5829346329,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_codet5_9_attempt1.log",
+      "finished_utc": "2026-08-30T22:44:34.147264+00:00"
+    },
+    "go/codet5/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1853364,
+      "return_code": 0,
+      "duration_seconds": 48756.62724177539,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_codet5_12_attempt1.log",
+      "finished_utc": "2026-08-30T23:58:33.810280+00:00"
+    },
+    "javascript/codebert/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857131,
+      "return_code": 0,
+      "duration_seconds": 39959.35178513825,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codebert_5_attempt1.log",
+      "finished_utc": "2026-08-31T03:18:49.035175+00:00"
+    },
+    "javascript/codebert/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857215,
+      "return_code": 0,
+      "duration_seconds": 44069.19389809668,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codebert_9_attempt1.log",
+      "finished_utc": "2026-08-31T06:10:46.429378+00:00"
+    },
+    "javascript/codebert/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857255,
+      "return_code": 0,
+      "duration_seconds": 20279.955011479557,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codebert_12_attempt1.log",
+      "finished_utc": "2026-08-30T23:57:33.542050+00:00"
+    },
+    "javascript/graphcodebert/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857541,
+      "return_code": 0,
+      "duration_seconds": 31141.43280326575,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_graphcodebert_5_attempt1.log",
+      "finished_utc": "2026-08-31T07:23:35.590119+00:00"
+    },
+    "javascript/graphcodebert/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857609,
+      "return_code": 0,
+      "duration_seconds": 78486.66412387788,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_graphcodebert_9_attempt1.log",
+      "finished_utc": "2026-08-31T21:45:40.208097+00:00"
+    },
+    "javascript/graphcodebert/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857632,
+      "return_code": 0,
+      "duration_seconds": 25405.841706044972,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_graphcodebert_12_attempt1.log",
+      "finished_utc": "2026-08-31T07:01:59.653861+00:00"
+    },
+    "javascript/codet5/distance/L5": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1857762,
+      "return_code": 0,
+      "duration_seconds": 33964.51363167912,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codet5_5_attempt1.log",
+      "finished_utc": "2026-08-31T12:44:53.550878+00:00"
+    },
+    "javascript/codet5/distance/L9": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1858727,
+      "return_code": 0,
+      "duration_seconds": 45833.467699065804,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codet5_9_attempt1.log",
+      "finished_utc": "2026-08-31T18:54:39.899131+00:00"
+    },
+    "javascript/codet5/distance/L12": {
+      "status": "complete",
+      "attempt": 1,
+      "pid": 1861161,
+      "return_code": 0,
+      "duration_seconds": 49714.08763837069,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/javascript_codet5_12_attempt1.log",
+      "finished_utc": "2026-08-31T20:50:33.743406+00:00"
+    },
+    "go/codebert/distance/L12": {
+      "status": "failed_attempt",
+      "attempt": 2,
+      "pid": 1883442,
+      "return_code": -15,
+      "duration_seconds": 642.8933212012053,
+      "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/distance_accelerator_logs/go_codebert_12_attempt2.log",
+      "finished_utc": "2026-08-31T11:27:12.089881+00:00"
+    }
+  },
+  "active": [],
+  "capacity": {
+    "available_memory_gib": 132.96973037719727,
+    "free_disk_gb": 189.308776448,
+    "checked_utc": "2026-08-31T11:27:12.090115+00:00"
+  },
+  "num_complete": 27,
+  "num_pending": 0,
+  "num_active_accelerated": 0,
+  "num_active_total": 0,
+  "heartbeat_utc": "2026-08-31T21:45:40.208135+00:00",
+  "quarantined_incomplete_results": [
+    {
+      "configuration": "go/codebert/distance/L12",
+      "source": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/distance/codebert/12",
+      "archive": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/interrupted_results_archive/20260831T111518Z/results/go/distance/codebert/12",
+      "quarantined_utc": "2026-08-31T11:15:18.878132+00:00"
+    },
+    {
+      "configuration": "go/codebert/distance/L12",
+      "source": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/distance/codebert/12",
+      "archive": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/interrupted_results_archive/20260831T111629Z/results/go/distance/codebert/12",
+      "quarantined_utc": "2026-08-31T11:16:29.194837+00:00"
+    }
+  ],
+  "legacy_runner_retired": true,
+  "finished_utc": "2026-08-31T21:45:50.261283+00:00"
+}

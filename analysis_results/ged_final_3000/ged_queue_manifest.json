@@ -1,0 +1,1195 @@
+{
+  "status": "complete",
+  "started_utc": "2026-09-01T10:54:50.670150+00:00",
+  "pid": 1917745,
+  "scope": {
+    "models": [
+      "codebert",
+      "graphcodebert",
+      "codet5"
+    ],
+    "languages": [
+      "java",
+      "go",
+      "javascript"
+    ],
+    "layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "total_layer_jobs": 108,
+    "distance_mode": "legacy",
+    "expected_programs": 3000
+  },
+  "resource_policy": {
+    "parallel_layers_per_cohort": 12,
+    "sequential_cohorts": true,
+    "device": "cpu",
+    "threads_per_layer": 1,
+    "minimum_memory_gb_before_cohort": 80.0,
+    "minimum_disk_gb_before_cohort": 60.0,
+    "layer_timeout_hours": 48.0,
+    "max_layer_attempts": 3
+  },
+  "cohort_order": [
+    {
+      "model": "codebert",
+      "language": "java"
+    },
+    {
+      "model": "codebert",
+      "language": "go"
+    },
+    {
+      "model": "codebert",
+      "language": "javascript"
+    },
+    {
+      "model": "graphcodebert",
+      "language": "java"
+    },
+    {
+      "model": "graphcodebert",
+      "language": "go"
+    },
+    {
+      "model": "graphcodebert",
+      "language": "javascript"
+    },
+    {
+      "model": "codet5",
+      "language": "java"
+    },
+    {
+      "model": "codet5",
+      "language": "go"
+    },
+    {
+      "model": "codet5",
+      "language": "javascript"
+    }
+  ],
+  "cohorts": {
+    "java/codebert": {
+      "status": "complete",
+      "model": "codebert",
+      "language": "java",
+      "started_utc": "2026-09-01T10:54:50.670595+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-01T11:07:31.325710+00:00",
+        "duration_seconds": 760.631176687777,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/extract.log",
+        "temporary_embedding_cleanup": null
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 53208.57872658968,
+          "finished_utc": "2026-09-02T01:54:19.938613+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 53961.03270792961,
+          "finished_utc": "2026-09-02T02:06:52.395838+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 57091.38072907925,
+          "finished_utc": "2026-09-02T02:59:02.745426+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 57452.59685789049,
+          "finished_utc": "2026-09-02T03:05:03.974510+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 62479.17106436193,
+          "finished_utc": "2026-09-02T04:28:50.551610+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 54593.06623855978,
+          "finished_utc": "2026-09-02T02:17:24.445609+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59980.86311402172,
+          "finished_utc": "2026-09-02T03:47:12.247329+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 55766.96330135316,
+          "finished_utc": "2026-09-02T02:36:58.338772+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 47580.67037922144,
+          "finished_utc": "2026-09-02T00:20:32.048846+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 45564.36714679748,
+          "finished_utc": "2026-09-01T23:46:55.747511+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 44149.79716720432,
+          "finished_utc": "2026-09-01T23:23:21.196078+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 56128.181527130306,
+          "finished_utc": "2026-09-02T02:42:59.564848+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 5.168212845921516,
+      "finished_utc": "2026-09-02T04:28:58.355409+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/java/codebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 20956406569
+      }
+    },
+    "go/codebert": {
+      "status": "complete",
+      "model": "codebert",
+      "language": "go",
+      "started_utc": "2026-09-02T04:28:58.355990+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-02T04:39:40.750889+00:00",
+        "duration_seconds": 642.3792492747307,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/extract.log",
+        "temporary_embedding_cleanup": null
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 54563.26697830111,
+          "finished_utc": "2026-09-02T19:49:04.032239+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 54623.47527453303,
+          "finished_utc": "2026-09-02T19:50:04.243933+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 66541.93828590214,
+          "finished_utc": "2026-09-02T23:08:42.720088+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 58265.32209203392,
+          "finished_utc": "2026-09-02T20:50:46.097042+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 65398.10431665927,
+          "finished_utc": "2026-09-02T22:49:38.890393+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 57482.721758939326,
+          "finished_utc": "2026-09-02T20:37:43.501616+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 64194.542330645025,
+          "finished_utc": "2026-09-02T22:29:35.324510+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 61606.155441977084,
+          "finished_utc": "2026-09-02T21:46:26.937852+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 53600.01382444799,
+          "finished_utc": "2026-09-02T19:33:00.800388+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 48480.21418555081,
+          "finished_utc": "2026-09-02T18:07:41.005965+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 43575.13031888008,
+          "finished_utc": "2026-09-02T16:45:55.922962+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 58656.624390251935,
+          "finished_utc": "2026-09-02T20:57:17.417007+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 4.497316658496857,
+      "finished_utc": "2026-09-02T23:08:49.342778+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/go/codebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 21404342289
+      }
+    },
+    "javascript/codebert": {
+      "status": "complete",
+      "model": "codebert",
+      "language": "javascript",
+      "started_utc": "2026-09-02T23:08:49.343574+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-02T23:22:50.148883+00:00",
+        "duration_seconds": 840.7894633188844,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/extract.log",
+        "temporary_embedding_cleanup": null
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 80452.39643137157,
+          "finished_utc": "2026-09-03T21:43:42.560551+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 81024.34213031828,
+          "finished_utc": "2026-09-03T21:53:14.508599+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 86592.7540755719,
+          "finished_utc": "2026-09-03T23:26:02.922619+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 87285.01018442214,
+          "finished_utc": "2026-09-03T23:37:35.191087+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 95261.20038763434,
+          "finished_utc": "2026-09-04T01:50:31.384154+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 83943.97681301087,
+          "finished_utc": "2026-09-03T22:41:54.152968+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 92793.19824840873,
+          "finished_utc": "2026-09-04T01:09:23.386738+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 84244.98946034908,
+          "finished_utc": "2026-09-03T22:46:55.169517+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 71693.79806663841,
+          "finished_utc": "2026-09-03T19:17:43.981156+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 67630.21280626208,
+          "finished_utc": "2026-09-03T18:10:00.398540+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 64771.174433119595,
+          "finished_utc": "2026-09-03T17:22:21.363244+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 78797.07216549665,
+          "finished_utc": "2026-09-03T21:16:07.261865+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 5.162950322031975,
+      "finished_utc": "2026-09-04T01:50:39.626324+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/javascript/codebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 29870358281
+      }
+    },
+    "java/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "java",
+      "started_utc": "2026-09-04T01:50:39.627126+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-04T02:05:53.661545+00:00",
+        "duration_seconds": 912.1714381575584,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 10528182972
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 51372.98862969875,
+          "finished_utc": "2026-09-04T16:22:06.665460+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 55917.30195814371,
+          "finished_utc": "2026-09-04T17:37:50.981929+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 58656.23965293914,
+          "finished_utc": "2026-09-04T18:23:29.922441+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59920.403648495674,
+          "finished_utc": "2026-09-04T18:44:34.099433+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 63592.117434985936,
+          "finished_utc": "2026-09-04T19:45:45.815846+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 55134.741425707936,
+          "finished_utc": "2026-09-04T17:24:48.432124+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59468.86370296031,
+          "finished_utc": "2026-09-04T18:37:02.554783+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 54623.119473829865,
+          "finished_utc": "2026-09-04T17:16:16.814857+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 49025.65277693421,
+          "finished_utc": "2026-09-04T15:42:59.350708+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 44662.06696002185,
+          "finished_utc": "2026-09-04T14:30:15.767473+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 42345.1470682621,
+          "finished_utc": "2026-09-04T13:51:38.851413+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 53148.572548761964,
+          "finished_utc": "2026-09-04T16:51:42.277767+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/graphcodebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 3.8820382356643677,
+      "finished_utc": "2026-09-04T19:45:52.985328+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/java/graphcodebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 20960661219
+      }
+    },
+    "go/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "go",
+      "started_utc": "2026-09-04T19:45:52.986195+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-04T19:58:55.782253+00:00",
+        "duration_seconds": 781.0389863923192,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 10082949492
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 52788.666879951954,
+          "finished_utc": "2026-09-05T10:38:44.463820+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 57092.60003845394,
+          "finished_utc": "2026-09-05T11:50:28.399934+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59831.44275905192,
+          "finished_utc": "2026-09-05T12:36:07.245665+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 61878.14873407036,
+          "finished_utc": "2026-09-05T13:10:13.954429+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 66363.04598932713,
+          "finished_utc": "2026-09-05T14:24:58.863959+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59259.58294444531,
+          "finished_utc": "2026-09-05T12:26:35.393136+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 61938.29920884222,
+          "finished_utc": "2026-09-05T13:11:14.111996+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 55678.0000545606,
+          "finished_utc": "2026-09-05T11:26:53.815809+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 48936.29455398768,
+          "finished_utc": "2026-09-05T09:34:32.112677+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 44572.16117263585,
+          "finished_utc": "2026-09-05T08:21:47.981344+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 42705.99161178619,
+          "finished_utc": "2026-09-05T07:50:41.815538+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 55768.23149518669,
+          "finished_utc": "2026-09-05T11:28:24.056462+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/graphcodebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 3.9757884740829468,
+      "finished_utc": "2026-09-05T14:25:06.277880+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/go/graphcodebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 21408214192
+      }
+    },
+    "javascript/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "javascript",
+      "started_utc": "2026-09-05T14:25:06.278850+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-05T14:41:54.647603+00:00",
+        "duration_seconds": 1006.1875649020076,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 13001611672
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 77140.71711988747,
+          "finished_utc": "2026-09-06T12:07:35.380850+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 90504.84461039305,
+          "finished_utc": "2026-09-06T15:50:19.520436+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 88939.68950591236,
+          "finished_utc": "2026-09-06T15:24:14.358742+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 90474.72689536959,
+          "finished_utc": "2026-09-06T15:49:49.398491+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 97337.58773699403,
+          "finished_utc": "2026-09-06T17:44:12.272391+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 85448.19823325425,
+          "finished_utc": "2026-09-06T14:26:02.875049+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 92491.43128123134,
+          "finished_utc": "2026-09-06T16:23:26.120341+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 83220.89202619344,
+          "finished_utc": "2026-09-06T13:48:55.574123+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 72385.63027654588,
+          "finished_utc": "2026-09-06T10:48:20.314705+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 67088.37603669614,
+          "finished_utc": "2026-09-06T09:20:03.063027+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 62754.36640910059,
+          "finished_utc": "2026-09-06T08:07:49.056684+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 78013.5612693876,
+          "finished_utc": "2026-09-06T12:22:08.253059+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/graphcodebert/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 3.9119672775268555,
+      "finished_utc": "2026-09-06T17:44:21.730324+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/javascript/graphcodebert/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 29874896132
+      }
+    },
+    "java/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "java",
+      "started_utc": "2026-09-06T17:44:21.731395+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-06T17:57:10.852026+00:00",
+        "duration_seconds": 767.289626032114,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 10527988268
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 65642.77402872592,
+          "finished_utc": "2026-09-07T12:11:13.640899+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 61037.5905200094,
+          "finished_utc": "2026-09-07T10:54:28.461560+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 58509.175470896065,
+          "finished_utc": "2026-09-07T10:12:20.051547+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 63866.89684391767,
+          "finished_utc": "2026-09-07T11:41:37.774202+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 60525.86378582567,
+          "finished_utc": "2026-09-07T10:45:56.747047+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 68140.88020322472,
+          "finished_utc": "2026-09-07T12:52:51.771383+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 69104.0189955756,
+          "finished_utc": "2026-09-07T13:08:54.902629+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 64047.47346903384,
+          "finished_utc": "2026-09-07T11:44:38.360650+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 67237.93859055638,
+          "finished_utc": "2026-09-07T12:37:48.827023+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 65763.16615501046,
+          "finished_utc": "2026-09-07T12:13:14.057318+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 69675.94750908762,
+          "finished_utc": "2026-09-07T13:18:26.841231+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 88694.42202208936,
+          "finished_utc": "2026-09-07T18:35:25.328860+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/java/codet5/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 3.9887754544615746,
+      "finished_utc": "2026-09-07T18:35:32.151321+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/java/codet5/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 20960172853
+      }
+    },
+    "go/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "go",
+      "started_utc": "2026-09-07T18:35:32.152548+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-07T18:47:34.156267+00:00",
+        "duration_seconds": 720.237898863852,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 10082754566
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 70729.76916722953,
+          "finished_utc": "2026-09-08T14:26:23.949491+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 63114.42195138335,
+          "finished_utc": "2026-09-08T12:19:28.596532+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 57485.616559408605,
+          "finished_utc": "2026-09-08T10:45:39.794886+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 63024.10057540238,
+          "finished_utc": "2026-09-08T12:17:58.280394+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 59141.08386208862,
+          "finished_utc": "2026-09-08T11:13:15.266699+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 68110.9962863326,
+          "finished_utc": "2026-09-08T13:42:45.180666+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 69164.50025180727,
+          "finished_utc": "2026-09-08T14:00:18.696685+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 64769.88758222014,
+          "finished_utc": "2026-09-08T12:47:04.077567+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 67478.83190012723,
+          "finished_utc": "2026-09-08T13:32:13.023615+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 66244.81502532959,
+          "finished_utc": "2026-09-08T13:11:39.009425+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 70699.62026710808,
+          "finished_utc": "2026-09-08T14:25:53.826896+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 90114.60518659651,
+          "finished_utc": "2026-09-08T19:49:28.815161+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/go/codet5/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 4.09434375166893,
+      "finished_utc": "2026-09-08T19:49:35.999427+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/go/codet5/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 21407859195
+      }
+    },
+    "javascript/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "javascript",
+      "started_utc": "2026-09-08T19:49:36.000767+00:00",
+      "extraction": {
+        "status": "complete",
+        "finished_utc": "2026-09-08T20:05:15.656307+00:00",
+        "duration_seconds": 937.3950942605734,
+        "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/extract.log",
+        "temporary_embedding_cleanup": {
+          "files": 3000,
+          "bytes": 13001418123
+        }
+      },
+      "layers": {
+        "0": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 100291.93317386508,
+          "finished_utc": "2026-09-09T23:56:47.605383+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_0_attempt_1.log"
+        },
+        "1": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 88341.97799975425,
+          "finished_utc": "2026-09-09T20:37:37.654478+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_1_attempt_1.log"
+        },
+        "2": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 84669.79848395288,
+          "finished_utc": "2026-09-09T19:36:25.479485+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_2_attempt_1.log"
+        },
+        "3": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 93007.50446549803,
+          "finished_utc": "2026-09-09T21:55:23.186807+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_3_attempt_1.log"
+        },
+        "4": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 88522.60751522332,
+          "finished_utc": "2026-09-09T20:40:38.291310+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_4_attempt_1.log"
+        },
+        "5": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 101465.42227631062,
+          "finished_utc": "2026-09-10T00:16:21.108163+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_5_attempt_1.log"
+        },
+        "6": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 103632.69990038127,
+          "finished_utc": "2026-09-10T00:52:28.398378+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_6_attempt_1.log"
+        },
+        "7": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 94843.66006587446,
+          "finished_utc": "2026-09-09T22:25:59.351834+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_7_attempt_1.log"
+        },
+        "8": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 98937.39686873555,
+          "finished_utc": "2026-09-09T23:34:13.089660+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_8_attempt_1.log"
+        },
+        "9": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 96649.75931888819,
+          "finished_utc": "2026-09-09T22:56:05.454975+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_9_attempt_1.log"
+        },
+        "10": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 105077.61440679431,
+          "finished_utc": "2026-09-10T01:16:33.322636+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_10_attempt_1.log"
+        },
+        "11": {
+          "status": "complete",
+          "attempts": 1,
+          "duration_seconds_last_attempt": 131717.06511710584,
+          "finished_utc": "2026-09-10T08:40:32.776438+00:00",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/logs/javascript/codet5/layer_11_attempt_1.log"
+        }
+      },
+      "active_layers": [],
+      "completed_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "summary_duration_seconds": 3.905203804373741,
+      "finished_utc": "2026-09-10T08:40:42.291601+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/ged_final_3000/validation/javascript/codet5/ged_validation.json",
+      "graph_cleanup": {
+        "files": 3000,
+        "bytes": 29874490289
+      }
+    }
+  },
+  "active_cohort": null,
+  "finished_utc": "2026-09-10T08:40:42.292866+00:00",
+  "completed_cohorts": 9,
+  "completed_layer_jobs": 108
+}

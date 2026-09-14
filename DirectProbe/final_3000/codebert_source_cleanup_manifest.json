@@ -1,0 +1,94 @@
+{
+  "status": "complete",
+  "purpose": "manifest-scoped cleanup after permanent attention, t-SNE, and DirectProbe datasets were validated",
+  "started_utc": "2026-08-26T10:04:24.540927+00:00",
+  "model": "codebert",
+  "languages": [
+    "java",
+    "go",
+    "javascript"
+  ],
+  "required_tasks": [
+    "distance",
+    "distance_id",
+    "siblings",
+    "siblings_id",
+    "dfg"
+  ],
+  "required_layers": [
+    5,
+    9,
+    12
+  ],
+  "runs": {
+    "java": {
+      "status": "complete",
+      "validated_directprobe_tasks": [
+        "distance",
+        "distance_id",
+        "siblings",
+        "siblings_id",
+        "dfg"
+      ],
+      "validated_directprobe_layers": [
+        5,
+        9,
+        12
+      ],
+      "purged_artifacts": 6000,
+      "purged_bytes": 31483113206,
+      "reextraction_required_for": [
+        "GED",
+        "new probing datasets"
+      ],
+      "finished_utc": "2026-08-26T10:04:27.872205+00:00"
+    },
+    "go": {
+      "status": "complete",
+      "validated_directprobe_tasks": [
+        "distance",
+        "distance_id",
+        "siblings",
+        "siblings_id",
+        "dfg"
+      ],
+      "validated_directprobe_layers": [
+        5,
+        9,
+        12
+      ],
+      "purged_artifacts": 6000,
+      "purged_bytes": 31485815531,
+      "reextraction_required_for": [
+        "GED",
+        "new probing datasets"
+      ],
+      "finished_utc": "2026-08-26T10:04:30.762897+00:00"
+    },
+    "javascript": {
+      "status": "complete",
+      "validated_directprobe_tasks": [
+        "distance",
+        "distance_id",
+        "siblings",
+        "siblings_id",
+        "dfg"
+      ],
+      "validated_directprobe_layers": [
+        5,
+        9,
+        12
+      ],
+      "purged_artifacts": 6000,
+      "purged_bytes": 42870494469,
+      "reextraction_required_for": [
+        "GED",
+        "new probing datasets"
+      ],
+      "finished_utc": "2026-08-26T10:04:34.314534+00:00"
+    }
+  },
+  "finished_utc": "2026-08-26T10:04:34.314787+00:00",
+  "total_purged_artifacts": 18000,
+  "total_purged_bytes": 105839423206
+}

@@ -1,0 +1,35 @@
+{
+  "status": "complete",
+  "started_utc": "2026-08-31T11:23:54.847073+00:00",
+  "accelerator_pid": 1838294,
+  "stalled_pid": 1883442,
+  "strategy": "reuse validated clusters and rerun prediction only",
+  "archived_cluster_source": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/interrupted_results_archive/20260831T111518Z/results/go/distance/codebert/12",
+  "canonical_result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/distance/codebert/12",
+  "isolated_recovery_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/recovery/go_codebert_distance_12_prediction",
+  "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/distance/config_codebert_12_prediction_recovery.ini",
+  "license_scope": "recovery subprocess environment only",
+  "license_file": "/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic",
+  "cluster_assignments": 5200,
+  "previous_recovery_archive": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/interrupted_results_archive/20260831T112354Z/recovery/go_codebert_distance_12_prediction",
+  "recovery_pid": 1886181,
+  "recovery_started_utc": "2026-08-31T11:23:54.874062+00:00",
+  "full_rerun_paused_utc": "2026-08-31T11:27:02.554966+00:00",
+  "replaced_full_rerun_archive": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/interrupted_results_archive/20260831T112702Z/replaced_full_rerun/go/distance/codebert/12",
+  "full_rerun_resolution": "terminated",
+  "full_rerun_stopped_utc": "2026-08-31T11:27:03.557810+00:00",
+  "duration_seconds": 188.68955279141665,
+  "finished_utc": "2026-08-31T11:27:03.560443+00:00",
+  "validation": {
+    "solver": "gurobi",
+    "num_test": 1300,
+    "accuracy": 0.7153846153846154,
+    "num_clusters": 12,
+    "required_files": [
+      "clusters.txt",
+      "prediction.txt",
+      "dis.txt",
+      "log.txt"
+    ]
+  }
+}

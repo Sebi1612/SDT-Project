@@ -1,0 +1,206 @@
+{
+  "status": "complete",
+  "started_utc": "2026-08-31T21:46:50.435198+00:00",
+  "pid": 1903199,
+  "languages": [
+    "java",
+    "go",
+    "javascript"
+  ],
+  "models": [
+    "codebert",
+    "graphcodebert",
+    "codet5"
+  ],
+  "tasks": [
+    "siblings",
+    "siblings_id",
+    "dfg",
+    "distance",
+    "distance_id"
+  ],
+  "layers": [
+    5,
+    9,
+    12
+  ],
+  "matrix_size": 135,
+  "workers_per_configuration": 4,
+  "concurrent_task_lanes": 5,
+  "maximum_concurrent_configurations": 5,
+  "maximum_directprobe_workers": 20,
+  "gurobi_threads_per_lp": 1,
+  "timeout_seconds_per_configuration": 172800,
+  "license_scope": "subprocess environment only",
+  "license_file": "/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic",
+  "legacy_handoff": {
+    "wrapper_pid": 0,
+    "runner_pid": 0,
+    "active_pid": 0,
+    "task": null
+  },
+  "lanes": {
+    "siblings": {
+      "status": "complete",
+      "task": "siblings",
+      "started_utc": "2026-08-31T21:46:50.436267+00:00",
+      "phases": {
+        "codebert": {
+          "status": "complete",
+          "models": [
+            "codebert"
+          ],
+          "duration_seconds": 0.06644704192876816,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_siblings_codebert_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_siblings_codebert.log",
+          "num_complete": 9,
+          "finished_utc": "2026-08-31T21:46:50.503841+00:00"
+        },
+        "adapter_models": {
+          "status": "complete",
+          "models": [
+            "graphcodebert",
+            "codet5"
+          ],
+          "duration_seconds": 0.06601212918758392,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_siblings_adapters_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_siblings_adapters.log",
+          "num_complete": 18,
+          "finished_utc": "2026-08-31T21:46:50.571446+00:00"
+        }
+      },
+      "adapter_wait_seconds": 0.0005785003304481506,
+      "finished_utc": "2026-08-31T21:46:50.571478+00:00"
+    },
+    "siblings_id": {
+      "status": "complete",
+      "task": "siblings_id",
+      "started_utc": "2026-08-31T21:46:50.436694+00:00",
+      "phases": {
+        "codebert": {
+          "status": "complete",
+          "models": [
+            "codebert"
+          ],
+          "duration_seconds": 0.06619057059288025,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_siblings_id_codebert_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_siblings_id_codebert.log",
+          "num_complete": 9,
+          "finished_utc": "2026-08-31T21:46:50.503602+00:00"
+        },
+        "adapter_models": {
+          "status": "complete",
+          "models": [
+            "graphcodebert",
+            "codet5"
+          ],
+          "duration_seconds": 0.06679309904575348,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_siblings_id_adapters_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_siblings_id_adapters.log",
+          "num_complete": 18,
+          "finished_utc": "2026-08-31T21:46:50.572007+00:00"
+        }
+      },
+      "adapter_wait_seconds": 0.00054941326379776,
+      "finished_utc": "2026-08-31T21:46:50.572035+00:00"
+    },
+    "dfg": {
+      "status": "complete",
+      "task": "dfg",
+      "started_utc": "2026-08-31T21:46:50.438651+00:00",
+      "phases": {
+        "codebert": {
+          "status": "complete",
+          "models": [
+            "codebert"
+          ],
+          "duration_seconds": 0.06506500393152237,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_dfg_codebert_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_dfg_codebert.log",
+          "num_complete": 9,
+          "finished_utc": "2026-08-31T21:46:50.507082+00:00"
+        },
+        "adapter_models": {
+          "status": "complete",
+          "models": [
+            "graphcodebert",
+            "codet5"
+          ],
+          "duration_seconds": 0.06547138094902039,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_dfg_adapters_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_dfg_adapters.log",
+          "num_complete": 18,
+          "finished_utc": "2026-08-31T21:46:50.573967+00:00"
+        }
+      },
+      "adapter_wait_seconds": 0.0007552951574325562,
+      "finished_utc": "2026-08-31T21:46:50.573997+00:00"
+    },
+    "distance": {
+      "status": "complete",
+      "task": "distance",
+      "started_utc": "2026-08-31T21:46:50.440178+00:00",
+      "phases": {
+        "codebert": {
+          "status": "complete",
+          "models": [
+            "codebert"
+          ],
+          "duration_seconds": 0.07043039798736572,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_distance_codebert_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_distance_codebert.log",
+          "num_complete": 9,
+          "finished_utc": "2026-08-31T21:46:50.511239+00:00"
+        },
+        "adapter_models": {
+          "status": "complete",
+          "models": [
+            "graphcodebert",
+            "codet5"
+          ],
+          "duration_seconds": 0.09389849007129669,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_distance_adapters_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_distance_adapters.log",
+          "num_complete": 18,
+          "finished_utc": "2026-08-31T21:46:50.605997+00:00"
+        }
+      },
+      "adapter_wait_seconds": 0.00020079314708709717,
+      "finished_utc": "2026-08-31T21:46:50.606035+00:00"
+    },
+    "distance_id": {
+      "status": "complete",
+      "task": "distance_id",
+      "started_utc": "2026-08-31T21:46:50.441588+00:00",
+      "phases": {
+        "codebert": {
+          "status": "complete",
+          "models": [
+            "codebert"
+          ],
+          "duration_seconds": 0.06520190089941025,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_distance_id_codebert_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_distance_id_codebert.log",
+          "num_complete": 9,
+          "finished_utc": "2026-08-31T21:46:50.508037+00:00"
+        },
+        "adapter_models": {
+          "status": "complete",
+          "models": [
+            "graphcodebert",
+            "codet5"
+          ],
+          "duration_seconds": 0.0669667199254036,
+          "manifest": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_run_manifest_distance_id_adapters_requested.json",
+          "log": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/directprobe_queue_distance_id_adapters.log",
+          "num_complete": 18,
+          "finished_utc": "2026-08-31T21:46:50.575896+00:00"
+        }
+      },
+      "adapter_wait_seconds": 0.0002499893307685852,
+      "finished_utc": "2026-08-31T21:46:50.575926+00:00"
+    }
+  },
+  "finished_utc": "2026-08-31T21:46:50.606735+00:00",
+  "num_complete_lanes": 5
+}

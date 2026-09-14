@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "valid": true,
+  "language": "go",
+  "model": "graphcodebert",
+  "layers": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "expected_programs": 3000,
+  "distance_mode": "legacy",
+  "results_directory": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/graphcodebert/attention/similarity_legacy/graphcodebert",
+  "errors": [],
+  "validated_utc": "2026-09-05T14:25:03.595971+00:00",
+  "summary": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/graphcodebert/attention/section_3_2_summary.json"
+}

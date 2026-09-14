@@ -1,4 +1,4 @@
-"""Validate paired non-CodeBERT graph and hidden-representation artifacts."""
+"""Validate paired graph and hidden-representation artifacts."""
 
 import argparse
 import hashlib
@@ -32,11 +32,21 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
 
     errors = []
     model_name = expected_model or graph_manifest.get("model")
-    try:
-        spec = get_model_spec(model_name)
-    except ValueError as exc:
-        errors.append(str(exc))
-        spec = None
+    if model_name == "codebert":
+        expected_transformer_layers = 12
+        expected_attention_heads = 12
+        expected_hidden_size = 768
+    else:
+        try:
+            spec = get_model_spec(model_name)
+            expected_transformer_layers = spec.expected_transformer_layers
+            expected_attention_heads = spec.expected_attention_heads
+            expected_hidden_size = spec.expected_hidden_size
+        except ValueError as exc:
+            errors.append(str(exc))
+            expected_transformer_layers = None
+            expected_attention_heads = None
+            expected_hidden_size = None
 
     for label, manifest in (
         ("graph", graph_manifest),
@@ -46,15 +56,17 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
             errors.append(f"{label} manifest is not complete")
         if manifest.get("model") != model_name:
             errors.append(f"{label} manifest model does not match {model_name}")
-        if expected_language and manifest.get("language") != expected_language:
+        manifest_language = manifest.get("language", manifest.get("lang"))
+        if expected_language and manifest_language != expected_language:
             errors.append(f"{label} manifest language mismatch")
-        if expected_count is not None and manifest.get(
-            "selected_num_codes"
-        ) != expected_count:
+        selected_count = manifest.get(
+            "selected_num_codes", manifest.get("num_requested")
+        )
+        if expected_count is not None and selected_count != expected_count:
             errors.append(f"{label} selected count mismatch")
         if len(manifest.get("artifacts", [])) + len(
             manifest.get("failures", [])
-        ) != manifest.get("selected_num_codes"):
+        ) != selected_count:
             errors.append(f"{label} artifact/failure accounting mismatch")
 
     graph_artifacts = graph_manifest.get("artifacts", [])
@@ -98,17 +110,17 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
         hidden = np.asarray(embedding.get("hidden_repr"))
         ast_graph = np.asarray(graph.get("ast_graph"))
         tree_dist = np.asarray(embedding.get("tree_dist"))
-        if spec is not None:
+        if expected_transformer_layers is not None:
             expected_attention = (
-                spec.expected_transformer_layers,
-                spec.expected_attention_heads,
+                expected_transformer_layers,
+                expected_attention_heads,
                 token_count,
                 token_count,
             )
             expected_hidden = (
-                spec.expected_transformer_layers + 1,
+                expected_transformer_layers + 1,
                 token_count,
-                spec.expected_hidden_size,
+                expected_hidden_size,
             )
             if attention.shape != expected_attention:
                 errors.append(
@@ -134,7 +146,7 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
         "graph_dir": os.path.abspath(graph_dir),
         "embedding_dir": os.path.abspath(embedding_dir),
         "model": model_name,
-        "language": graph_manifest.get("language"),
+        "language": graph_manifest.get("language", graph_manifest.get("lang")),
         "selected": graph_manifest.get("selected_num_codes"),
         "artifacts": len(graph_artifacts),
         "failures": len(graph_manifest.get("failures", [])),

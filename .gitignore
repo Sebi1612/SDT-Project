@@ -21,4 +21,17 @@ attention/exp_data/pilot_100/
 tree-sitter-go/
 tree-sitter-javascript/
 
-DirectProbe/final_3000/data/**/codebert/embeddings/
+# Final DirectProbe feature matrices are multi-gigabyte reproducible
+# intermediates. Keep the compact entities, dataset manifests, configs, solver
+# outputs, and validation manifests in Git instead.
+DirectProbe/final_3000/data/**/embeddings/
+
+# Runtime-only DirectProbe recovery and progress artifacts.
+DirectProbe/final_3000/*.log
+DirectProbe/final_3000/*.lock
+DirectProbe/final_3000/*dry_run*.json
+DirectProbe/final_3000/*_logs/
+DirectProbe/final_3000/preparation_logs/
+DirectProbe/final_3000/recovery/
+DirectProbe/final_3000/interrupted_runs/
+DirectProbe/final_3000/interrupted_results_archive/

@@ -1,0 +1,588 @@
+{
+  "status": "complete",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "workers": 4,
+  "timeout_seconds": 172800,
+  "required_solver": "gurobi",
+  "runs": [
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 12871.882427185774,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_graphcodebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/graphcodebert/5",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 915,
+        "1": 1156,
+        "0": 44,
+        "3": 285
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0794,
+      "mean_intercluster_distance": 3.3011,
+      "maximum_intercluster_distance": 10.5919,
+      "accuracy": 0.8933333333333333,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.83,
+        "Sibling": 0.9566666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 10428.99745902419,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_graphcodebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/graphcodebert/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 977,
+        "3": 1165,
+        "0": 35,
+        "1": 223
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1048,
+      "mean_intercluster_distance": 3.6349,
+      "maximum_intercluster_distance": 11.072,
+      "accuracy": 0.8666666666666667,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.7966666666666666,
+        "Sibling": 0.9366666666666666
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 10676.47474398464,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_graphcodebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/graphcodebert/12",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 1144,
+        "3": 1132,
+        "0": 68,
+        "1": 56
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.008,
+      "mean_intercluster_distance": 2.8867499999999997,
+      "maximum_intercluster_distance": 8.8302,
+      "accuracy": 0.8566666666666667,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8266666666666667,
+        "Sibling": 0.8866666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 6175.610204093158,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_codet5_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/codet5/5",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 1103,
+        "1": 207,
+        "0": 97,
+        "3": 993
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 3.566375,
+      "maximum_intercluster_distance": 12.1096,
+      "accuracy": 0.8866666666666667,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8866666666666667,
+        "Sibling": 0.8866666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 8392.288093656301,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_codet5_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/codet5/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 1160,
+        "0": 70,
+        "3": 1130,
+        "1": 40
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1138,
+      "mean_intercluster_distance": 11.238024999999999,
+      "maximum_intercluster_distance": 31.4921,
+      "accuracy": 0.885,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.86,
+        "Sibling": 0.91
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "java",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 16936.0594965145,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/java/siblings/config_codet5_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/java/siblings/codet5/12",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 1192,
+        "1": 1126,
+        "2": 74,
+        "3": 8
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 2.02635,
+      "maximum_intercluster_distance": 5.8422,
+      "accuracy": 0.83,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.7633333333333333,
+        "Sibling": 0.8966666666666666
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 9235.329433478415,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_graphcodebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/graphcodebert/5",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 419,
+        "3": 991,
+        "2": 781,
+        "1": 209
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.2294,
+      "mean_intercluster_distance": 2.086325,
+      "maximum_intercluster_distance": 5.6408,
+      "accuracy": 0.9083333333333333,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.87,
+        "Sibling": 0.9466666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 10074.392503343523,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_graphcodebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/graphcodebert/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "1": 409,
+        "3": 1199,
+        "2": 791,
+        "0": 1
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1782,
+      "mean_intercluster_distance": 9.13035,
+      "maximum_intercluster_distance": 21.6022,
+      "accuracy": 0.8966666666666666,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8666666666666667,
+        "Sibling": 0.9266666666666666
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 9098.597853586078,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_graphcodebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/graphcodebert/12",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 418,
+        "2": 1197,
+        "1": 782,
+        "3": 3
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1359,
+      "mean_intercluster_distance": 4.58765,
+      "maximum_intercluster_distance": 8.9128,
+      "accuracy": 0.8683333333333333,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.85,
+        "Sibling": 0.8866666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 4128.321451604366,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_codet5_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/codet5/5",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 421,
+        "1": 1181,
+        "3": 779,
+        "2": 19
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 4.34275,
+      "maximum_intercluster_distance": 11.6131,
+      "accuracy": 0.8966666666666666,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8933333333333333,
+        "Sibling": 0.9
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 6897.175475373864,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_codet5_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/codet5/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "2": 423,
+        "1": 1199,
+        "3": 777,
+        "0": 1
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.5609,
+      "mean_intercluster_distance": 27.064149999999998,
+      "maximum_intercluster_distance": 67.1767,
+      "accuracy": 0.9116666666666666,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.9,
+        "Sibling": 0.9233333333333333
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "go",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 9117.990782789886,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/go/siblings/config_codet5_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/go/siblings/codet5/12",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 407,
+        "3": 1157,
+        "1": 793,
+        "2": 43
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0832,
+      "mean_intercluster_distance": 2.403375,
+      "maximum_intercluster_distance": 8.3351,
+      "accuracy": 0.8883333333333333,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8566666666666667,
+        "Sibling": 0.92
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 8826.700898073614,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_graphcodebert_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/graphcodebert/5",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "0": 909,
+        "1": 433,
+        "3": 765,
+        "2": 291,
+        "4": 2
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 2.122533333333333,
+      "maximum_intercluster_distance": 6.6614,
+      "accuracy": 0.855,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8,
+        "Sibling": 0.91
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 11327.824354171753,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_graphcodebert_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/graphcodebert/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "0": 912,
+        "1": 453,
+        "2": 747,
+        "3": 288
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 0.501325,
+      "maximum_intercluster_distance": 1.246,
+      "accuracy": 0.8533333333333334,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8066666666666666,
+        "Sibling": 0.9
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "graphcodebert",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 11965.044757008553,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_graphcodebert_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/graphcodebert/12",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "1": 1171,
+        "3": 1061,
+        "0": 139,
+        "2": 29
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0497,
+      "mean_intercluster_distance": 2.472125,
+      "maximum_intercluster_distance": 6.65,
+      "accuracy": 0.805,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.7566666666666667,
+        "Sibling": 0.8533333333333334
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 5,
+      "duration_seconds": 6276.245017655194,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_codet5_5.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/codet5/5",
+      "num_clusters": 5,
+      "cluster_sizes": {
+        "2": 222,
+        "4": 897,
+        "3": 921,
+        "1": 303,
+        "0": 57
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 4.423000000000001,
+      "maximum_intercluster_distance": 14.863,
+      "accuracy": 0.835,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.8033333333333333,
+        "Sibling": 0.8666666666666667
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 9,
+      "duration_seconds": 22009.368935205042,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_codet5_9.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/codet5/9",
+      "num_clusters": 4,
+      "cluster_sizes": {
+        "1": 1199,
+        "2": 1183,
+        "0": 1,
+        "3": 17
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.1707,
+      "mean_intercluster_distance": 27.5267,
+      "maximum_intercluster_distance": 68.0133,
+      "accuracy": 0.8266666666666667,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.76,
+        "Sibling": 0.8933333333333333
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    },
+    {
+      "status": "complete",
+      "language": "javascript",
+      "model": "codet5",
+      "task": "siblings",
+      "layer": 12,
+      "duration_seconds": 12537.0868159011,
+      "workers": 4,
+      "config": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/config_files/javascript/siblings/config_codet5_12.ini",
+      "result_dir": "/home/abhinav/sdt_project/dev-sebastian/DirectProbe/final_3000/results/javascript/siblings/codet5/12",
+      "num_clusters": 3,
+      "cluster_sizes": {
+        "2": 1200,
+        "0": 563,
+        "1": 637
+      },
+      "solver": "gurobi",
+      "minimum_intercluster_distance": 0.0,
+      "mean_intercluster_distance": 0.009,
+      "maximum_intercluster_distance": 0.018,
+      "accuracy": 0.775,
+      "num_test": 600,
+      "per_label_accuracy": {
+        "NotSibling": 0.6666666666666666,
+        "Sibling": 0.8833333333333333
+      },
+      "per_label_test_count": {
+        "NotSibling": 300,
+        "Sibling": 300
+      }
+    }
+  ],
+  "num_complete": 18,
+  "num_failed": 0
+}

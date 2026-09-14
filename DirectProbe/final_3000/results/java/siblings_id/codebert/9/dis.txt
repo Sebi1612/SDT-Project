@@ -1,0 +1,4 @@
+(0-NotSibling, 1-Sibling): 2.8706
+(0-NotSibling, 2-Sibling): 16.8390
+(1-Sibling, 3-NotSibling): 0.0968
+(2-Sibling, 3-NotSibling): 3.3921
