@@ -1,0 +1,35 @@
+{
+  "analysis": "ast_vs_hidden_distance_tsne",
+  "language": "python",
+  "model": "graphcodebert",
+  "seed": 0,
+  "layers": [
+    5
+  ],
+  "perplexities": [
+    5,
+    10
+  ],
+  "iterations": 50000,
+  "selection_rule": "seeded random artifact with at least minimum_program_tokens",
+  "minimum_program_tokens": 100,
+  "eligibility_source": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/exp_0.jsonl",
+  "num_eligible_programs": 861,
+  "selected_artifact": "002578_4c3ff78f8920ab10cb9c00b14143452aa09ff6bbv.pkl",
+  "num_tokens": 100,
+  "spearman_ast_vs_hidden_distance": {
+    "5": {
+      "spearman_r": 0.26721977526503454,
+      "pvalue": 1.0652192063064994e-81
+    }
+  },
+  "embedding_manifest": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_python_final_3000/python/graphcodebert/embedding_manifest.json",
+  "generated_files": [
+    "distance_layer_5_perplexity_5_ast.csv",
+    "distance_layer_5_perplexity_5_hidden.csv",
+    "distance_layer_5_perplexity_5.png",
+    "distance_layer_5_perplexity_10_ast.csv",
+    "distance_layer_5_perplexity_10_hidden.csv",
+    "distance_layer_5_perplexity_10.png"
+  ]
+}

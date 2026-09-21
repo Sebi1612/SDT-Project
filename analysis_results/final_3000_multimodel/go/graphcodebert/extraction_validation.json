@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "model": "graphcodebert",
+  "language": "go",
+  "expected_programs": 3000,
+  "graph_artifacts": 3000,
+  "embedding_artifacts": 3000,
+  "graph_failures": 0,
+  "embedding_failures": 0,
+  "paired_cohort": true,
+  "errors": [],
+  "valid": true
+}

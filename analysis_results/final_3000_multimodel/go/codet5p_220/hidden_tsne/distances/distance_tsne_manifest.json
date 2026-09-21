@@ -1,0 +1,35 @@
+{
+  "analysis": "ast_vs_hidden_distance_tsne",
+  "language": "go",
+  "model": "codet5p_220",
+  "seed": 0,
+  "layers": [
+    5
+  ],
+  "perplexities": [
+    5,
+    10
+  ],
+  "iterations": 50000,
+  "selection_rule": "seeded random artifact with at least minimum_program_tokens",
+  "minimum_program_tokens": 100,
+  "eligibility_source": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+  "num_eligible_programs": 777,
+  "selected_artifact": "002478_c070c8f9a8f0032d48f0d2a77d4e382788bd8a1d_Open.pkl",
+  "num_tokens": 137,
+  "spearman_ast_vs_hidden_distance": {
+    "5": {
+      "spearman_r": 0.027375431579104742,
+      "pvalue": 0.008232037643277073
+    }
+  },
+  "embedding_manifest": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/codet5p_220/embedding_manifest.json",
+  "generated_files": [
+    "distance_layer_5_perplexity_5_ast.csv",
+    "distance_layer_5_perplexity_5_hidden.csv",
+    "distance_layer_5_perplexity_5.png",
+    "distance_layer_5_perplexity_10_ast.csv",
+    "distance_layer_5_perplexity_10_hidden.csv",
+    "distance_layer_5_perplexity_10.png"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "status": "complete",
+  "purpose": "Python recomputation check against stored paper results",
+  "model": "codet5",
+  "primary_threshold": 0.05,
+  "pilot_ged_mode": null,
+  "pilot_ged_method": null,
+  "pilot_ged_provenance": null,
+  "ged_comparison_is_paper_compatible": false,
+  "ged_comparison_status": "skipped",
+  "pilot_summary": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/codet5/attention/section_3_2_summary.json",
+  "pilot_expected_programs": 3000,
+  "candidate_run_label": "Recomputed 3,000-program run",
+  "reference_root": "/home/abhinav/sdt_project/dev-sebastian/attention/graph_comparision",
+  "reference_dataset": "CodeSearchNet Python test subset exp_0.jsonl",
+  "reference_dataset_rows": 3000,
+  "reference_evaluated_rows": "not recorded in the legacy result files; individual alignment failures may have been excluded by the original scripts",
+  "interpretation": "This is a descriptive reproducibility check, not a statistical equivalence test. Compare curve direction, magnitude, correlation, and absolute differences. GED is compared only when the candidate uses the paper-compatible legacy NetworkX mode.",
+  "aggregate_curve_comparison": {
+    "overlap": {
+      "ast": {
+        "fscore": {
+          "mean_absolute_difference": 6.536492789256665e-05,
+          "root_mean_squared_difference": 7.813332141095579e-05,
+          "mean_signed_difference": -5.4805732836259634e-05,
+          "pearson_layer_correlation": 0.9999955505134606
+        },
+        "precision": {
+          "mean_absolute_difference": 0.00016053379145319902,
+          "root_mean_squared_difference": 0.00017321162049455536,
+          "mean_signed_difference": -0.00016053379145319902,
+          "pearson_layer_correlation": 0.9999988267984243
+        },
+        "recall": {
+          "mean_absolute_difference": 4.5338722820193834e-05,
+          "root_mean_squared_difference": 5.0790274271414926e-05,
+          "mean_signed_difference": 9.165481714655069e-07,
+          "pearson_layer_correlation": 0.999998873422181
+        }
+      },
+      "dfg": {
+        "fscore": {
+          "mean_absolute_difference": 6.0383678983190935e-05,
+          "root_mean_squared_difference": 7.95328861247334e-05,
+          "mean_signed_difference": 2.1932351077602146e-05,
+          "pearson_layer_correlation": 0.9999977105268273
+        },
+        "precision": {
+          "mean_absolute_difference": 5.7551235417852474e-05,
+          "root_mean_squared_difference": 7.83790566903948e-05,
+          "mean_signed_difference": 3.8411633352398077e-05,
+          "pearson_layer_correlation": 0.9999975404023046
+        },
+        "recall": {
+          "mean_absolute_difference": 0.0004000041397650746,
+          "root_mean_squared_difference": 0.00041640477605196417,
+          "mean_signed_difference": -0.0004000041397650746,
+          "pearson_layer_correlation": 0.9999989172837674
+        }
+      }
+    },
+    "ged": {}
+  },
+  "outputs": {
+    "overlap_csv": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/codet5/attention/python_reference_comparison_overlap.csv",
+    "overlap_plot": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/codet5/attention/python_reference_comparison_overlap.png"
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "status": "complete",
+  "paper_section": "3.2",
+  "model": "graphcodebert",
+  "language": "python",
+  "primary_threshold": 0.05,
+  "num_layers": 12,
+  "num_heads": 12,
+  "expected_programs": 3000,
+  "ged_status": "skipped",
+  "ged_mode": null,
+  "ged_method": null,
+  "ged_paper_comparable": false,
+  "ged_results_directory": null,
+  "ged_provenance": null,
+  "head_selection": "highest macro-mean F-score independently for AST and DFG; smallest zero-based head index breaks ties",
+  "ged_head_selection": "lowest macro-mean GED per node independently for each code graph; smallest zero-based head index breaks ties",
+  "outputs": {
+    "overlap_csv": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/graphcodebert/attention/section_3_2_summary_overlap.csv",
+    "overlap_plot": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/graphcodebert/attention/section_3_2_summary_overlap.png"
+  },
+  "layers": [
+    {
+      "layer_index": 0,
+      "layer_number_one_based": 1,
+      "overlap": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.33752978823691226,
+          "precision": 0.32672623116309885,
+          "recall": 0.3657359471454477,
+          "iou": 0.2040342863220542
+        },
+        "dfg": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "fscore": 0.19123128555530028,
+          "precision": 0.12871638592598902,
+          "recall": 0.5028242253957966
+        }
+      }
+    },
+    {
+      "layer_index": 1,
+      "layer_number_one_based": 2,
+      "overlap": {
+        "ast": {
+          "head_index": 0,
+          "head_number_one_based": 1,
+          "fscore": 0.3301980759710657,
+          "precision": 0.4064730451831026,
+          "recall": 0.28766404108591165,
+          "iou": 0.1987559288048524
+        },
+        "dfg": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.13355580525292665,
+          "precision": 0.07919257108596318,
+          "recall": 0.49682087891115867
+        }
+      }
+    },
+    {
+      "layer_index": 2,
+      "layer_number_one_based": 3,
+      "overlap": {
+        "ast": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "fscore": 0.31984180455562483,
+          "precision": 0.3911756333243933,
+          "recall": 0.27966400615519,
+          "iou": 0.19165232864168058
+        },
+        "dfg": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "fscore": 0.12811224996375023,
+          "precision": 0.0785850042447924,
+          "recall": 0.397192115899626
+        }
+      }
+    },
+    {
+      "layer_index": 3,
+      "layer_number_one_based": 4,
+      "overlap": {
+        "ast": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.3587080682435529,
+          "precision": 0.39005763337110444,
+          "recall": 0.34517566133812305,
+          "iou": 0.21967573023662665
+        },
+        "dfg": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "fscore": 0.13137798822516342,
+          "precision": 0.07590106927626498,
+          "recall": 0.5589713373934466
+        }
+      }
+    },
+    {
+      "layer_index": 4,
+      "layer_number_one_based": 5,
+      "overlap": {
+        "ast": {
+          "head_index": 7,
+          "head_number_one_based": 8,
+          "fscore": 0.32544939274200213,
+          "precision": 0.5100441061668276,
+          "recall": 0.24596011691120157,
+          "iou": 0.19549188993504482
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.1629222200674945,
+          "precision": 0.09826334865670733,
+          "recall": 0.5508805617070333
+        }
+      }
+    },
+    {
+      "layer_index": 5,
+      "layer_number_one_based": 6,
+      "overlap": {
+        "ast": {
+          "head_index": 8,
+          "head_number_one_based": 9,
+          "fscore": 0.3442268396334759,
+          "precision": 0.43480867835389464,
+          "recall": 0.29580939032098164,
+          "iou": 0.20925002481292063
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.18817232013751634,
+          "precision": 0.11710785966530331,
+          "recall": 0.5655280868578891
+        }
+      }
+    },
+    {
+      "layer_index": 6,
+      "layer_number_one_based": 7,
+      "overlap": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.32257546545020854,
+          "precision": 0.3413370547316958,
+          "recall": 0.3192634987345213,
+          "iou": 0.1936783756200268
+        },
+        "dfg": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.15965597729452788,
+          "precision": 0.09554241824924492,
+          "recall": 0.5592202950225454
+        }
+      }
+    },
+    {
+      "layer_index": 7,
+      "layer_number_one_based": 8,
+      "overlap": {
+        "ast": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "fscore": 0.30303186356226913,
+          "precision": 0.4973377315857168,
+          "recall": 0.22396031094551835,
+          "iou": 0.17951879045105476
+        },
+        "dfg": {
+          "head_index": 9,
+          "head_number_one_based": 10,
+          "fscore": 0.1322849580287155,
+          "precision": 0.0782261395284273,
+          "recall": 0.4929819672561738
+        }
+      }
+    },
+    {
+      "layer_index": 8,
+      "layer_number_one_based": 9,
+      "overlap": {
+        "ast": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.3219251322893982,
+          "precision": 0.5150339567801682,
+          "recall": 0.24069441557392776,
+          "iou": 0.19346860539198274
+        },
+        "dfg": {
+          "head_index": 1,
+          "head_number_one_based": 2,
+          "fscore": 0.02196745262665416,
+          "precision": 0.01499372682104039,
+          "recall": 0.0449074420719137
+        }
+      }
+    },
+    {
+      "layer_index": 9,
+      "layer_number_one_based": 10,
+      "overlap": {
+        "ast": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.27225491786154565,
+          "precision": 0.4713791530336796,
+          "recall": 0.1973956601278291,
+          "iou": 0.15857391388482808
+        },
+        "dfg": {
+          "head_index": 10,
+          "head_number_one_based": 11,
+          "fscore": 0.06442964475395266,
+          "precision": 0.055804894128080394,
+          "recall": 0.09067197898293203
+        }
+      }
+    },
+    {
+      "layer_index": 10,
+      "layer_number_one_based": 11,
+      "overlap": {
+        "ast": {
+          "head_index": 4,
+          "head_number_one_based": 5,
+          "fscore": 0.16739050752941498,
+          "precision": 0.28142153898782246,
+          "recall": 0.12557806121779003,
+          "iou": 0.09249518013253637
+        },
+        "dfg": {
+          "head_index": 6,
+          "head_number_one_based": 7,
+          "fscore": 0.28054569001825835,
+          "precision": 0.19461509115955244,
+          "recall": 0.5837795876687857
+        }
+      }
+    },
+    {
+      "layer_index": 11,
+      "layer_number_one_based": 12,
+      "overlap": {
+        "ast": {
+          "head_index": 11,
+          "head_number_one_based": 12,
+          "fscore": 0.17333387895827948,
+          "precision": 0.2315123446171834,
+          "recall": 0.14324393478455422,
+          "iou": 0.0952507227022553
+        },
+        "dfg": {
+          "head_index": 2,
+          "head_number_one_based": 3,
+          "fscore": 0.1639903944802935,
+          "precision": 0.09802927231424381,
+          "recall": 0.5767951853831672
+        }
+      }
+    }
+  ]
+}

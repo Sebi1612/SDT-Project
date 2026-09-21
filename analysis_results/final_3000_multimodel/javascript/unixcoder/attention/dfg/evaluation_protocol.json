@@ -1,0 +1,44 @@
+{
+  "protocol_version": "structural_attention_v1",
+  "analysis": "dfg_attention_overlap",
+  "model": "unixcoder",
+  "language": "javascript",
+  "model_extraction_validated_for": [
+    "codebert"
+  ],
+  "supported_languages": [
+    "python",
+    "java",
+    "go",
+    "javascript"
+  ],
+  "primary_threshold": 0.05,
+  "threshold_predicate": "attention > threshold",
+  "averaging": "macro mean over programs",
+  "bootstrap_unit": "program",
+  "bootstrap_method": "percentile",
+  "bootstrap_samples": 1000,
+  "confidence_level": 0.95,
+  "bootstrap_seed": 0,
+  "graph_direction": "directed",
+  "parser_failures": "excluded and reported in coverage counts",
+  "empty_dfgs": "included as valid zero-edge graphs",
+  "identifier_policy": "tree-sitter type contains 'identifier'",
+  "dfg_relation_policy": "binary edges for attention evaluation; typed labels, when requested separately, are native to each GraphCodeBERT extractor",
+  "typed_dfg_cross_language_comparison_supported": false,
+  "known_limitations": [
+    "GraphCodeBERT DFG state is name-based and does not fully model lexical scope shadowing.",
+    "Passing alignment validates token identity and graph shape, not complete semantic correctness for every language construct."
+  ],
+  "threshold_sweep": [
+    0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4
+  ]
+}

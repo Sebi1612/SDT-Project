@@ -1,16 +1,39 @@
 # Analysis runbook
 
-This runbook describes how to reproduce the paper-compatible AST/DFG attention
-analysis (Section 3.2), qualitative hidden-state analysis (Section 3.3.1), and
-DirectProbe analysis (Section 3.3.2) for Python, Java, Go and JavaScript.
+This is the final reproduction guide for the four-language structural analysis.
+Run commands from the repository root. Existing final outputs are complete; use
+new staging/output directories for exploratory reruns so validated results are
+not overwritten accidentally.
 
-Read [`ANALYSIS_RESULTS_SUMMARY.md`](ANALYSIS_RESULTS_SUMMARY.md) first to see
-which runs already exist. The commands below do not need to be rerun for a
-combination whose validation manifest is already complete.
+## 1. Scope and authoritative inputs
 
-## 1. Environment and conventions
+The retained 3,000-program inputs are:
 
-Run commands from the repository root and use the `attention` environment:
+```text
+attention/exp_data/exp_0.jsonl                 Python paper cohort
+attention/exp_data/final_3000/java.jsonl       Java extension cohort
+attention/exp_data/final_3000/javascript.jsonl JavaScript extension cohort
+attention/exp_data/final_3000/go.jsonl         Go extension cohort
+```
+
+Each added-language file has a neighboring `_manifest.json` recording its
+test-partition filter, seed, sample size, duplicate checks, alignment checks,
+and SHA-256. The exact DirectProbe pairs and splits are recorded in each
+`DirectProbe/final_3000/data/<language>/<task>/<model>/dataset_manifest.json`;
+the corresponding `entities/` and `labels/` files are retained.
+
+The final experiment matrix is:
+
+- attention overlap: six models × four languages;
+- GED: CodeBERT, GraphCodeBERT, and CodeT5 × Java, JavaScript, and Go, with
+  original Python outputs as the reference;
+- t-SNE: CodeBERT × four languages in the main comparison;
+- DirectProbe: three models × four languages × five tasks × layers 5, 9, 12,
+  using original Python outputs as the reference.
+
+## 2. Environment
+
+The completed project used Python 3.9 and the following interpreter:
 
 ```bash
 REPO_ROOT=/home/abhinav/sdt_project/dev-sebastian
@@ -20,161 +43,78 @@ export MPLCONFIGDIR
 cd "$REPO_ROOT"
 ```
 
-Use `--device cuda:0` only when `torch.cuda.is_available()` is true and the GPU
-has enough memory. Otherwise use `--device cpu`. The completed adapter matrix
-was run on CPU with four OpenMP/MKL threads.
-
-The adapter runner uses locally cached model files and sets Hugging Face and
-Transformers to offline mode. The required checkpoints are listed in
-[`attention/MODEL_ADAPTERS.md`](attention/MODEL_ADAPTERS.md).
-
-DirectProbe must receive the project-local Gurobi licence on every solver
-invocation; do not change a global Gurobi setting:
+To create a fresh environment:
 
 ```bash
-GRB_LICENSE_FILE=/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic \
-  "$PYTHON_BIN" DirectProbe/run_multilingual_pilot.py --help
+conda create -n attention python=3.9.16
+conda activate attention
+pip install -r attention/requirements.txt
+pip install -r DirectProbe/requirements.txt
+pip install -e DirectProbe
 ```
 
-The model names accepted by the new adapter path are `graphcodebert`,
-`unixcoder`, `codet5`, `plbart`, `codet5p_220`, and `codegen`. CodeBERT uses its
-established extraction path and is intentionally not routed through the
-adapter.
-
-## 2. Prepare the paper-compatible 3,000-program cohorts
-
-For Java, Go and JavaScript, the cohort builder performs all required steps in
-one pass: select only CodeSearchNet's test partition, remove comments, preserve
-and validate AST token alignment, require DFG alignment, require exact model
-subtoken merging, enforce fewer than 500 subtokens for the relevant models,
-and sample deterministically with seed 0.
-
-Run once for each language, replacing `LANG`:
+Build the pinned ABI-14 Tree-sitter libraries once. The explicit builder avoids
+a known setuptools linker problem with Python's C++ scanner:
 
 ```bash
-LANG=java
-"$PYTHON_BIN" attention/prepare_attention_cohort.py \
-  --input "attention/exp_data/${LANG}_full.jsonl" \
-  --output "attention/exp_data/final_3000/${LANG}.jsonl" \
-  --manifest "attention/exp_data/final_3000/${LANG}_manifest.json" \
-  --lang "$LANG" \
-  --sample_size 3000 \
-  --seed 0
+"$PYTHON_BIN" attention/build_parsers.py --output-dir build
 ```
 
-Repeat with `LANG=go` and `LANG=javascript`. Do not overwrite the full input
-file. Accept the cohort only when the manifest says `status=complete`,
-`sample_size=3000`, `output_partitions={"test": 3000}`, and
-`duplicate_cleaned_code_count=0`.
+Analysis scripts then load `build/my-languages-<language>.so`. Model extraction
+needs the checkpoints listed in
+`attention/MODEL_ADAPTERS.md`. Remove `--local_files_only` only when a checkpoint
+must be downloaded and network access is available.
 
-The existing validated files are:
+For bounded CPU runs, use:
 
-- [`attention/exp_data/final_3000/java.jsonl`](attention/exp_data/final_3000/java.jsonl)
-- [`attention/exp_data/final_3000/go.jsonl`](attention/exp_data/final_3000/go.jsonl)
-- [`attention/exp_data/final_3000/javascript.jsonl`](attention/exp_data/final_3000/javascript.jsonl)
+```bash
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+export TOKENIZERS_PARALLELISM=false
+```
 
-Python uses the established comment/docstring-free test-split data from the
-paper. The multilingual pilot inputs live under
-[`attention/exp_data/pilot_100`](attention/exp_data/pilot_100).
+Use a CUDA device only after checking its free memory. The completed queues use
+disk and memory guards and are resumable from their JSON manifests.
 
-## 3. Run the verification ladder before a new full matrix
+## 3. Validate retained data and results
 
-### 3.1 CodeBERT Python reference gate
+Check cohort sizes:
 
-This reruns the 100-program Section 3.2 pilot and compares Python with the
-stored paper curves. The command intentionally includes the slow,
-paper-compatible legacy GED check. For an overlap-only run, add both
-`--skip_ged` and `--skip_python_reference_comparison`, because the combined
-Python reference report requires GED.
+```bash
+wc -l \
+  attention/exp_data/exp_0.jsonl \
+  attention/exp_data/final_3000/java.jsonl \
+  attention/exp_data/final_3000/javascript.jsonl \
+  attention/exp_data/final_3000/go.jsonl
+```
+
+Rebuild the result inventory and package checksums. This also verifies that
+every indexed primary output and validation path exists:
+
+```bash
+"$PYTHON_BIN" results/build_inventory.py
+"$PYTHON_BIN" results/validate_archive.py
+(cd results && sha256sum -c checksums.sha256)
+```
+
+The authoritative completion overview is `ANALYSIS_RESULTS_SUMMARY.md`, and the
+file-level index is `results/RESULT_INVENTORY.csv`.
+
+## 4. Attention overlap and t-SNE
+
+### 4.1 CodeBERT for Java, JavaScript, and Go
+
+`run_section_3_2.py` extracts attention/AST artifacts, validates all 3,000
+programs, computes AST/DFG precision/recall/F-score for every layer, and writes
+the paper-style threshold-0.05 summary. GED is deliberately separate.
 
 ```bash
 "$PYTHON_BIN" attention/run_section_3_2.py \
-  --languages python \
-  --dataset_dir attention/exp_data/pilot_100 \
-  --graph_root graph_info/pilot_100 \
-  --results_root analysis_results/attention_pilot_100 \
-  --expected_count 100 \
-  --device cpu \
-  --ged_mode legacy
-```
-
-The important reference report is
-[`analysis_results/attention_pilot_100/python/python_reference_comparison.json`](analysis_results/attention_pilot_100/python/python_reference_comparison.json).
-
-### 3.2 Non-CodeBERT adapter preflight
-
-Run this for every intended model/language before committing storage to a full
-extraction. This validates the selected cohort, parser alignment, tokenizer
-protocol and model limits without retaining large tensors:
-
-```bash
-MODEL=graphcodebert
-LANG=java
-"$PYTHON_BIN" attention/verify_model_adapter.py \
-  --model "$MODEL" \
-  --code_file "attention/exp_data/pilot_100/${LANG}.jsonl" \
-  --lang "$LANG" \
-  --num_codes 100 \
-  --local_files_only \
-  --report "analysis_results/model_adapter_verification/preflight_100/${LANG}/${MODEL}.json"
-```
-
-Add `--forward --device cpu` (or a valid CUDA device) for a real checkpoint
-forward pass. For CodeGen, use `--num_codes 1` for the initial forward gate
-because the 3.7B checkpoint is much larger.
-
-## 4. Recommended storage-bounded non-GED/non-DirectProbe matrix
-
-The following command performs the already-tested sequence for five models and
-three languages:
-
-1. paired attention/hidden-state extraction;
-2. strict 3,000-artifact validation;
-3. AST overlap on every attention layer;
-4. DFG overlap and strict end-to-end alignment on every attention layer;
-5. paper-style Section 3.2 summary at threshold 0.05, with GED marked skipped;
-6. representative layer-5 t-SNE (100 shortest programs with at least 100 code
-   tokens, token perplexity 50, distance perplexities 5/10, 50,000 iterations);
-7. permanent-output validation; and
-8. deletion of only the manifest-listed raw `.pkl` tensors after validation.
-
-```bash
-OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
-  "$PYTHON_BIN" attention/run_staged_model_analysis.py \
-  --models graphcodebert unixcoder codet5 plbart codet5p_220 \
-  --languages java go javascript \
-  --dataset_root attention/exp_data/final_3000 \
-  --graph_stage_root graph_info/staged_final_3000 \
-  --embedding_stage_root structural_probe/staged_final_3000 \
-  --results_root analysis_results/final_3000_multimodel \
-  --run_manifest analysis_results/final_3000_multimodel/run_manifest.json \
-  --expected_programs 3000 \
-  --tsne_layer 5 \
-  --device cpu \
-  --minimum_free_gb 35 \
-  --omp_threads 4
-```
-
-The runner is resumable: combinations already marked complete in the aggregate
-manifest are skipped. For a genuinely fresh rerun, use new graph, embedding,
-results and manifest roots instead of overwriting the validated run.
-
-This staged command is appropriate only when GED and DirectProbe are deferred.
-Those analyses need the raw tensors, which the command purges after validation.
-
-## 5. CodeBERT attention and t-SNE analysis
-
-### 5.1 Attention overlap without GED
-
-The Section 3.2 runner creates CodeBERT attention/AST artifacts, validates the
-manifest, computes all AST/DFG overlap layers and writes summaries:
-
-```bash
-"$PYTHON_BIN" attention/run_section_3_2.py \
-  --languages java go javascript \
+  --languages java javascript go \
   --dataset_dir attention/exp_data/final_3000 \
-  --graph_root graph_info/final_3000 \
-  --results_root analysis_results/attention_final_3000 \
+  --graph_root graph_info/reproduction_codebert \
+  --results_root analysis_results/reproduction_codebert \
   --expected_count 3000 \
   --device cpu \
   --bootstrap_samples 1000 \
@@ -182,36 +122,26 @@ manifest, computes all AST/DFG overlap layers and writes summaries:
   --skip_python_reference_comparison
 ```
 
-If the validated graph artifacts already exist and only the downstream metrics
-must be regenerated, add `--skip_graph_generation`.
-
-### 5.2 Hidden states and representative t-SNE
-
-Run once for each language. `save_word_embedding.py` uses the graph manifest to
-guarantee that hidden states and attention results refer to the same programs.
+To regenerate CodeBERT hidden states and t-SNE for one language:
 
 ```bash
 LANG=java
+GRAPH_DIR="graph_info/reproduction_codebert/${LANG}/codebert"
+EMBED_DIR="structural_probe/reproduction/${LANG}/final_3000/codebert"
+
 "$PYTHON_BIN" attention/save_word_embedding.py \
   --model codebert \
   --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
-  --graph_loc "graph_info/final_3000/${LANG}/codebert" \
-  --save_dir structural_probe \
+  --graph_loc "$GRAPH_DIR" \
+  --save_dir structural_probe/reproduction \
   --exp_name final_3000 \
   --lang "$LANG" \
   --device cpu \
   --seed 0
 
-"$PYTHON_BIN" attention/validate_representation_run.py \
-  --graph_dir "graph_info/final_3000/${LANG}/codebert" \
-  --embedding_dir "structural_probe/${LANG}/final_3000/codebert" \
-  --expected_model codebert \
-  --expected_language "$LANG" \
-  --expected_count 3000
-
 "$PYTHON_BIN" attention/hidden_tsne.py \
-  --embedding_dir "structural_probe/${LANG}/final_3000/codebert" \
-  --save_dir "analysis_results/${LANG}/tsne/final_3000" \
+  --embedding_dir "$EMBED_DIR" \
+  --save_dir "analysis_results/reproduction_tsne/${LANG}" \
   --lang "$LANG" \
   --layers 5 \
   --token_perplexities 50 \
@@ -223,364 +153,267 @@ LANG=java
   --seed 0
 ```
 
-Repeat with `LANG=go` and `LANG=javascript`.
+Repeat with `LANG=javascript` and `LANG=go`.
 
-## 6. Manual retained workflow for a complete model/language analysis
+### 4.2 GraphCodeBERT, UniXcoder, PLBART, CodeT5, and CodeT5+220M
 
-Use this workflow when GED and/or DirectProbe will follow. It keeps the raw
-graph and hidden-state tensors. The example uses GraphCodeBERT/Java; change the
-two variables for another adapter model or language.
-
-```bash
-MODEL=graphcodebert
-LANG=java
-GRAPH_DIR="graph_info/retained_final_3000/${LANG}/${MODEL}"
-EMBED_DIR="structural_probe/retained_final_3000/${LANG}/${MODEL}"
-RESULT_DIR="analysis_results/retained_final_3000/${LANG}/${MODEL}"
-
-"$PYTHON_BIN" attention/extract_model_representations.py \
-  --model "$MODEL" \
-  --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
-  --graph_output_dir "$GRAPH_DIR" \
-  --embedding_output_dir "$EMBED_DIR" \
-  --lang "$LANG" \
-  --device cpu \
-  --local_files_only
-
-"$PYTHON_BIN" attention/validate_representation_run.py \
-  --graph_dir "$GRAPH_DIR" \
-  --embedding_dir "$EMBED_DIR" \
-  --expected_model "$MODEL" \
-  --expected_language "$LANG" \
-  --expected_count 3000
-
-"$PYTHON_BIN" attention/graph_comp.py \
-  --graph_loc "$GRAPH_DIR" \
-  --save_dir "$RESULT_DIR/attention" \
-  --all_layers \
-  --bootstrap_samples 1000
-
-"$PYTHON_BIN" attention/dfg_comp.py \
-  --graph_loc "$GRAPH_DIR" \
-  --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
-  --save_dir "$RESULT_DIR/attention" \
-  --lang "$LANG" \
-  --all_layers \
-  --bootstrap_samples 1000
-
-"$PYTHON_BIN" attention/hidden_tsne.py \
-  --embedding_dir "$EMBED_DIR" \
-  --save_dir "$RESULT_DIR/hidden_tsne" \
-  --lang "$LANG" \
-  --layers 5 \
-  --token_perplexities 50 \
-  --distance_perplexities 5 10 \
-  --min_tokens 100 \
-  --max_programs 100 \
-  --program_selection shortest \
-  --iterations 50000 \
-  --seed 0
-```
-
-Do not use `extract_model_representations.py` for CodeBERT; use Section 5.
-
-## 7. GED attention analysis
-
-GED is still part of Section 3.2. For comparison with the paper, use
-`--distance_mode legacy`. It reproduces the original first-candidate NetworkX
-estimate and can take roughly ten hours per model layer according to the
-project README. Run it only while the corresponding graph artifacts are still
-present.
-
-For the retained adapter example from Section 6:
+The storage-bounded runner performs paired attention/hidden-state extraction,
+validation, AST/DFG overlap, summary generation, layer-5 t-SNE, final
+validation, and manifest-scoped deletion of raw tensors:
 
 ```bash
-"$PYTHON_BIN" attention/similarity.py \
-  --graphs_dir "$GRAPH_DIR" \
-  --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
-  --save_dir "$RESULT_DIR/attention" \
-  --lang "$LANG" \
-  --all_layers \
-  --threshold 0.05 \
-  --bootstrap_samples 1000 \
-  --distance_mode legacy
-
-"$PYTHON_BIN" attention/summarize_attention_analysis.py \
-  --results_dir "$RESULT_DIR/attention" \
-  --output "$RESULT_DIR/attention/section_3_2_summary.json" \
-  --model "$MODEL" \
-  --lang "$LANG" \
-  --threshold 0.05 \
+"$PYTHON_BIN" attention/run_staged_model_analysis.py \
+  --models graphcodebert unixcoder plbart codet5 codet5p_220 \
+  --languages java javascript go \
+  --dataset_root attention/exp_data/final_3000 \
+  --graph_stage_root graph_info/reproduction_adapters \
+  --embedding_stage_root structural_probe/reproduction_adapters \
+  --results_root analysis_results/reproduction_multimodel \
+  --run_manifest analysis_results/reproduction_multimodel/run_manifest.json \
   --expected_programs 3000 \
-  --ged_mode legacy
+  --tsne_layer 5 \
+  --device cpu \
+  --minimum_free_gb 35 \
+  --omp_threads 4
 ```
 
-For CodeBERT, either run the same two commands against
-`graph_info/final_3000/$LANG/codebert`, or invoke `run_section_3_2.py` without
-`--skip_ged` and with `--skip_graph_generation`.
+For Python, use the same runner with the paper cohort and reference comparison:
 
-The exact fixed-node edge distance is also available with
-`--distance_mode fixed`, but save it separately and do not compare it directly
-with the paper's legacy GED numbers.
+```bash
+"$PYTHON_BIN" attention/run_staged_model_analysis.py \
+  --models graphcodebert unixcoder plbart codet5 codet5p_220 \
+  --languages python \
+  --dataset_root attention/exp_data \
+  --dataset_pattern exp_0.jsonl \
+  --graph_stage_root graph_info/reproduction_python_adapters \
+  --embedding_stage_root structural_probe/reproduction_python_adapters \
+  --results_root analysis_results/reproduction_python_multimodel \
+  --run_manifest analysis_results/reproduction_python_multimodel/run_manifest.json \
+  --expected_programs 3000 \
+  --compare_python_reference \
+  --device cpu \
+  --minimum_free_gb 35 \
+  --omp_threads 4
+```
 
-### 7.1 Requested final multilingual GED queue
+Python CodeBERT has its dedicated, paper-reference-aware runner:
 
-The final requested GED scope is CodeBERT, GraphCodeBERT, and CodeT5 for Java,
-Go, and JavaScript: 9 model/language cohorts and 108 layer jobs.  The queue
-retains only one artifact cohort at a time and runs its 12 layers concurrently
-in isolated shard directories.  Isolation is required because `similarity.py`
-writes cohort-level filenames in addition to the layer-specific JSON file.
-After all shards validate, the queue merges them into the normal Section 3.2
-`similarity_legacy` directory, regenerates the summary, validates full
-3,000-program coverage, and removes only the manifest-listed temporary pickle
-files.
+```bash
+"$PYTHON_BIN" attention/run_staged_codebert_analysis.py \
+  --dataset_root attention/exp_data \
+  --dataset_pattern exp_0.jsonl \
+  --graph_stage_root graph_info/reproduction_python_codebert \
+  --embedding_stage_root structural_probe/reproduction_python_codebert \
+  --attention_results_root analysis_results/reproduction_python_codebert \
+  --hidden_results_root analysis_results/reproduction_python_tsne \
+  --run_manifest analysis_results/reproduction_python_codebert/run_manifest.json \
+  --python_reference_root attention/graph_comparision \
+  --expected_programs 3000 \
+  --device cpu
+```
 
-The detached run is launched with:
+## 5. Graph edit distance
+
+The paper-compatible analysis uses `distance_mode=legacy`, which reproduces the
+first candidate yielded by NetworkX `optimize_graph_edit_distance`; it is not a
+guaranteed global minimum. The final queue covers 3 models × 3 added languages
+× 12 layers. For each model/language cohort it extracts representations, runs
+up to 12 isolated layer jobs, merges and validates them, and then purges only
+manifest-listed temporary tensors.
+
+Dry-run the schedule first:
+
+```bash
+"$PYTHON_BIN" attention/run_requested_ged_queue.py \
+  --models codebert graphcodebert codet5 \
+  --languages java javascript go \
+  --workers 12 \
+  --device cpu \
+  --dry_run
+```
+
+Start a durable background run:
 
 ```bash
 tmux new-session -d -s sdt-ged \
-  "cd /home/abhinav/sdt_project/dev-sebastian && \
-   exec /home/abhinav/miniconda3/envs/attention/bin/python \
-   attention/run_requested_ged_watchdog.py \
-   --python /home/abhinav/miniconda3/envs/attention/bin/python \
-   --workers 12"
+  "cd $REPO_ROOT && exec $PYTHON_BIN attention/run_requested_ged_watchdog.py \
+   --python $PYTHON_BIN --workers 12"
 ```
 
-Status and logs are stored under `analysis_results/ged_final_3000/`:
-
-- `ged_watchdog_manifest.json`: detached watchdog and restart attempts;
-- `ged_queue_manifest.json`: active cohort and per-layer status;
-- `logs/<language>/<model>/`: extraction, layer-attempt, and summary logs;
-- `shards/<language>/<model>/layer_<n>/`: isolated resumable layer outputs;
-- `validation/<language>/<model>/ged_validation.json`: final cohort checks.
-
-GED uses NetworkX and does not invoke Gurobi.  Each layer process has
-BLAS/OpenMP threading capped at one, the nine cohorts are sequential, and a
-layer is retried at most three times.  The queue pauses before a new cohort
-when less than 80 GB of memory or 60 GB of disk is available.
-
-## 8. DirectProbe hidden-representation analysis
-
-DirectProbe needs both retained graph and embedding `.pkl` files. Build one
-task dataset at a time with `create_multilingual_dp.py`. To follow Appendix H,
-use these sampling settings:
-
-| Task | `--target_per_label` | `--max_programs` |
-|---|---:|---:|
-| `distance` | 1300 | 160 |
-| `distance_id` | 1300 | 450 |
-| `siblings` | 1500 | 100 |
-| `siblings_id` | 1500 | 300 |
-| `dfg` | 1500 | 130 |
-
-The paper-compatible hidden layers are model-specific:
-
-| Model | Layers used for the paper-style middle/deep comparison |
-|---|---|
-| CodeBERT, GraphCodeBERT, UniXcoder, CodeT5 | `5 9 12` |
-| PLBART | `3 6` |
-| CodeT5+220M | `5 12` |
-| CodeGen | `8 16` |
-
-Example: create GraphCodeBERT/Java sibling data at layers 5, 9 and 12:
+Monitor with:
 
 ```bash
-DP_ROOT=DirectProbe/retained_final_3000
-"$PYTHON_BIN" attention/create_multilingual_dp.py \
-  --task siblings \
+tmux capture-pane -pt sdt-ged
+sed -n '1,240p' analysis_results/ged_final_3000/ged_queue_manifest.json
+```
+
+Final values are merged into the associated attention result directory under
+`similarity_legacy/`; `analysis_results/ged_final_3000/validation/` records the
+coverage check. GED does not use Gurobi.
+
+## 6. DirectProbe
+
+The five tasks are `distance`, `distance_id`, `siblings`, `siblings_id`, and
+`dfg`. The selected models are CodeBERT, GraphCodeBERT, and CodeT5, and the
+hidden states are 5, 9, and 12.
+
+### 6.1 Recreate adapter probe matrices
+
+This staged command recreates GraphCodeBERT and CodeT5 representations, builds
+all balanced task datasets, verifies the generated configs/matrices, and
+deletes the large source tensors after the probe matrices are safe:
+
+```bash
+"$PYTHON_BIN" attention/run_staged_directprobe_preparation.py \
+  --models graphcodebert codet5 \
+  --languages java javascript go \
+  --dataset_root attention/exp_data/final_3000 \
+  --graph_stage_root graph_info/reproduction_directprobe \
+  --embedding_stage_root structural_probe/reproduction_directprobe \
+  --output_root DirectProbe/reproduction_final_3000 \
+  --run_manifest DirectProbe/reproduction_final_3000/preparation_manifest.json \
+  --expected_programs 3000 \
+  --device cpu \
+  --minimum_free_gb 55 \
+  --omp_threads 4
+```
+
+For CodeBERT, retain a paired graph/embedding cohort using
+`save_graph_info.py` and `save_word_embedding.py`, then run
+`attention/create_multilingual_dp.py` once per task. Use the retained final
+dataset manifest's `program_limit_used`, `selected_per_label`, layers, and seed
+for an exact reconstruction. Example:
+
+```bash
+LANG=java
+GRAPH_BASE="graph_info/reproduction_dp_codebert/${LANG}"
+GRAPH_DIR="${GRAPH_BASE}/final_3000/codebert"
+EMBED_DIR="structural_probe/reproduction_dp_codebert/${LANG}/final_3000/codebert"
+
+"$PYTHON_BIN" attention/save_graph_info.py \
+  --model codebert \
+  --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
+  --save_dir "$GRAPH_BASE" \
+  --exp_name final_3000 \
   --lang "$LANG" \
-  --model "$MODEL" \
+  --device cpu \
+  --seed 0
+
+"$PYTHON_BIN" attention/save_word_embedding.py \
+  --model codebert \
+  --code_file "attention/exp_data/final_3000/${LANG}.jsonl" \
+  --graph_loc "$GRAPH_DIR" \
+  --save_dir structural_probe/reproduction_dp_codebert \
+  --exp_name final_3000 \
+  --lang "$LANG" \
+  --device cpu \
+  --seed 0
+
+"$PYTHON_BIN" attention/create_multilingual_dp.py \
+  --task distance \
+  --lang "$LANG" \
+  --model codebert \
   --embedding_dir "$EMBED_DIR" \
   --graph_dir "$GRAPH_DIR" \
-  --output_root "$DP_ROOT" \
+  --output_root DirectProbe/reproduction_final_3000 \
   --layers 5 9 12 \
-  --target_per_label 1500 \
-  --max_programs 100 \
+  --target_per_label 1300 \
+  --max_programs 160 \
   --require_target \
   --seed 0
 ```
 
-Repeat with the appropriate values from the two tables for all five tasks. The
-same seed, cohort and sampling parameters must be used for every model so the
-selected token pairs stay comparable.
+The paper-style starting caps are 160 (`distance`), 450 (`distance_id`), 100
+(`siblings`), 300 (`siblings_id`), and 130 (`dfg`). Some final multilingual
+datasets expanded the cap to reach the same balanced per-label target; the
+retained manifest is authoritative.
 
-Then run the generated configurations with Gurobi. A long timeout is necessary;
-start conservatively with one worker so the server is not monopolized:
+### 6.2 Run the solver
+
+Never change the server's global Gurobi configuration. Scope the dedicated
+licence to each invocation:
 
 ```bash
 GRB_LICENSE_FILE=/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic \
   "$PYTHON_BIN" DirectProbe/run_multilingual_pilot.py \
   --dp_dir DirectProbe \
-  --pilot_root "$DP_ROOT" \
-  --languages "$LANG" \
-  --models "$MODEL" \
+  --pilot_root DirectProbe/reproduction_final_3000 \
+  --languages java javascript go \
+  --models codebert graphcodebert codet5 \
   --tasks distance distance_id siblings siblings_id dfg \
   --layers 5 9 12 \
-  --workers 1 \
+  --workers 4 \
   --timeout 172800 \
   --required_solver gurobi \
-  --manifest_name "directprobe_run_manifest_${LANG}_${MODEL}.json"
+  --quarantine_incomplete \
+  --manifest_name directprobe_reproduction_manifest.json
 ```
 
-Adjust `--layers` per model. A run is accepted only if the manifest marks it
-complete, all four DirectProbe result files exist, and `solver` is `gurobi`.
+The historical production scheduler is
+`DirectProbe/run_requested_probe_queue.py`; it runs the five tasks as separate
+lanes and injects the same local licence into every child process. Use the
+generic command above for a clean output root.
 
-## 9. CodeGen
+## 7. Rebuild the final comparison report
 
-CodeGen is intentionally excluded from the completed full matrix. Before a
-3,000-program run, retain the one-program forward gate:
+This step reads stored results only; it does not perform model inference, GED,
+or probing:
 
 ```bash
-"$PYTHON_BIN" attention/verify_model_adapter.py \
-  --model codegen \
-  --code_file attention/exp_data/pilot_100/python.jsonl \
-  --lang python \
-  --num_codes 1 \
-  --forward \
-  --device cpu \
-  --local_files_only \
-  --report analysis_results/model_adapter_verification/forward_1/python/codegen.json
+MPLCONFIGDIR=/tmp/sdt-final-report \
+  "$PYTHON_BIN" results/build_results.py
+
+cd results/report
+latexmk -pdf -interaction=nonstopmode four_language_results.tex
+cd "$REPO_ROOT"
+"$PYTHON_BIN" results/build_inventory.py
+(cd results && sha256sum -c checksums.sha256)
 ```
 
-After checking free disk and memory, use the retained workflow from Section 6
-with `MODEL=codegen`. CodeGen has 16 attention layers and 17 hidden-state
-outputs including the embedding state. Its full extraction should be scheduled
-separately from the five smaller models.
+If `latexmk` is unavailable, upload the complete `results/report/` directory to
+Overleaf or use another LaTeX engine that provides `graphicx`, `booktabs`, and
+`geometry`.
 
-## 10. Acceptance checklist
+## 8. Re-run validation audits
 
-Do not use a result in aggregate analysis until all applicable checks pass:
-
-- Cohort manifest is complete, contains exactly 3,000 test records, and records
-  comment removal plus AST, DFG and model-token alignment validation.
-- Graph and embedding manifests identify the expected model, language, dataset
-  hash and artifact cohort, with zero extraction failures.
-- `validate_representation_run.py` succeeds for retained paired tensors.
-- Every AST layer JSON has `num_evaluated=3000`.
-- Every DFG layer JSON has `num_aligned=3000` and
-  `end_to_end_alignment_rate=1.0`.
-- Section 3.2 summary has `status=complete`, the correct model/language and
-  `expected_programs=3000`.
-- GED mode is explicitly recorded as `legacy` for paper comparison or `fixed`
-  for the newer metric; never combine the two in one curve.
-- t-SNE manifests record the intended layer, perplexities, 50,000 iterations,
-  seed and selected program rule.
-- DirectProbe manifests record `solver=gurobi`; incomplete result directories
-  are not counted.
-- Keep pilot, verification, final, legacy-GED and fixed-GED outputs in distinct
-  directories.
-
-The JSON manifests are the authoritative provenance record. PNG files alone
-are not sufficient evidence that a run completed correctly.
-
-## 11. Active Python replication and requested DirectProbe schedule
-
-The 2026-08-26 schedule adds a full 3,000-program Python recomputation for the
-same six models already analyzed in Java, Go and JavaScript. It runs only AST
-and DFG attention overlap plus the representative qualitative t-SNE analyses;
-GED and DirectProbe are excluded from the Python comparison. Each recomputed
-Python overlap curve is compared with the corresponding stored paper curve by
-`attention/compare_python_reference.py --skip_ged`.
-
-The original storage-bounded sequential Python queue was:
+The DFG and PLBART audits run directly from retained artifacts:
 
 ```bash
-"$PYTHON_BIN" attention/run_requested_analysis_queue.py
+PYTHONPATH=attention MPLCONFIGDIR=/tmp \
+  "$PYTHON_BIN" results/validation/dfg_manual_audit.py
+
+"$PYTHON_BIN" results/validation/plbart_reference_audit.py
 ```
 
-Adapter probing-data preparation is now complete. For the Python-only rerun,
-use the faster bounded three-lane queue in a durable host session:
+The stored program-disjoint audit output is final and remains in
+`results/validation/probe_split_audit.{json,csv}`. Re-running its source needs
+the layer-12 probe embedding matrices. Recreate them with Section 6.1, place
+them under the data root selected by the script, and then run:
 
 ```bash
-tmux new-session -d -s sdt-python-analysis -c "$REPO_ROOT" \
-  "$PYTHON_BIN" attention/run_parallel_python_analysis.py
+OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  "$PYTHON_BIN" results/validation/probe_split_audit.py
 ```
 
-This runs CodeBERT in one lane and the five adapter models in two historically
-balanced lanes. It permits at most three model cohorts and 12 CPU threads at
-once, requires at least 150 GB free before starting, and retains the 55 GB
-per-model disk guard. The adapter runner uses `--dataset_pattern exp_0.jsonl`,
-so the established Python cohort is read directly without copying it. Once all
-Python manifests pass, the queue refreshes:
+Read `results/validation/README.md` before interpreting the diagnostics. In
+particular, the program-disjoint probe audit is a limitation analysis; the main
+paper-compatible probe results retain the original pair-level split protocol.
 
-- `analysis_results/aggregate/final_3000_summary.json` and its CSV tables;
-- `analysis_results/multilingual_code_llm_results.ipynb`;
-- the manuscript figures; and
-- `analysis_results/manuscript/figures/generated_four_language_results.tex`.
+## 9. Acceptance criteria
 
-Live Python status is recorded in
-`analysis_results/background_runs/python_analysis_queue.json`, with lane logs
-under `analysis_results/background_runs/python_analysis_logs/`.
+Do not use a run in the final comparison unless all applicable checks pass:
 
-One cohort record contains a Python-2 `exec` expression that the bundled
-tree-sitter grammar represents with an error-recovery node. The pipeline keeps
-the source record unchanged and accepts recovery only after the recovered AST
-leaf stream aligns exactly with every CodeSearchNet token. Manifests record it
-under `parse_recoveries`; it is not counted as an extraction failure.
+- cohort manifest: complete, 3,000 test records, no duplicate cleaned code;
+- graph/embedding manifests: correct model, language, dataset hash, and zero
+  extraction failures;
+- every AST layer: `num_evaluated=3000`;
+- every DFG layer: `num_aligned=3000` and alignment rate 1.0;
+- attention summary: complete with threshold 0.05;
+- GED: explicitly `legacy` for paper comparison and all 12 layers present;
+- t-SNE manifest: layer 5, recorded perplexity, 50,000 iterations, seed 0;
+- DirectProbe manifest: all four output files present and `solver=gurobi`;
+- final inventory rebuild succeeds and all package checksums verify.
 
-The DirectProbe target count is held fixed at the paper-style 1,300 or 1,500
-examples per label. The listed paper program caps are tried first. If a model's
-tokenization/alignment does not expose enough examples inside that cap, the
-preparation runner expands only the number of programs searched until the same
-per-label target is met. The dataset and preparation manifests record the
-paper cap, every attempted cap, and the cap actually used. This policy is
-necessary for cross-model probing: for example, GraphCodeBERT/Java yielded
-only 1,063 distance-2 candidates in the first 160 programs and met the fixed
-1,300 target at a cap of 240.
-
-The requested probing matrix is exactly three models (`codebert`,
-`graphcodebert`, `codet5`) by three added languages (`java`, `go`,
-`javascript`) by five tasks by three hidden states (`5`, `9`, `12`): 135
-configurations. Four CodeBERT sibling configurations already have valid Gurobi
-outputs, leaving 131 solver configurations. The queue command is:
-
-```bash
-"$PYTHON_BIN" DirectProbe/run_requested_probe_queue.py
-```
-
-This wrapper supplies the project-local licence to every child solver process:
-
-```text
-GRB_LICENSE_FILE=/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic
-```
-
-It does not modify any global Gurobi configuration. The five tasks are five
-independent concurrent lanes. Within each lane, model/language/layer
-configurations remain sequential. Joblib is capped at four workers per lane,
-so at most five configurations and 20 DirectProbe workers run concurrently.
-Each Gurobi LP and each BLAS/OpenMP process is capped at one thread, and each
-configuration has a 48-hour timeout. Both top-level queues use a positive nice
-value. Host measurements of the first four-worker configuration showed about
-5 GiB aggregate RSS and about 1.4 CPU cores of average use. Five lanes should
-therefore stay around 25--40 GiB RAM and well below the server's 64 CPU cores,
-including reasonable task-to-task variation. Model-level parallelism is not
-enabled initially so the server retains substantial headroom.
-
-Live status is recorded in:
-
-- `analysis_results/background_runs/analysis_queue.json`;
-- `DirectProbe/final_3000/requested_probing_parallel_queue_manifest.json`;
-- `DirectProbe/final_3000/directprobe_run_manifest_<task>_codebert_requested.json`;
-- `DirectProbe/final_3000/directprobe_run_manifest_<task>_adapters_requested.json`.
-
-The preparation/Python queue is expected to take roughly 5--8 hours based on
-the completed adapter timings. DirectProbe is much less predictable. The four
-finished 3,000-program sibling runs took 1.8--2.5 hours each with ten workers,
-and distance tasks can be harder. With five task lanes, each lane contains at
-most 27 sequential configurations rather than one queue containing all 131.
-The planning horizon is now 7--14 days. The extreme 48-hour-timeout ceiling is
-54 days for a full 27-configuration lane, but that would require every item in
-the slowest lane to reach its timeout. Re-estimate after the first complete
-CodeBERT result in each task lane; only if the measured projection misses the
-deadline should model-level parallelism be added.
-
-### Storage cleanup performed before this schedule
-
-The 15 CodeBERT DirectProbe datasets (three languages by five tasks) were
-validated for layers 5, 9 and 12 together with their configs and permanent
-attention/t-SNE outputs. The manifest-scoped cleanup then removed only 18,000
-source `.pkl` tensors (105,839,423,206 bytes) from the three CodeBERT graph and
-embedding cohorts. The cleanup record is
-`DirectProbe/final_3000/codebert_source_cleanup_manifest.json`. The permanent
-results and DirectProbe datasets remain intact. A future CodeBERT GED analysis
-or a new probing dataset using other token pairs would require re-extraction.
+Raw `.pkl` tensors, queue logs, GED shards, and probe embedding text matrices
+are staging artifacts. Delete them only after these validations pass and only
+within the manifest-recorded scope.

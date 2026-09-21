@@ -1,0 +1,72 @@
+{
+  "status": "complete",
+  "purpose": "storage-bounded Python CodeBERT non-GED/non-DirectProbe analysis",
+  "started_utc": "2026-08-26T13:04:03.744287+00:00",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "model": "codebert",
+  "language": "python",
+  "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/exp_0.jsonl",
+  "expected_programs": 3000,
+  "device": "cpu",
+  "omp_threads": 4,
+  "phases": {
+    "extract_graphs": {
+      "status": "complete",
+      "duration_seconds": 345.3730241432786,
+      "finished_utc": "2026-08-26T13:09:49.117883+00:00"
+    },
+    "validate_graphs": {
+      "status": "complete",
+      "duration_seconds": 4.400510206818581,
+      "finished_utc": "2026-08-26T13:09:53.519377+00:00"
+    },
+    "extract_hidden_states": {
+      "status": "complete",
+      "duration_seconds": 286.06289411336184,
+      "finished_utc": "2026-08-26T13:14:39.583046+00:00"
+    },
+    "validate_representations": {
+      "status": "complete",
+      "duration_seconds": 7.132336214184761,
+      "finished_utc": "2026-08-26T13:14:46.724123+00:00"
+    },
+    "ast_overlap": {
+      "status": "complete",
+      "duration_seconds": 71.24104256182909,
+      "finished_utc": "2026-08-26T13:58:44.238908+00:00"
+    },
+    "dfg_overlap": {
+      "status": "complete",
+      "duration_seconds": 37.29654689133167,
+      "finished_utc": "2026-08-26T13:59:21.544294+00:00"
+    },
+    "attention_summary": {
+      "status": "complete",
+      "duration_seconds": 3.742899887263775,
+      "finished_utc": "2026-08-26T13:59:25.288230+00:00"
+    },
+    "python_reference_comparison": {
+      "status": "complete",
+      "duration_seconds": 4.14781291782856,
+      "finished_utc": "2026-08-26T13:59:29.436760+00:00"
+    },
+    "representative_tsne": {
+      "status": "complete",
+      "duration_seconds": 865.3850161358714,
+      "finished_utc": "2026-08-26T14:13:54.822473+00:00"
+    }
+  },
+  "failed_utc": "2026-08-26T13:16:35.745298+00:00",
+  "reason": "RuntimeError: Command failed with exit code 1; see analysis_results/attention_final_3000/python/logs/attention_summary.log\nstarted_utc=2026-08-26T13:16:32.219576+00:00\ncommand=[\"/home/abhinav/miniconda3/envs/attention/bin/python\", \"attention/summarize_attention_analysis.py\", \"--results_dir\", \"analysis_results/attention_final_3000/python\", \"--output\", \"analysis_results/attention_final_3000/python/section_3_2_summary.json\", \"--model\", \"codebert\", \"--lang\", \"python\", \"--threshold\", \"0.05\", \"--expected_programs\", \"3000\", \"--skip_ged\"]\nTraceback (most recent call last):\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/summarize_attention_analysis.py\", line 393, in <module>\n    main()\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/summarize_attention_analysis.py\", line 380, in main\n    summarize(\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/summarize_attention_analysis.py\", line 241, in summarize\n    require_count(\n  File \"/home/abhinav/sdt_project/dev-sebastian/attention/summarize_attention_analysis.py\", line 93, in require_count\n    raise ValueError(f'{label} is {value}, expected {expected}')\nValueError: DFG aligned programs is 2992, expected 3000\n\nfinished_utc=2026-08-26T13:16:35.744958+00:00\nduration_seconds=3.525472529232502\nexit_code=1\n",
+  "representations_reused": true,
+  "resumed_utc": "2026-08-26T13:57:32.997381+00:00",
+  "finished_utc": "2026-08-26T14:13:59.973939+00:00",
+  "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/attention_final_3000/python/python_final_validation.json",
+  "large_intermediates_retained": false,
+  "purged_artifacts": 6000,
+  "purged_bytes": 28319118544,
+  "reextraction_required_for": [
+    "GED",
+    "DirectProbe"
+  ]
+}

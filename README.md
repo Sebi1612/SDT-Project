@@ -1,142 +1,99 @@
-We provide the code to generate all data and results. However, it requires a lot of space and time to generate everything. So, we have also provided intermediate results that the code
-generates and a jupyter notebook to generate all plots and results presented in the paper.
+# Multilingual structural evaluation of code language models
 
-The code has been tested on `Ubuntu 22.04` with `python 3.9.16`.
+This repository is the final artifact for a multilingual extension of Anand et
+al., *A Critical Study of What Code-LLMs (Do Not) Learn*. The original work
+studied Python; this project applies the same analysis families to Java,
+JavaScript, and Go and compares all four languages.
 
-There are two directories - `attention` and `DirectProbe`. The code for `DirectProbe` has been taken from [DirectProbe](https://github.com/utahnlp/DirectProbe). We have only changed the `main.py` to pass different config files. The
-two directories needs to be at the same level.
+The repository contains the exact sampled program cohorts, the original Python
+reference outputs, the new multilingual outputs, the code that produced them,
+validation audits, and a compiled four-language result report. Large model
+representations that can be regenerated from the retained inputs are not kept.
 
-### Getting started
-1. Create aconda environment and install the required packages. 
+## Start here
 
-	```
-    # In attention/ directory,
-	conda create -n attention python=3.9.16
-    pip install -r requirements.txt
-	```
+1. Read the final report: [`results/report/four_language_results.pdf`](results/report/four_language_results.pdf).
+2. Browse every result group and its provenance in
+   [`results/RESULT_INVENTORY.csv`](results/RESULT_INVENTORY.csv).
+3. Read [`results/METHODOLOGY.md`](results/METHODOLOGY.md),
+   [`results/PROVENANCE.md`](results/PROVENANCE.md), and
+   [`results/LIMITATIONS.md`](results/LIMITATIONS.md).
+4. Use [`ANALYSIS_RUNBOOK.md`](ANALYSIS_RUNBOOK.md) for exact reproduction and
+   report-generation commands.
 
-2. To set up the DirectProbe code, follow the instructions from [DirectProbe](https://github.com/utahnlp/DirectProbe). Note that DirectProbe requires Gurobi but can also run without it. However, running without Gurobi results into unstable results.
+## Experimental scope
 
-	We ran the the experiments with Gurobi and provide all the results generated during our experiments in the `DirectProbe/results` directory.
-	We ran DirectProbe only for layers 5,9 and 12 and so provide results only for these layers.
+| Analysis | Models | Languages | Final evidence |
+| --- | --- | --- | --- |
+| AST/DFG attention overlap | CodeBERT, GraphCodeBERT, UniXcoder, PLBART, CodeT5, CodeT5+220M | Python, Java, JavaScript, Go | per-layer JSON/CSV summaries and comparative figures |
+| Graph edit distance (GED) | CodeBERT, GraphCodeBERT, CodeT5 | Python reference plus new Java, JavaScript, Go runs | 12 layer files per model/language and validation manifests |
+| t-SNE hidden-state visualizations | CodeBERT in the main comparison; all six models archived | Python, Java, JavaScript, Go | token-type and AST-distance plots with manifests |
+| DirectProbe | CodeBERT, GraphCodeBERT, CodeT5 | Python reference plus new Java, JavaScript, Go runs | five tasks at layers 5, 9, and 12 |
 
-### Generating plots and results
-All the results provided in the paper is available in `results_attention_tsne.ipynb` and `results_hidden_repr.ipynb`. Before running the notebooks,
-note that 
-attention distribution and attention maps both require self-attention values to be saved first and t-SNE plots require 
-hidden representations are saved beforehand.  
+The main cohorts contain 3,000 programs from the CodeSearchNet test partition.
+Python uses the paper repository's `exp_0.jsonl`; the added-language cohorts and
+their selection manifests are in `attention/exp_data/final_3000/`.
 
-### Attention Analysis
-We provide various splits of randomly sampled 3000 codes in `exp_data/`. We performed our experiments with `exp_0.jsonl`, but any other set of codes should work and give similar results.
+## Repository layout
 
-For the multilingual CodeBERT Section 3.2 pilot, run the following from the
-repository root:
-
-```
-python attention/run_section_3_2.py \
-  --languages python java go javascript \
-  --device cuda:0
-```
-
-The runner validates that each pilot contains exactly 100 programs with fewer
-than 500 CodeBERT subtokens. It then generates attention/AST artifacts,
-requires complete artifact coverage, evaluates AST and DFG precision, recall,
-and F-score over the paper's threshold grid, calculates the paper-compatible
-legacy NetworkX GED estimate per node at 0.05, and writes paper-style best-head
-summaries. Graph artifacts are separated under
-`graph_info/pilot_100/<language>/codebert`; results are separated under
-`analysis_results/attention_pilot_100/<language>`.
-Legacy GED results are stored under `similarity_legacy`; the newer exact
-fixed-node edge distance remains available separately under `similarity`.
-Pass `--also_run_fixed_ged` to calculate and summarize both modes in one run.
-For Python, the runner also compares the 100-program curves with the stored
-3,000-program CodeBERT results in `attention/graph_comparision` and writes
-`python_reference_comparison.json`, comparison CSV files, and overlay plots.
-If graph artifacts already exist, rerun only the analyses with:
-
-```
-python attention/run_section_3_2.py \
-  --languages python \
-  --skip_graph_generation
+```text
+.
+├── README.md                     project entry point
+├── ANALYSIS_RUNBOOK.md           commands for every analysis and validation
+├── ANALYSIS_RESULTS_SUMMARY.md   completion matrix and canonical locations
+├── results/                      final human- and machine-readable result package
+│   ├── report/                   final PDF, LaTeX, figures, tables, summary JSON
+│   ├── validation/               split, PLBART, and DFG audit code/results
+│   └── RESULT_INVENTORY.csv      index of 153 result groups
+├── attention/                    extraction and structural-analysis source code
+│   ├── exp_data/                 exact final program cohorts
+│   └── graph_comparision/        original Python paper outputs
+├── analysis_results/             authoritative multilingual analysis outputs
+├── DirectProbe/                  probe implementation, data definitions, configs,
+│   ├── results/                  original Python paper outputs
+│   └── final_3000/               multilingual pairs, configs, manifests, results
+├── parser/                       DFG extraction implementation
+└── tree-sitter-{python,java,go,javascript}/
+                                  language grammar sources
 ```
 
-In `attention/` directory,
+## Data and storage policy
 
-1. To save attention maps, run
- 
-	```
-	python save_graph_info.py --model [model_name] --exp_name exp0
-	``` 
-	to run the code with `exp_0.jsonl`. For any other set of codes, pass the filename using `--code_file` Replace `model_name` with `codebert`, `graphcodebert`, `unixcoder`,
-	`plbart` or `codet5`. This will save the attention maps in `graph_info/exp_0/[model_name]` directory. For smaller model, it requires about 18GB space; larger models require more space.
-	
-	Note: For CodeRL, the weights need to be downloaded. The link to download the weights is available in CodeRL repo.
+The following data needed to inspect or reproduce the study are versioned:
 
-2. For exact graph comparision with AST, run 
-	
-	```
-	python graph_comp.py --graph_loc graph_info/exp0/[model_name] --save_dir graph_comparision --exp_name exp_0 --all_layers
-	``` 	
-	If `model_name` is plbart, also pass `--num_layers 6`. The comparision results are stores in `graph_comparision/ast/exp0/`.
+- the exact 3,000-program input cohort for every language;
+- cohort hashes, filtering statistics, seeds, and source-partition manifests;
+- the exact DirectProbe train/test entity pairs, labels, configurations, and
+  dataset manifests;
+- all final metric outputs, figures, tables, validation records, and original
+  Python reference results.
 
-3. For exact graph comparision with DFG, run
-	
-	```
-	python dfg_comp.py --graph_loc graph_info/exp0/[model_name] --save_dir graph_comparision --exp_name exp_0 --all_layers
-	``` 
-	If `model_name` is plbart, also pass `--num_layers 6`. If the code split used is not `exp_0.jsonl`, pass the one that is used with `--code_file`.
-	The comparision results are stores in `graph_comparision/dfg/exp_0`.
+Downloaded full CodeSearchNet exports, model checkpoints, attention tensors,
+hidden-state tensors, and text copies of probe embedding matrices are
+reproducible intermediates and are intentionally excluded. Keeping them would
+add tens of gigabytes without changing any reported value. The runbook explains
+how to regenerate them, and the final manifests record the inputs and settings.
 
-4. For similarity analysis with GED, run
+## Environment
 
-	```
-	python similarity.py --graphs_dir graph_info/exp0/[model_name] --save_dir graph_comparision --exp_name exp_0 --all_layers --distance_mode legacy
-	``` 
-	If `model_name` is plbart, also pass `--num_layers 6`. If the code split used is not `exp_0.jsonl`, pass the one that is used with `--code_file`. Paper-compatible legacy results are stored in
-	`graph_comparision/similarity_legacy/exp_0`. The legacy mode intentionally
-	reproduces the first candidate yielded by NetworkX's
-	`optimize_graph_edit_distance`, as used by the original project; it is an
-	estimate and not guaranteed to be the globally minimal GED. Use
-	`--distance_mode fixed` for the newer exact fixed-node edge distance, stored
-	separately in `graph_comparision/similarity/exp_0`. The paper environment
-	declared NetworkX 3.0; every legacy run records the installed NetworkX version
-	and warns on a version mismatch so the Python reference run can validate it.
+The project was run on Ubuntu with Python 3.9. The established environment in
+this workspace is `/home/abhinav/miniconda3/envs/attention/bin/python`.
+Dependencies are listed in `attention/requirements.txt` and
+`DirectProbe/requirements.txt`. Model checkpoints must either be present in the
+Hugging Face cache or downloaded before an offline run.
 
-	Calculation of Graph Edit Distance can take a lot of time, ~10 hours for each layer of one model.
+DirectProbe must use the project-local Gurobi licence on every invocation:
 
-###  Probing on Hidden Representation
-1. First save the hidden representation for all models by running (in `attention/` directory),
+```bash
+GRB_LICENSE_FILE=/home/abhinav/sdt_project/.config/gurobi/dev-sebastian/gurobi.lic \
+  /home/abhinav/miniconda3/envs/attention/bin/python DirectProbe/main.py --help
+```
 
-	```
-	python save_word_embedding.py --model [model_name] --exp_name exp_0
-	```
-	This will save the hidden representation in the directory `structural_probe/exp_0`. By default, the code uses exp_0.jsonl split. For any other code split, pass it using `--code_file`.
+This does not modify the global Gurobi configuration.
 
-2. Create the dataset for DirectProbe. You need to generate 3 things - directories to save the dataset, config files and finally, the dataset.
-	The `DirectProbe/results/` already contains all the generated results. Move these results to a different location before proceeding. 
-	
-	Run the following in `attention/` directory:
-	
-	```
-	python create_dp_dataset.py --task [task_name] --create_data_dirs
-	python create_dp_dataset.py --task [task_name] --create_config_files
-	python create_dp_dataset.py --task [task_name] --save_dataset
-    ```	
-	`task_name` can be `distance`, `siblings` or `dfg`.
-	
-	Similarly, run `create_dp_id_dataset.py` with `task_name` as `distance_id` or `siblings_id` for dataset with only identifiers as the second token.
+## Upstream sources
 
-	Note: The two files, `create_dp_dataset.py` and `create_dp_id_dataset.py`, has model details in the files. The file has entries for CodeGen and encoder and decoder of CodeT5+2B. To generate the dataset for other models, simply add
-	them and their details to the respective lists. The dataset can also be created for one model at a time, but that would result in different data points in the datasets of different models. 
+- Original paper repository: <https://github.com/stg-tud/code-LLM-critical-evaluation>
+- DirectProbe: <https://github.com/utahnlp/DirectProbe>
 
-3. In `DirectProbe/` directory and run
-
-	```
-	python main.py --config_file [config_file]
-	```
-	The config_file has the structure `config_files/task_name/config_[model_layer.ini]`. For example, for layer 12 of CodeBERT for tree distance task, 
-	it is `config_files/distance/config_codebert_12.ini`.
-
-	Note that, gurobi creates multiple processes and the code takes a lot of time to run. The time taken depends on number of cores available. We ran our experiments on a processor with 32 cores.
-	
-	The results generated here might vary slightly from those reported in the paper since the data points are sampled randomly.
+See the root `LICENSE` and `DirectProbe/LICENSE` for licensing information.

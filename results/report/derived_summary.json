@@ -1,0 +1,216 @@
+{
+  "attention": {
+    "python": {
+      "ast_peak_recall_median_models": 0.36316352706983046,
+      "dfg_peak_recall_median_models": 0.5594489311500102
+    },
+    "java": {
+      "ast_peak_recall_median_models": 0.3504218452291622,
+      "dfg_peak_recall_median_models": 0.7099967437045467
+    },
+    "javascript": {
+      "ast_peak_recall_median_models": 0.34521451322156615,
+      "dfg_peak_recall_median_models": 0.6098489432257546
+    },
+    "go": {
+      "ast_peak_recall_median_models": 0.3630933507348449,
+      "dfg_peak_recall_median_models": 0.5946408996849408
+    }
+  },
+  "ged": {
+    "python": {
+      "ast_best_layer_median_models": 3.1100200412442915,
+      "ast_wo_identifiers_best_layer_median_models": 1.398598422113903,
+      "dfg_best_layer_median_models": 0.3771498393125508
+    },
+    "java": {
+      "ast_best_layer_median_models": 3.162202212074666,
+      "ast_wo_identifiers_best_layer_median_models": 1.449666217526724,
+      "dfg_best_layer_median_models": 0.2317184855531478
+    },
+    "javascript": {
+      "ast_best_layer_median_models": 2.9964480367267923,
+      "ast_wo_identifiers_best_layer_median_models": 1.605909433136,
+      "dfg_best_layer_median_models": 0.2803188524387485
+    },
+    "go": {
+      "ast_best_layer_median_models": 2.5189258278954405,
+      "ast_wo_identifiers_best_layer_median_models": 1.2017538921995998,
+      "dfg_best_layer_median_models": 0.33717376314402153
+    }
+  },
+  "probing": {
+    "python": {
+      "distance_median_models_accuracy": 0.7107692307692308,
+      "distance_median_models_clusters": 10.0,
+      "distance_id_median_models_accuracy": 0.61,
+      "distance_id_median_models_clusters": 7.0,
+      "siblings_median_models_accuracy": 0.8666666666666667,
+      "siblings_median_models_clusters": 4.0,
+      "siblings_id_median_models_accuracy": 0.825,
+      "siblings_id_median_models_clusters": 4.0,
+      "dfg_median_models_accuracy": 0.8355555555555556,
+      "dfg_median_models_clusters": 4.0
+    },
+    "java": {
+      "distance_median_models_accuracy": 0.6338461538461538,
+      "distance_median_models_clusters": 10.0,
+      "distance_id_median_models_accuracy": 0.683076923076923,
+      "distance_id_median_models_clusters": 7.0,
+      "siblings_median_models_accuracy": 0.8466666666666667,
+      "siblings_median_models_clusters": 4.0,
+      "siblings_id_median_models_accuracy": 0.7616666666666667,
+      "siblings_id_median_models_clusters": 4.0,
+      "dfg_median_models_accuracy": 0.8677777777777778,
+      "dfg_median_models_clusters": 3.0
+    },
+    "javascript": {
+      "distance_median_models_accuracy": 0.6961538461538461,
+      "distance_median_models_clusters": 9.0,
+      "distance_id_median_models_accuracy": 0.66,
+      "distance_id_median_models_clusters": 5.0,
+      "siblings_median_models_accuracy": 0.805,
+      "siblings_median_models_clusters": 4.0,
+      "siblings_id_median_models_accuracy": 0.77,
+      "siblings_id_median_models_clusters": 4.0,
+      "dfg_median_models_accuracy": 0.8611111111111112,
+      "dfg_median_models_clusters": 4.0
+    },
+    "go": {
+      "distance_median_models_accuracy": 0.7376923076923076,
+      "distance_median_models_clusters": 10.0,
+      "distance_id_median_models_accuracy": 0.7707692307692308,
+      "distance_id_median_models_clusters": 5.0,
+      "siblings_median_models_accuracy": 0.8816666666666667,
+      "siblings_median_models_clusters": 4.0,
+      "siblings_id_median_models_accuracy": 0.8666666666666667,
+      "siblings_id_median_models_clusters": 4.0,
+      "dfg_median_models_accuracy": 0.9033333333333333,
+      "dfg_median_models_clusters": 4.0
+    }
+  },
+  "probing_layers": {
+    "python": {
+      "distance": {
+        "5": 0.7607692307692308,
+        "9": 0.7376923076923076,
+        "12": 0.7107692307692308
+      },
+      "distance_id": {
+        "5": 0.6707692307692308,
+        "9": 0.6592307692307692,
+        "12": 0.61
+      },
+      "siblings": {
+        "5": 0.8916666666666667,
+        "9": 0.8833333333333333,
+        "12": 0.8666666666666667
+      },
+      "siblings_id": {
+        "5": 0.89,
+        "9": 0.8466666666666667,
+        "12": 0.825
+      },
+      "dfg": {
+        "5": 0.8533333333333334,
+        "9": 0.8666666666666667,
+        "12": 0.8355555555555556
+      }
+    },
+    "java": {
+      "distance": {
+        "5": 0.6853846153846154,
+        "9": 0.6630769230769231,
+        "12": 0.6338461538461538
+      },
+      "distance_id": {
+        "5": 0.7430769230769231,
+        "9": 0.7376923076923076,
+        "12": 0.683076923076923
+      },
+      "siblings": {
+        "5": 0.8933333333333333,
+        "9": 0.885,
+        "12": 0.8466666666666667
+      },
+      "siblings_id": {
+        "5": 0.8116666666666666,
+        "9": 0.8066666666666666,
+        "12": 0.7616666666666667
+      },
+      "dfg": {
+        "5": 0.8911111111111111,
+        "9": 0.9044444444444445,
+        "12": 0.8677777777777778
+      }
+    },
+    "javascript": {
+      "distance": {
+        "5": 0.7323076923076923,
+        "9": 0.7238461538461538,
+        "12": 0.6961538461538461
+      },
+      "distance_id": {
+        "5": 0.7176923076923077,
+        "9": 0.7115384615384616,
+        "12": 0.66
+      },
+      "siblings": {
+        "5": 0.855,
+        "9": 0.8533333333333334,
+        "12": 0.805
+      },
+      "siblings_id": {
+        "5": 0.85,
+        "9": 0.8383333333333334,
+        "12": 0.77
+      },
+      "dfg": {
+        "5": 0.8844444444444445,
+        "9": 0.8955555555555555,
+        "12": 0.8611111111111112
+      }
+    },
+    "go": {
+      "distance": {
+        "5": 0.7892307692307692,
+        "9": 0.7723076923076924,
+        "12": 0.7376923076923076
+      },
+      "distance_id": {
+        "5": 0.8084615384615385,
+        "9": 0.796923076923077,
+        "12": 0.7707692307692308
+      },
+      "siblings": {
+        "5": 0.9066666666666666,
+        "9": 0.9116666666666666,
+        "12": 0.8816666666666667
+      },
+      "siblings_id": {
+        "5": 0.8916666666666667,
+        "9": 0.88,
+        "12": 0.8666666666666667
+      },
+      "dfg": {
+        "5": 0.9,
+        "9": 0.9077777777777778,
+        "12": 0.9033333333333333
+      }
+    }
+  },
+  "tsne": {
+    "python": {
+      "selected_program_spearman_ast_vs_hidden_distance": 0.16717658629451088
+    },
+    "java": {
+      "selected_program_spearman_ast_vs_hidden_distance": 0.14186759773005447
+    },
+    "javascript": {
+      "selected_program_spearman_ast_vs_hidden_distance": 0.24498103725373413
+    },
+    "go": {
+      "selected_program_spearman_ast_vs_hidden_distance": 0.18578212804861882
+    }
+  }
+}

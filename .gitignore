@@ -7,12 +7,31 @@ __pycache__/
 *.py[cod]
 build/*.so
 
-# Generated experiment artifacts. Existing historical artifacts that are
-# already tracked remain tracked; new runs stay local.
+# Generated experiment artifacts. Raw representations remain local. The
+# explicitly unignored final result trees are the canonical archived outputs.
 graph_info/
 dfg_results/
 structural_probe/
 analysis_results/
+!analysis_results/
+analysis_results/*
+!analysis_results/attention_final_3000/
+!analysis_results/attention_final_3000/**
+!analysis_results/final_3000_multimodel/
+!analysis_results/final_3000_multimodel/**
+!analysis_results/ged_final_3000/
+!analysis_results/ged_final_3000/**
+!analysis_results/python/
+!analysis_results/python/**
+!analysis_results/java/
+!analysis_results/java/**
+!analysis_results/javascript/
+!analysis_results/javascript/**
+!analysis_results/go/
+!analysis_results/go/**
+analysis_results/**/logs/
+analysis_results/ged_final_3000/shards/
+analysis_results/presentation*/
 DirectProbe/pilot_100/
 attention/exp_data/pilot_100/
 
@@ -35,3 +54,11 @@ DirectProbe/final_3000/preparation_logs/
 DirectProbe/final_3000/recovery/
 DirectProbe/final_3000/interrupted_runs/
 DirectProbe/final_3000/interrupted_results_archive/
+
+# LaTeX and notebook/runtime by-products.
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc

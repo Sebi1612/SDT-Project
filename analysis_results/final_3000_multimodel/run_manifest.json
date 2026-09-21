@@ -1,0 +1,814 @@
+{
+  "status": "complete",
+  "purpose": "storage-bounded non-GED/non-DirectProbe final analysis",
+  "created_utc": "2026-08-19T21:37:33.634879+00:00",
+  "python": "/home/abhinav/miniconda3/envs/attention/bin/python",
+  "models": [
+    "graphcodebert",
+    "unixcoder",
+    "codet5",
+    "plbart",
+    "codet5p_220"
+  ],
+  "languages": [
+    "java",
+    "go",
+    "javascript"
+  ],
+  "expected_programs": 3000,
+  "representative_tsne": {
+    "layer": 5,
+    "token_perplexities": [
+      50
+    ],
+    "distance_perplexities": [
+      5,
+      10
+    ],
+    "iterations": 50000
+  },
+  "excluded": [
+    "CodeGen",
+    "GED",
+    "DirectProbe solver runs"
+  ],
+  "runs": {
+    "java/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "java",
+      "started_utc": "2026-08-19T21:37:33.635183+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/java/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/java/graphcodebert",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 450.69153571128845,
+          "finished_utc": "2026-08-19T21:45:04.327404+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 8.633069939911366,
+          "finished_utc": "2026-08-19T21:45:12.961156+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 91.72224945574999,
+          "finished_utc": "2026-08-19T21:46:44.718882+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 39.11476028710604,
+          "finished_utc": "2026-08-19T21:47:23.834535+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7886582240462303,
+          "finished_utc": "2026-08-19T21:47:27.624461+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 964.1897292211652,
+          "finished_utc": "2026-08-19T22:03:31.815222+00:00"
+        }
+      },
+      "finished_utc": "2026-08-19T22:03:36.923364+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/graphcodebert/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488844191,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "java/unixcoder": {
+      "status": "complete",
+      "model": "unixcoder",
+      "language": "java",
+      "started_utc": "2026-08-19T22:03:36.923862+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/java/unixcoder",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/java/unixcoder",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/unixcoder",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 417.90889163315296,
+          "finished_utc": "2026-08-19T22:10:34.833341+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 8.652301728725433,
+          "finished_utc": "2026-08-19T22:10:43.486484+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 91.82718589901924,
+          "finished_utc": "2026-08-19T22:12:15.347236+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 38.51146209985018,
+          "finished_utc": "2026-08-19T22:12:53.859905+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7809054479002953,
+          "finished_utc": "2026-08-19T22:12:57.641652+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 960.6233575567603,
+          "finished_utc": "2026-08-19T22:28:58.266160+00:00"
+        }
+      },
+      "finished_utc": "2026-08-19T22:29:03.342485+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/unixcoder/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488911485,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "java/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "java",
+      "started_utc": "2026-08-19T22:29:03.342933+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/java/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/java/codet5",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 397.9101046100259,
+          "finished_utc": "2026-08-19T22:35:41.259831+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 8.090839356184006,
+          "finished_utc": "2026-08-19T22:35:49.351607+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 86.8311535269022,
+          "finished_utc": "2026-08-19T22:37:16.216589+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 39.0734109506011,
+          "finished_utc": "2026-08-19T22:37:55.291231+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.77740266174078,
+          "finished_utc": "2026-08-19T22:37:59.069989+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 957.6728051677346,
+          "finished_utc": "2026-08-19T22:53:56.743950+00:00"
+        }
+      },
+      "finished_utc": "2026-08-19T22:54:01.602677+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488161121,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "java/plbart": {
+      "status": "complete",
+      "model": "plbart",
+      "language": "java",
+      "started_utc": "2026-08-19T22:54:01.603167+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/java/plbart",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/java/plbart",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/plbart",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 259.5998078659177,
+          "finished_utc": "2026-08-19T22:58:21.209874+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 3.6632059812545776,
+          "finished_utc": "2026-08-19T22:58:24.873960+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 27.143278382718563,
+          "finished_utc": "2026-08-19T22:58:52.050970+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 20.113200694322586,
+          "finished_utc": "2026-08-19T22:59:12.165245+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7360163629055023,
+          "finished_utc": "2026-08-19T22:59:15.902452+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 934.9081977754831,
+          "finished_utc": "2026-08-19T23:14:50.811864+00:00"
+        }
+      },
+      "finished_utc": "2026-08-19T23:14:53.652466+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/plbart/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 16337936941,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "java/codet5p_220": {
+      "status": "complete",
+      "model": "codet5p_220",
+      "language": "java",
+      "started_utc": "2026-08-19T23:14:53.653022+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/java/codet5p_220",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/java/codet5p_220",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5p_220",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 486.8829178214073,
+          "finished_utc": "2026-08-19T23:23:00.542708+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 8.669157035648823,
+          "finished_utc": "2026-08-19T23:23:09.212894+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 91.91874751448631,
+          "finished_utc": "2026-08-19T23:24:41.165588+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 39.02953454107046,
+          "finished_utc": "2026-08-19T23:25:20.196199+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.806851200759411,
+          "finished_utc": "2026-08-19T23:25:24.004110+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 937.6191178634763,
+          "finished_utc": "2026-08-19T23:41:01.624365+00:00"
+        }
+      },
+      "finished_utc": "2026-08-19T23:41:06.783533+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/java/codet5p_220/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31488197121,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "go/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "go",
+      "started_utc": "2026-08-19T23:41:06.784105+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/go/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/graphcodebert",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 388.24945452809334,
+          "finished_utc": "2026-08-19T23:47:35.040491+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.863153234124184,
+          "finished_utc": "2026-08-19T23:47:44.904980+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 103.02470926195383,
+          "finished_utc": "2026-08-19T23:49:27.963303+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.33804174512625,
+          "finished_utc": "2026-08-19T23:50:22.302529+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7786619141697884,
+          "finished_utc": "2026-08-19T23:50:26.082391+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 924.9544334858656,
+          "finished_utc": "2026-08-20T00:05:51.046622+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T00:05:56.082945+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/graphcodebert/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31491163684,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "go/unixcoder": {
+      "status": "complete",
+      "model": "unixcoder",
+      "language": "go",
+      "started_utc": "2026-08-20T00:05:56.083578+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/go/unixcoder",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/unixcoder",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/unixcoder",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 382.7187684252858,
+          "finished_utc": "2026-08-20T00:12:18.809090+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.835515156388283,
+          "finished_utc": "2026-08-20T00:12:28.645941+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 101.4345051124692,
+          "finished_utc": "2026-08-20T00:14:10.113774+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.22065859287977,
+          "finished_utc": "2026-08-20T00:15:04.335530+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.799684666097164,
+          "finished_utc": "2026-08-20T00:15:08.136504+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 800.9759318381548,
+          "finished_utc": "2026-08-20T00:28:29.114359+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T00:28:34.173058+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/unixcoder/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31491329934,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "go/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "go",
+      "started_utc": "2026-08-20T00:28:34.173732+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/go/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/codet5",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 386.724889755249,
+          "finished_utc": "2026-08-20T00:35:00.905353+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.459586516022682,
+          "finished_utc": "2026-08-20T00:35:10.366166+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 101.62729786336422,
+          "finished_utc": "2026-08-20T00:36:52.026976+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.51608633995056,
+          "finished_utc": "2026-08-20T00:37:46.544356+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.779895670711994,
+          "finished_utc": "2026-08-20T00:37:50.325442+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 911.4343297109008,
+          "finished_utc": "2026-08-20T00:53:01.761547+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T00:53:06.760153+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/codet5/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31490613761,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "go/plbart": {
+      "status": "complete",
+      "model": "plbart",
+      "language": "go",
+      "started_utc": "2026-08-20T00:53:06.760876+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/go/plbart",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/plbart",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/plbart",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 245.74670309573412,
+          "finished_utc": "2026-08-20T00:57:12.508458+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 4.194573387503624,
+          "finished_utc": "2026-08-20T00:57:16.704299+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 29.614633835852146,
+          "finished_utc": "2026-08-20T00:57:46.352767+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 27.366383463144302,
+          "finished_utc": "2026-08-20T00:58:13.720749+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7481322959065437,
+          "finished_utc": "2026-08-20T00:58:17.470208+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 874.2302823588252,
+          "finished_utc": "2026-08-20T01:12:51.702355+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T01:12:54.594182+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/plbart/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 16324512925,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "go/codet5p_220": {
+      "status": "complete",
+      "model": "codet5p_220",
+      "language": "go",
+      "started_utc": "2026-08-20T01:12:54.595029+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/go.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/go/codet5p_220",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/go/codet5p_220",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/codet5p_220",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 452.3708675727248,
+          "finished_utc": "2026-08-20T01:20:26.972690+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 9.67894846946001,
+          "finished_utc": "2026-08-20T01:20:36.653240+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 102.9880890622735,
+          "finished_utc": "2026-08-20T01:22:19.675167+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.584278002381325,
+          "finished_utc": "2026-08-20T01:23:14.260790+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7507794871926308,
+          "finished_utc": "2026-08-20T01:23:18.013154+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 947.2427483275533,
+          "finished_utc": "2026-08-20T01:39:05.257655+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T01:39:10.365314+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/go/codet5p_220/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 31490649761,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "javascript/graphcodebert": {
+      "status": "complete",
+      "model": "graphcodebert",
+      "language": "javascript",
+      "started_utc": "2026-08-20T01:39:10.366105+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/javascript/graphcodebert",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/javascript/graphcodebert",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/graphcodebert",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 488.72946010529995,
+          "finished_utc": "2026-08-20T01:47:19.102356+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 12.594383083283901,
+          "finished_utc": "2026-08-20T01:47:31.701623+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 130.00498458743095,
+          "finished_utc": "2026-08-20T01:49:41.740211+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.19201347976923,
+          "finished_utc": "2026-08-20T01:50:35.933931+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7873922660946846,
+          "finished_utc": "2026-08-20T01:50:39.722815+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 814.0655533745885,
+          "finished_utc": "2026-08-20T02:04:13.790301+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T02:04:20.501148+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/graphcodebert/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42876507804,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "javascript/unixcoder": {
+      "status": "complete",
+      "model": "unixcoder",
+      "language": "javascript",
+      "started_utc": "2026-08-20T02:04:20.502014+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/javascript/unixcoder",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/javascript/unixcoder",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/unixcoder",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 489.7759863957763,
+          "finished_utc": "2026-08-20T02:12:30.284761+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 12.429701134562492,
+          "finished_utc": "2026-08-20T02:12:42.716093+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 132.06315375119448,
+          "finished_utc": "2026-08-20T02:14:54.813041+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.89825265109539,
+          "finished_utc": "2026-08-20T02:15:49.713015+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.8000600785017014,
+          "finished_utc": "2026-08-20T02:15:53.514363+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 796.707056812942,
+          "finished_utc": "2026-08-20T02:29:10.222986+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T02:29:17.068519+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/unixcoder/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42876617181,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "javascript/codet5": {
+      "status": "complete",
+      "model": "codet5",
+      "language": "javascript",
+      "started_utc": "2026-08-20T02:29:17.069412+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/javascript/codet5",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/javascript/codet5",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/codet5",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 462.9848142042756,
+          "finished_utc": "2026-08-20T02:37:00.055517+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 12.16503381729126,
+          "finished_utc": "2026-08-20T02:37:12.222366+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 127.08845169842243,
+          "finished_utc": "2026-08-20T02:39:19.344699+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.10875455290079,
+          "finished_utc": "2026-08-20T02:40:13.455074+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.7479375526309013,
+          "finished_utc": "2026-08-20T02:40:17.204865+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 622.4320564717054,
+          "finished_utc": "2026-08-20T02:50:39.639085+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T02:50:46.302994+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/codet5/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42875908412,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "javascript/plbart": {
+      "status": "complete",
+      "model": "plbart",
+      "language": "javascript",
+      "started_utc": "2026-08-20T02:50:46.303918+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/javascript/plbart",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/javascript/plbart",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/plbart",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 299.75001891702414,
+          "finished_utc": "2026-08-20T02:55:46.060676+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 5.08324409276247,
+          "finished_utc": "2026-08-20T02:55:51.145558+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 36.549862161278725,
+          "finished_utc": "2026-08-20T02:56:27.729559+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 26.57335366308689,
+          "finished_utc": "2026-08-20T02:56:54.304504+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.76616021245718,
+          "finished_utc": "2026-08-20T02:56:58.072238+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 814.4826934933662,
+          "finished_utc": "2026-08-20T03:10:32.557093+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T03:10:36.295765+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/plbart/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 22203638825,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    },
+    "javascript/codet5p_220": {
+      "status": "complete",
+      "model": "codet5p_220",
+      "language": "javascript",
+      "started_utc": "2026-08-20T03:10:36.296719+00:00",
+      "code_file": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/javascript.jsonl",
+      "graph_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/graph_info/staged_final_3000/javascript/codet5p_220",
+      "embedding_stage_dir": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/staged_final_3000/javascript/codet5p_220",
+      "results_dir": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/codet5p_220",
+      "phases": {
+        "extract": {
+          "status": "complete",
+          "duration_seconds": 553.444437161088,
+          "finished_utc": "2026-08-20T03:19:49.747799+00:00"
+        },
+        "validate_representations": {
+          "status": "complete",
+          "duration_seconds": 12.687747806310654,
+          "finished_utc": "2026-08-20T03:20:02.437323+00:00"
+        },
+        "ast_overlap": {
+          "status": "complete",
+          "duration_seconds": 130.9260227754712,
+          "finished_utc": "2026-08-20T03:22:13.397121+00:00"
+        },
+        "dfg_overlap": {
+          "status": "complete",
+          "duration_seconds": 54.314016714692116,
+          "finished_utc": "2026-08-20T03:23:07.712986+00:00"
+        },
+        "attention_summary": {
+          "status": "complete",
+          "duration_seconds": 3.778256878256798,
+          "finished_utc": "2026-08-20T03:23:11.493602+00:00"
+        },
+        "representative_tsne": {
+          "status": "complete",
+          "duration_seconds": 835.5414213910699,
+          "finished_utc": "2026-08-20T03:37:07.036536+00:00"
+        }
+      },
+      "finished_utc": "2026-08-20T03:37:13.879592+00:00",
+      "validation": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/javascript/codet5p_220/final_validation.json",
+      "large_intermediates_retained": false,
+      "purged_artifacts": 6000,
+      "purged_bytes": 42875944412,
+      "reextraction_required_for": [
+        "GED",
+        "DirectProbe"
+      ]
+    }
+  },
+  "finished_utc": "2026-08-20T03:39:57.097118+00:00",
+  "num_complete": 15,
+  "total_purged_bytes": 478288937558,
+  "phase_duration_seconds": {
+    "extract": 6163.488657802343,
+    "validate_representations": 135.70046073943377,
+    "ast_overlap": 1384.764324888587,
+    "dfg_overlap": 664.954207777977,
+    "attention_summary": 56.626794919371605,
+    "representative_tsne": 13097.079714849591
+  },
+  "total_phase_duration_seconds": 21502.614160977304
+}

@@ -1,0 +1,35 @@
+{
+  "analysis": "ast_vs_hidden_distance_tsne",
+  "language": "java",
+  "model": "codebert",
+  "seed": 0,
+  "layers": [
+    5
+  ],
+  "perplexities": [
+    5,
+    10
+  ],
+  "iterations": 50000,
+  "selection_rule": "seeded random artifact with at least minimum_program_tokens",
+  "minimum_program_tokens": 100,
+  "eligibility_source": "/home/abhinav/sdt_project/dev-sebastian/attention/exp_data/final_3000/java.jsonl",
+  "num_eligible_programs": 855,
+  "selected_artifact": "002519_81153d865f71b84ca933532c7115717bc3979270_AES256Local.encrypt.pkl",
+  "num_tokens": 262,
+  "spearman_ast_vs_hidden_distance": {
+    "5": {
+      "spearman_r": 0.14186759773005447,
+      "pvalue": 3.458733091467943e-153
+    }
+  },
+  "embedding_manifest": "/home/abhinav/sdt_project/dev-sebastian/structural_probe/java/final_3000/codebert/embedding_manifest.json",
+  "generated_files": [
+    "distance_layer_5_perplexity_5_ast.csv",
+    "distance_layer_5_perplexity_5_hidden.csv",
+    "distance_layer_5_perplexity_5.png",
+    "distance_layer_5_perplexity_10_ast.csv",
+    "distance_layer_5_perplexity_10_hidden.csv",
+    "distance_layer_5_perplexity_10.png"
+  ]
+}

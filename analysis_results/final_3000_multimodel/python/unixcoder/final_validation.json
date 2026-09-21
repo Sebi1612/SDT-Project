@@ -1,0 +1,25 @@
+{
+  "status": "complete",
+  "model": "unixcoder",
+  "language": "python",
+  "expected_programs": 3000,
+  "expected_attention_layers": 12,
+  "representative_tsne_layer": 5,
+  "ged": "skipped",
+  "directprobe_solver": "skipped",
+  "summary": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/attention/section_3_2_summary.json",
+  "token_tsne_manifest": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/token_types/token_type_tsne_manifest.json",
+  "distance_tsne_manifest": "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_tsne_manifest.json",
+  "generated_tsne_files": [
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/token_types/token_types_layer_5_perplexity_50.csv",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/token_types/token_types_layer_5_perplexity_50.png",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_5_ast.csv",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_5_hidden.csv",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_5.png",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_10_ast.csv",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_10_hidden.csv",
+    "/home/abhinav/sdt_project/dev-sebastian/analysis_results/final_3000_multimodel/python/unixcoder/hidden_tsne/distances/distance_layer_5_perplexity_10.png"
+  ],
+  "errors": [],
+  "valid": true
+}
