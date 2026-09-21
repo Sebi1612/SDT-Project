@@ -80,9 +80,6 @@ def merge_tokens_and_attention(tokenized_tokens, code_tokens, attention, start_i
             merged_token = ''
             
     if code_idx != len(modified_code_tokens):
-        print("tokens: ", tokenized_tokens, "\n")
-        print("raw_tokens:", code_tokens, "\n")
-        print("merged: ", merged_tokens, "\n")
         raise Exception(f'Tokens mismatch: \n {code_idx}, {len(modified_code_tokens)} ')
      	    
 
@@ -112,10 +109,6 @@ def draw_map(att_map, tokens, figsize = (3,3), save_loc=None, labelsize=20):
     ax.set_yticks(np.arange(len(tokens)), labels=tokens)
     plt.tick_params(labelsize = labelsize)
     plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
-    #for i in range(len(tokens)):
-     #   for j in range(len(tokens)):
-      #      text = ax.text(j, i, att_map[i, j],
-       #                ha="center", va="center", color="w")
     
     fig.tight_layout()
     if save_loc is not None:
@@ -141,7 +134,6 @@ def get_max_edges(head, mode = 'both', **kwargs):
     if mode == 'max':
         n_max = kwargs['n_max']
         mask_0 = np.argpartition(head, -n_max, axis = 1) < head.shape[1] - n_max
-        #mask_1 = np.argpartition(head, -n_max, axis = 1) >= head.shape[1] - n_max
         head[mask_0] = 0 
         
     elif mode == 'threshold':
@@ -159,4 +151,3 @@ def get_max_edges(head, mode = 'both', **kwargs):
     
  
     
-

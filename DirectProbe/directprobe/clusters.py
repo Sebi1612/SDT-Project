@@ -1,30 +1,17 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.6.0
-#
-# Date: 2020-03-20 10:56:58
-# Last modified: 2020-12-28 15:30:23
 
 """
 Data structure for probing.
 """
 
-# import logging
 from collections import Counter
 from functools import total_ordering
 import heapq
 from typing import List
-# from multiprocessing import Pool
 
-# import numpy as np
-# import torch
-# from tqdm import tqdm
-# from tqdm import trange
-# from joblib import Parallel, delayed
 
 
 class Cluster:
@@ -189,16 +176,3 @@ class ClusterDisList:
             s = s.format(a=str(self.idx),
                          b=str(self.dis_list[0]))
         return s
-
-
-if __name__ == '__main__':
-    import random
-    n = 3
-    array = []
-    for i in range(n):
-        for j in range(n):
-            array.append(ClusterDisPair(i, j, i+j))
-    random.shuffle(array)
-    print(array)
-    array.sort()
-    print(array)

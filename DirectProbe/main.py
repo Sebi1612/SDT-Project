@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.6.0
-#
-# Date: 2019-07-24 10:36:21
-# Last modified: 2022-10-14 15:04:51
 
 """
 Main enterance.
@@ -49,9 +43,7 @@ def loading(
     logger.info('Load entities from ' + path)
     entities = utils.load_entities(path)
 
-    # For debugging
     n = len(entities)
-    # n = 200
     annotations = [entities[i].Label for i in range(n)]
     entities = [entities[i] for i in range(n)]
 
@@ -84,9 +76,7 @@ def load_test(config: Config):
     logger.info('Load entities from ' + path)
     entities = utils.load_entities(path)
 
-    # For debugging
     n = len(entities)
-    # n = 30
     annotations = [entities[i].Label for i in range(n)]
     entities = [entities[i] for i in range(n)]
 
@@ -101,7 +91,6 @@ def load_test(config: Config):
     embeddings_path = config.test_embeddings_path
     logger.info('Loading embeddings from ' + embeddings_path)
     embeddings = utils.load_embeddings(embeddings_path)
-    # embeddings = embeddings[:n]
     logger.info('Finish loading embeddings...')
 
     assert len(embeddings) == n
@@ -180,8 +169,6 @@ def prediction(config):
 def main(config_file):
     assist = EA.getAssist('Probing')
 
-    # Assist is used for developping experiments
-    # For real using application, it needs to be deactivated
     assist.deactivate()
 
     config = configparser.ConfigParser(
@@ -200,8 +187,6 @@ def main(config_file):
 
 
 if __name__ == '__main__':
-    # import cProfile
-    # cProfile.run('main()', sort='cumulative')
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_file', required=True)
     args = parser.parse_args()

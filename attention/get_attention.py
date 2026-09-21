@@ -275,14 +275,10 @@ def get_attention_codeT5p_2b_dec(data, model, tokenizer, device='cuda', random =
 
 def get_attention_codegen(data, model, tokenizer, device='cuda', random = False):
     
-    #tokenizer = AutoTokenizer.from_pretrained(model_version)
-    #model = AutoModelForCausalLM.from_pretrained(model_version, output_attentions = True, trust_remote_code=True) 
     
-    #model.to(device)
     
     raw_tokens = data['code_tokens']
     code_tokens = tokenizer.tokenize(' '.join(raw_tokens))
-    #tokens = [tokenizer.cls_token] + code_tokens + [tokenizer.sep_token]
     tokens = code_tokens
     token_idx = tokenizer.convert_tokens_to_ids(tokens)
     inputs = torch.tensor(token_idx).unsqueeze(0).to(device)

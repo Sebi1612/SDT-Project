@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.8.0
-#
-# Date: 2020-07-24 16:12:52
-# Last modified: 2021-04-08 09:30:32
 
 """
 Logger configurations.
@@ -36,7 +30,6 @@ LOGGING_CONFIG = {
              'level': 'DEBUG',
              'formatter': 'standard',
              'class': 'logging.StreamHandler',
-             # 'stream': 'ext://sys.stdout',
              },
      },
      'loggers': {

@@ -173,8 +173,35 @@ def validate_permanent_outputs(
         errors.append("attention summary layer count mismatch")
     if summary.get("expected_programs") != expected_programs:
         errors.append("attention summary expected-program count mismatch")
-    if summary.get("ged_status") != "skipped":
-        errors.append("GED was not explicitly skipped")
+    ged_status = summary.get("ged_status")
+    if ged_status not in ("skipped", "included"):
+        errors.append(f"Unexpected GED status: {ged_status!r}")
+    if ged_status == "included":
+        from similarity import DISTANCE_METHODS, similarity_directory
+        from summarize_attention_analysis import validate_ged_mode
+
+        ged_mode = summary.get("ged_mode")
+        if ged_mode not in DISTANCE_METHODS:
+            errors.append(f"Unexpected GED mode: {ged_mode!r}")
+        else:
+            if summary.get("ged_method") != DISTANCE_METHODS[ged_mode]:
+                errors.append("GED summary method mismatch")
+            ged_dir = attention_dir / similarity_directory(ged_mode) / model
+            threshold = summary.get("primary_threshold", 0.05)
+            for layer in range(expected_layers):
+                path = ged_dir / f"layer_{layer}_threshold_{threshold}.json"
+                try:
+                    ged = load_json(path)
+                    validate_ged_mode(ged, ged_mode, layer)
+                except (OSError, ValueError) as exc:
+                    errors.append(f"Invalid GED output {path}: {exc}")
+                    continue
+                if ged.get("model") != model or ged.get("language") != language:
+                    errors.append(f"GED layer {layer} model/language mismatch")
+                if ged.get("layer") != layer:
+                    errors.append(f"GED layer {layer} index mismatch")
+                if ged.get("num_evaluated") != expected_programs:
+                    errors.append(f"GED layer {layer} lacks full coverage")
 
     for layer in range(expected_layers):
         ast_path = attention_dir / "ast" / f"{model}_layer_{layer}.json"
@@ -217,7 +244,7 @@ def validate_permanent_outputs(
         "expected_programs": expected_programs,
         "expected_attention_layers": expected_layers,
         "representative_tsne_layer": tsne_layer,
-        "ged": "skipped",
+        "ged": ged_status,
         "directprobe_solver": "skipped",
         "summary": str(summary_path.resolve()),
         "token_tsne_manifest": str(token_manifest_path.resolve()),
@@ -390,25 +417,6 @@ def run_one(args, language, model, run_manifest, environment):
             ],
         ),
     ]
-    if language == "python" and args.compare_python_reference:
-        phases.insert(
-            -1,
-            (
-                "python_reference_comparison",
-                [
-                    python,
-                    "attention/compare_python_reference.py",
-                    "--pilot_summary",
-                    str(attention_dir / "section_3_2_summary.json"),
-                    "--reference_root",
-                    str(Path(args.python_reference_root)),
-                    "--output",
-                    str(attention_dir / "python_reference_comparison.json"),
-                    "--skip_ged",
-                ],
-            ),
-        )
-
     representations_reused = False
     try:
         extraction_validation = validate_complete_extraction(
@@ -503,7 +511,7 @@ def run_one(args, language, model, run_manifest, environment):
 def main():
     cli = argparse.ArgumentParser()
     cli.add_argument("--models", nargs="+", default=DEFAULT_MODELS)
-    cli.add_argument("--languages", nargs="+", default=DEFAULT_LANGUAGES)
+    cli.add_argument("--languages", nargs="+", choices=DEFAULT_LANGUAGES, default=DEFAULT_LANGUAGES)
     cli.add_argument("--dataset_root", default="attention/exp_data/final_3000")
     cli.add_argument(
         "--dataset_pattern",
@@ -531,18 +539,6 @@ def main():
     cli.add_argument("--device", default="cpu")
     cli.add_argument("--minimum_free_gb", type=float, default=35.0)
     cli.add_argument("--omp_threads", type=int, default=4)
-    cli.add_argument(
-        "--compare_python_reference",
-        action="store_true",
-        help=(
-            "For Python, compare the recomputed overlap curves with the "
-            "stored 3,000-program paper outputs. GED remains skipped."
-        ),
-    )
-    cli.add_argument(
-        "--python_reference_root",
-        default="attention/graph_comparision",
-    )
     args = cli.parse_args()
 
     args.run_manifest = str(Path(args.run_manifest))
@@ -571,7 +567,6 @@ def main():
                 "iterations": 50000,
             },
             "excluded": ["CodeGen", "GED", "DirectProbe solver runs"],
-            "python_reference_comparison": args.compare_python_reference,
             "runs": {},
         }
     atomic_json(args.run_manifest, run_manifest)

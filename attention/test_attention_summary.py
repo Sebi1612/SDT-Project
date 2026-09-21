@@ -12,7 +12,6 @@ if ATTENTION_DIR not in sys.path:
     sys.path.insert(0, ATTENTION_DIR)
 
 from run_section_3_2 import validate_codebert_dataset
-from compare_python_reference import compare
 from summarize_attention_analysis import summarize
 from validate_graph_run import validate
 
@@ -189,130 +188,6 @@ class AttentionSummaryTests(unittest.TestCase):
             with redirect_stdout(StringIO()):
                 self.assertFalse(validate(root, minimum_coverage=1.0))
                 self.assertTrue(validate(root, minimum_coverage=0.0))
-
-    def test_python_reference_comparison_uses_stored_legacy_layout(self):
-        with tempfile.TemporaryDirectory() as root:
-            pilot_results = os.path.join(root, 'pilot')
-            self.make_results(pilot_results, ged_mode='legacy')
-            pilot_summary = os.path.join(root, 'pilot_summary.json')
-            summary = summarize(
-                pilot_results,
-                pilot_summary,
-                'codebert',
-                'java',
-                expected_programs=100,
-                ged_mode='legacy',
-            )
-            summary['language'] = 'python'
-            with open(pilot_summary, 'w') as handle:
-                json.dump(summary, handle)
-
-            reference = os.path.join(root, 'reference')
-            for layer in range(2):
-                for graph_name in ('ast', 'dfg'):
-                    source = os.path.join(
-                        pilot_results,
-                        graph_name,
-                        f'codebert_layer_{layer}.json',
-                    )
-                    with open(source) as handle:
-                        data = json.load(handle)
-                    write_json(os.path.join(
-                        reference,
-                        graph_name,
-                        'exp_0',
-                        f'codebert_layer_{layer}.json',
-                    ), data)
-                similarity_path = os.path.join(
-                    pilot_results,
-                    'similarity_legacy',
-                    'codebert',
-                    f'layer_{layer}_threshold_0.05.json',
-                )
-                with open(similarity_path) as handle:
-                    similarity = json.load(handle)
-                write_json(os.path.join(
-                    reference,
-                    'similarity',
-                    'exp_0',
-                    'codebert',
-                    f'layer_{layer}_threshold_0.05.json',
-                ), similarity)
-
-            output_path = os.path.join(root, 'comparison.json')
-            result = compare(pilot_summary, reference, output_path)
-            self.assertEqual(
-                result['aggregate_curve_comparison']['overlap']['ast'][
-                    'fscore'
-                ]['mean_absolute_difference'],
-                0.0,
-            )
-            self.assertTrue(os.path.exists(output_path))
-            self.assertTrue(os.path.exists(output_path[:-5] + '_overlap.png'))
-
-    def test_python_reference_comparison_rejects_fixed_ged(self):
-        with tempfile.TemporaryDirectory() as root:
-            self.make_results(root)
-            summary_path = os.path.join(root, 'summary.json')
-            summary = summarize(
-                root,
-                summary_path,
-                'codebert',
-                'java',
-                expected_programs=100,
-            )
-            summary['language'] = 'python'
-            write_json(summary_path, summary)
-            with self.assertRaisesRegex(ValueError, '--ged_mode legacy'):
-                compare(summary_path, os.path.join(root, 'reference'), root)
-
-    def test_python_reference_overlap_comparison_supports_other_models(self):
-        with tempfile.TemporaryDirectory() as root:
-            pilot_results = os.path.join(root, 'pilot')
-            self.make_results(pilot_results)
-            for graph_name in ('ast', 'dfg'):
-                for layer in range(2):
-                    path = os.path.join(
-                        pilot_results, graph_name, f'codebert_layer_{layer}.json'
-                    )
-                    with open(path) as handle:
-                        data = json.load(handle)
-                    data['model'] = 'graphcodebert'
-                    new_path = os.path.join(
-                        pilot_results,
-                        graph_name,
-                        f'graphcodebert_layer_{layer}.json',
-                    )
-                    write_json(new_path, data)
-                    write_json(os.path.join(
-                        root,
-                        'reference',
-                        graph_name,
-                        'exp_0',
-                        f'graphcodebert_layer_{layer}.json',
-                    ), data)
-            summary_path = os.path.join(root, 'summary.json')
-            summary = summarize(
-                pilot_results,
-                summary_path,
-                'graphcodebert',
-                'java',
-                expected_programs=100,
-                skip_ged=True,
-            )
-            summary['language'] = 'python'
-            write_json(summary_path, summary)
-            output = os.path.join(root, 'comparison.json')
-            result = compare(
-                summary_path,
-                os.path.join(root, 'reference'),
-                output,
-                skip_ged=True,
-            )
-            self.assertEqual(result['model'], 'graphcodebert')
-            self.assertEqual(result['ged_comparison_status'], 'skipped')
-            self.assertNotIn('ged_csv', result['outputs'])
-
 
 if __name__ == '__main__':
     unittest.main()

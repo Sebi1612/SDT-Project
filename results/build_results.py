@@ -1,10 +1,11 @@
-"""Build a four-language counterpart to the figures and tables in paper.pdf §4.
+"""Build four-language comparative figures.
 
 Run with the project's attention environment; no model inference is performed here.
 """
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import re
@@ -23,9 +24,7 @@ REPO = HERE.parent
 ANALYSIS = REPO / "analysis_results"
 OUTPUT = HERE / "report"
 FIGURES = OUTPUT / "figures"
-TABLES = OUTPUT / "tables"
 FIGURES.mkdir(parents=True, exist_ok=True)
-TABLES.mkdir(parents=True, exist_ok=True)
 LANGUAGES = ("python", "java", "javascript", "go")
 LANG_LABELS = ("Python", "Java", "JavaScript", "Go")
 MODELS = ("codebert", "graphcodebert", "unixcoder", "plbart", "codet5", "codet5p_220")
@@ -45,8 +44,18 @@ def attention_root(language: str, model: str) -> Path:
 
 
 def read_overlap(language: str, model: str) -> dict[str, dict[str, list[float]]]:
-    path = attention_root(language, model) / "section_3_2_summary_overlap.csv"
     result: dict[str, dict[str, list[float]]] = {graph: {metric: [] for metric in ("recall", "precision")} for graph in GRAPHS}
+    if language == "python":
+        root = REPO / "attention" / "graph_comparision"
+        for graph in GRAPHS:
+            for layer in range(6 if model == "plbart" else 12):
+                path = root / graph / "exp_0" / f"{model}_layer_{layer}.json"
+                record = json.loads(path.read_text())
+                head = max(record["fscore"], key=lambda h: (float(record["fscore"][h]["0.05"]), -int(h)))
+                for metric in ("recall", "precision"):
+                    result[graph][metric].append(float(record[metric][head]["0.05"]))
+        return result
+    path = attention_root(language, model) / "section_3_2_summary_overlap.csv"
     with path.open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) in (12, 24), (path, len(rows))
@@ -60,7 +69,6 @@ def read_overlap(language: str, model: str) -> dict[str, dict[str, list[float]]]
 
 def read_ged(language: str, model: str) -> dict[str, list[float]]:
     if language == "python":
-        # §4 / Figure 5 reference outputs, not a final-3000 Python GED rerun.
         root = REPO / "attention" / "graph_comparision" / "similarity" / "exp_0" / model
     else:
         root = attention_root(language, model) / "similarity_legacy" / model
@@ -108,9 +116,6 @@ def read_probe(language: str, task: str, model: str, layer: int = 12) -> dict:
 
 OVERLAP = {(lang, model): read_overlap(lang, model) for lang in LANGUAGES for model in MODELS}
 GED = {(lang, model): read_ged(lang, model) for lang in LANGUAGES for model in GED_MODELS}
-PROBES = {(lang, model, task): read_probe(lang, task, model)
-          for lang in LANGUAGES for model in PROBE_MODELS
-          for task in ("distance", "distance_id", "siblings", "siblings_id", "dfg")}
 PROBE_LAYERS = {(lang, model, task, layer): read_probe(lang, task, model, layer)
                 for lang in LANGUAGES for model in PROBE_MODELS
                 for task in ("distance", "distance_id", "siblings", "siblings_id", "dfg")
@@ -169,8 +174,6 @@ def plot_tsne(kind: str, filename: str) -> None:
     if kind == "token_types":
         fig, axes = plt.subplots(2, 2, figsize=(12.7, 10.5), constrained_layout=True)
     else:
-        # A four-row layout makes the two AST/hidden panels for each language
-        # legible when the combined figure is placed on an A4 page.
         fig, axes = plt.subplots(4, 1, figsize=(12.7, 16.5), constrained_layout=True)
     for ax, lang, label in zip(axes.flat, LANGUAGES, LANG_LABELS):
         if kind == "token_types":
@@ -212,82 +215,18 @@ def plot_probe_layers() -> None:
     plt.close(fig)
 
 
-def probe_table(tasks: tuple[str, ...], labels: tuple[tuple[str, ...], ...], filename: str,
-                caption: str, label: str) -> None:
-    lines = ["\\begin{table}[p]", "\\centering", "\\small"]
-    lines.append("\\resizebox{\\textwidth}{!}{%")
-    columns = 3 + max(len(label_set) for label_set in labels)
-    lines.append("\\begin{tabular}{llr" + "r" * (columns - 3) + "}")
-    lines.append("\\toprule")
-    for task, label_set in zip(tasks, labels):
-        task_title = {"distance": "Keyword--all AST distance", "distance_id": "Keyword--identifier AST distance",
-                      "siblings": "Keyword--all siblings", "siblings_id": "Keyword--identifier siblings",
-                      "dfg": "Identifier--identifier DFG"}[task]
-        lines.append("\\multicolumn{" + str(columns) + "}{l}{" + task_title + "} \\\\")
-        lines.append("Language & Model & Clusters & " + " & ".join(label_set) + " \\\\")
-        lines.append("\\midrule")
-        for lang, lang_label in zip(LANGUAGES, LANG_LABELS):
-            for model in PROBE_MODELS:
-                result = PROBES[(lang, model, task)]
-                if task.startswith("distance"):
-                    label_keys = ("2", "3", "4", "5", "6")
-                elif task.startswith("siblings"):
-                    label_keys = ("0", "1") if lang == "python" else ("NotSibling", "Sibling")
-                else:
-                    label_keys = ("0", "1", "-1") if lang == "python" else ("NoEdge", "ComesFrom", "ComputedFrom")
-                values = [f"{result['per_label'][key]:.2f}" for key in label_keys]
-                model_label = {"codebert": "CodeBERT", "graphcodebert": "GraphCodeBERT", "codet5": "CodeT5"}[model]
-                lines.append(f"{lang_label} & {model_label} & {result['clusters']} & " + " & ".join(values) + " \\\\")
-            lines.append("\\addlinespace")
-        lines.append("\\midrule")
-    lines[-1] = "\\bottomrule"
-    lines += ["\\end{tabular}%", "}", f"\\caption{{{caption}}}", f"\\label{{{label}}}", "\\end{table}"]
-    (TABLES / filename).write_text("\n".join(lines) + "\n")
-
-
-def summarize() -> dict:
-    record = {"attention": {}, "ged": {}, "probing": {}, "probing_layers": {}, "tsne": {}}
-    for lang in LANGUAGES:
-        record["attention"][lang] = {}
-        record["ged"][lang] = {}
-        record["probing"][lang] = {}
-        record["probing_layers"][lang] = {}
-        tsne_manifest = json.loads((ANALYSIS / lang / "tsne" / "final_3000" / "distances"
-                                    / "distance_tsne_manifest.json").read_text())
-        record["tsne"][lang] = {"selected_program_spearman_ast_vs_hidden_distance":
-                                float(tsne_manifest["spearman_ast_vs_hidden_distance"]["5"]["spearman_r"])}
-        for graph in GRAPHS:
-            values = [max(OVERLAP[(lang, model)][graph]["recall"]) for model in MODELS]
-            record["attention"][lang][f"{graph}_peak_recall_median_models"] = float(np.median(values))
-        for graph in GED_GRAPHS:
-            values = [min(GED[(lang, model)][graph]) for model in GED_MODELS]
-            record["ged"][lang][f"{graph}_best_layer_median_models"] = float(np.median(values))
-        for task in ("distance", "distance_id", "siblings", "siblings_id", "dfg"):
-            values = [PROBES[(lang, model, task)]["accuracy"] for model in PROBE_MODELS]
-            record["probing"][lang][f"{task}_median_models_accuracy"] = float(np.median(values))
-            record["probing"][lang][f"{task}_median_models_clusters"] = float(np.median(
-                [PROBES[(lang, model, task)]["clusters"] for model in PROBE_MODELS]))
-            record["probing_layers"][lang][task] = {str(layer): float(np.median(
-                [PROBE_LAYERS[(lang, model, task, layer)]["accuracy"] for model in PROBE_MODELS]))
-                for layer in (5, 9, 12)}
-    return record
-
-
 def main() -> None:
+    cli = argparse.ArgumentParser()
+    cli.add_argument("--skip-tsne", action="store_true")
+    args = cli.parse_args()
     plot_overlap("recall", "figure4_recall_four_languages.pdf")
     plot_overlap("precision", "figure7_precision_four_languages.pdf")
     plot_ged()
-    plot_tsne("token_types", "figure10_token_tsne_four_languages.pdf")
-    plot_tsne("distances", "figure11_distance_tsne_four_languages.pdf")
+    if not args.skip_tsne:
+        plot_tsne("token_types", "figure10_token_tsne_four_languages.pdf")
+        plot_tsne("distances", "figure11_distance_tsne_four_languages.pdf")
     plot_probe_layers()
-    probe_table(("distance", "distance_id"), (("2", "3", "4", "5", "6"),) * 2,
-                "table1_distance.tex", "Four-language DirectProbe AST tree-distance results at layer 12. Values are per-label test accuracy; Python is the paper-repository reference and the other languages are final-3000 runs.", "tab:distance")
-    probe_table(("siblings", "siblings_id"), (("Not siblings", "Siblings"),) * 2,
-                "table2_siblings.tex", "Four-language DirectProbe AST-sibling results at layer 12. Values are per-label test accuracy.", "tab:siblings")
-    probe_table(("dfg",), (("No edge", "Comes from", "Computed from"),),
-                "table3_dfg.tex", "Four-language DirectProbe DFG-edge results at layer 12. Values are per-label test accuracy.", "tab:dfg")
-    (OUTPUT / "derived_summary.json").write_text(json.dumps(summarize(), indent=2) + "\n")
-    print(f"Built six comparative figures, three probing tables, and {OUTPUT / 'derived_summary.json'}")
+    print(f"Built {4 if args.skip_tsne else 6} comparative figures in {FIGURES}")
 
 
 if __name__ == "__main__":

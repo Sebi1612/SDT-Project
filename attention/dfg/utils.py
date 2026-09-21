@@ -28,7 +28,7 @@ def remove_comments_and_docstrings(source, lang):
             # This series of conditionals removes docstrings:
             elif token_type == tokenize.STRING:
                 if prev_toktype != tokenize.INDENT:
-            # This is likely a docstring; double-check we're not inside an operator:
+            
                     if prev_toktype != tokenize.NEWLINE:
                         if start_col > 0:
                             out += token_string
@@ -50,7 +50,7 @@ def remove_comments_and_docstrings(source, lang):
         def replacer(match):
             s = match.group(0)
             if s.startswith('/'):
-                return " " # note: a space and not an empty string
+                return " " 
             else:
                 return s
         pattern = re.compile(
@@ -117,7 +117,6 @@ def tree_to_variable_index(root_node, index_to_code):
         # --- THE SAFETY GUARD TO PREVENT KEYERROR ---
         if index not in index_to_code:
             return []
-        # --------------------------------------------
 
         _, code = index_to_code[index]
         if root_node.type != code:

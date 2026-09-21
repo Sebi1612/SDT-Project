@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.8.0
-#
-# Date: 2020-12-29 13:46:09
-# Last modified: 2021-04-08 09:29:58
 
 """
 Analyzing functions.
@@ -137,7 +131,6 @@ class Analyzer:
             cls = q.clusters[i]
             indexs = torch.LongTensor(cls.indices)
             vecs = q.fix_embeddings[indexs]
-            # vecs = vecs.cpu().numpy()
             data.append(vecs)
 
         indexs = [(i, j) for i in indices for j in indices

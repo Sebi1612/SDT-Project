@@ -75,7 +75,6 @@ def get_model_and_tokenizer(model, model_version = None):
 
         model.config.decoder_start_token_id = tokenizer.bos_token_id
         model.config.pad_token_id = tokenizer.eos_token_id
-        # model.config.encoder.output_attentions = True
         model.config.encoder.output_hidden_states = True
         special_char='Ġ'
         return model, tokenizer, special_char
@@ -164,9 +163,6 @@ def merge_hidden_repr(hidden_states, tokenized_tokens, code_tokens, start_index 
             merged_token = ''
 
     if code_idx != len(modified_code_tokens):
-        print("tokens: ", tokenized_tokens, "\n")
-        print("raw_tokens:", code_tokens, "\n")
-        print("merged: ", merged_tokens, "\n")
         raise Exception(f'Tokens mismatch: \n {code_idx}, {len(modified_code_tokens)} ')
 
     mask = torch.tensor(mask)
@@ -461,7 +457,6 @@ def get_lca_info(node, walk_path, curr_depth, depth, is_code_token, code_token_i
             walk_path.append(token)
             depth.append(curr_depth)
             is_code_token.append(True)
-            print('this probebly is unreachable')
 
         else:
             walk_path.append(node.type)
@@ -704,7 +699,6 @@ def save_word_embeddings(args, save_dir):
                 code_num += 1
             except:
                 print('There was an issue when trying to get delete and merge rows.')
-        #print(len(embeddings_dict.keys()))
         file_name = args.model + '.pkl'
 
         with open(os.path.join(save_dir, file_name), 'wb') as f:
@@ -732,8 +726,6 @@ if __name__ == '__main__':
     if args.model == 'codebert':
         save_codebert_embeddings(args, tree_sitter_parser)
     else:
-        # Preserve the repository's legacy model paths until each is migrated
-        # to the manifest-backed extraction protocol.
         legacy_dir = args.save_dir
         os.makedirs(legacy_dir, exist_ok=True)
         if args.exp_name:

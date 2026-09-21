@@ -32,7 +32,6 @@ def traverse_node(node, collected_tokens, byte_code, include_comments=False):
     # Keep Python string exclusions
     exclude_token = ['"""', "'''", "\\'"]
 
-    # FIX: Add Java-specific comment node types
     # tree-sitter-java uses 'line_comment' and 'block_comment'
     comment_types = [
         'comment',
@@ -155,14 +154,11 @@ def get_ast_tokens_and_prog_graphs(collected_tokens, model_tokens, tokens, byte_
             if token_info['token'] not in model_tokens[tokens_idx]:
                 continue
 
-            # Python specific bug fix
             if new_token['token'] == "r'''" and i+1 < len(collected_tokens):
                 next_info = collected_tokens[i+1]
                 new_token['token'] = new_token['token'] + byte_code[new_token['end_byte'] : next_info['start_byte']].decode('utf-8')
 
             j = 0
-            # If this loop runs out of bounds due to an anomaly, it will raise an IndexError
-            # which we will now silently catch in the main script.
             while new_token['token'] != model_tokens[tokens_idx]:
                 j += 1
                 next_info = collected_tokens[i+j]

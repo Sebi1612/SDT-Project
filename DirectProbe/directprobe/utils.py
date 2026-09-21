@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.6.0
-#
-# Date: 2019-07-24 09:55:34
-# Last modified: 2021-04-08 09:30:52
 
 """
 Some utility functions, including loading and saving data.

@@ -729,15 +729,19 @@ def save_dfg_stats(
 
 
 def build_parser(lang):
-    grammar_repo = f'tree-sitter-{lang}'
-    language_library = os.path.join('build', f'my-languages-{lang}.so')
-    os.makedirs('build', exist_ok=True)
+    attention_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.dirname(attention_dir)
+    grammar_root = attention_dir if lang == 'python' else repo_root
+    grammar_repo = os.path.join(grammar_root, f'tree-sitter-{lang}')
+    build_dir = os.path.join(repo_root, 'build')
+    language_library = os.path.join(build_dir, f'my-languages-{lang}.so')
+    os.makedirs(build_dir, exist_ok=True)
 
     language_libraries = [language_library]
     if lang == 'python':
         language_libraries.insert(
             0,
-            os.path.join('attention', 'build', 'my-languages.so'),
+            os.path.join(attention_dir, 'build', 'my-languages.so'),
         )
 
     load_errors = []

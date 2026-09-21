@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.6.0
-#
-# Date: 2020-03-20 10:42:42
-# Last modified: 2021-04-08 09:30:46
 
 import logging
 import os
@@ -17,10 +11,8 @@ from sklearn.preprocessing import StandardScaler
 import torch
 import numpy as np
 from joblib import Parallel, delayed
-# from scipy.spatial import distance
 import gurobipy as gp
 from gurobipy import GRB
-# from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
 
 from directprobe.distanceQ import DistanceQ
@@ -63,7 +55,6 @@ class Space:
     def point2hull(X: np.array, p: np.array) -> float:
         """Compute the distance between cluster X and point p.
         """
-        # clf = LinearSVC(tol=1e-5, loss='hinge', C=1000, max_iter=20000)
         clf = SVC(tol=1e-5, C=10000, kernel='linear', max_iter=20000)
         y = [0] * len(X)
         y.append(1)
@@ -90,7 +81,6 @@ class Space:
         """Compute the distance between two convex hulls.
         """
         clf = SVC(tol=1e-5, C=1000000, kernel='linear', max_iter=50000)
-        # clf = LinearSVC(tol=1e-5, loss='hinge', C=100000, max_iter=20000)
         y1 = [1] * len(X1)
         y2 = [-1] * len(X2)
         y1 = np.array(y1)
@@ -197,7 +187,6 @@ class Space:
             True: there is at least overlapping.
             False: there is not overlapping.
         """
-        # logger = logging.getLogger('Probing')
         cur_vecs = q.fix_embeddings[torch.LongTensor(newcluster.indices)]
         X1 = cur_vecs.numpy()
         data = []
@@ -207,7 +196,6 @@ class Space:
             X2 = vecs.numpy()
             data.append((X1, X2))
 
-        # logger.info('Solving {a} LP...'.format(a=str(len(data))))
         results = Parallel(n_jobs=worker_count(), prefer='processes', verbose=0,
                            batch_size='auto')(
             delayed(self.solver)(X1, X2) for X1, X2 in data)
@@ -256,15 +244,12 @@ class Space:
         model.update()
         model.optimize()
 
-        # s = 'Solved a LP problem, status code {a}'
-        # logger.info(s.format(a=str(model.Status)))
         return int(model.Status != GRB.OPTIMAL)
 
     def hardSVM(X1: np.array, X2: np.array):
         """Return 1 when the X1 and X2 are not separable.
         """
         clf = SVC(tol=1e-5, C=10000, kernel='linear', max_iter=500000)
-        # clf = LinearSVC(tol=1e-5, loss='hinge', C=100000, max_iter=20000)
         y1 = [0] * len(X1)
         y2 = [1] * len(X2)
         y1 = np.array(y1)

@@ -17,9 +17,6 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 GRAMMARS = {
-    # The original paper's grammar is ABI 14. The newer root grammar is kept
-    # as an upstream source snapshot but emits ABI 15, which tree_sitter 0.20
-    # cannot load.
     "python": ("attention/tree-sitter-python", ("parser.c", "scanner.cc")),
     "java": ("tree-sitter-java", ("parser.c",)),
     "go": ("tree-sitter-go", ("parser.c",)),

@@ -1,13 +1,7 @@
 # !/usr/bin/env python3
 # -*- coding:utf-8 -*-
-#
 # Author: Yichu Zhou - flyaway1217@gmail.com
 # Blog: zhouyichu.com
-#
-# Python release: 3.6.0
-#
-# Date: 2020-02-18 11:05:08
-# Last modified: 2022-10-14 15:05:30
 
 """
 Applying the probing process.
@@ -152,8 +146,6 @@ class Probe:
                 # Here we do not use early stop
                 # because we want to cache all the errors
                 # in space object.
-                # It may take time here, but save more latter.
-                # return flag
         return flag
 
     def _build_clusters_from_track(
@@ -223,18 +215,6 @@ class Probe:
                     pbar.update(1)
         return q
 
-    # def _closest_set(self, q, test_vec):
-    #     args = self._args
-    #     embeds = q.fix_embeddings.to(args.device)
-    #     vec = torch.Tensor(test_vec).to(args.device)
-
-    #     cdist = torch.cdist(embeds, vec.reshape(1, -1))
-    #     cdist = cdist.reshape(-1).cpu().numpy()
-    #     min_dists = []
-    #     for t in q.clusters:
-    #         min_dists.append(min(cdist[t.indices]))
-    #     n = min(len(q.clusters), 5)
-    #     return np.argsort(min_dists)[:n]
 
     def _build_q_from_track(
             self,

@@ -38,9 +38,6 @@ def build_parser(lang, grammar_repo):
     language_library = os.path.join('build', f'my-languages-{lang}.so')
     language_libraries = [language_library]
     if lang == 'python':
-        # This repository's established Python pipeline uses an ABI-14
-        # grammar. The checked-out tree-sitter-python grammar currently emits
-        # ABI 15, which tree_sitter 0.20 cannot load.
         language_libraries.insert(
             0, os.path.join('attention', 'build', 'my-languages.so')
         )
@@ -376,12 +373,9 @@ if __name__ == '__main__':
     parser.add_argument('--grammar_repo', default = None)
 
     args = parser.parse_args()
-    #args.save_dir = os.path.join(args.save_dir, args.lang)
-    #if hasattr(args, 'graph_loc'):
-     #   args.graph_loc = os.path.join(args.graph_loc, args.lang)
 
     default_grammar_repos = {
-    'python': 'tree-sitter-python',
+    'python': 'attention/tree-sitter-python',
     'java': 'tree-sitter-java',
     'go': 'tree-sitter-go',
     'javascript': 'tree-sitter-javascript',

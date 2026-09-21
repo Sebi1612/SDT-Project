@@ -27,7 +27,7 @@ from save_word_embedding import aligned_ast_structure
 
 
 DEFAULT_GRAMMARS = {
-    "python": "tree-sitter-python",
+    "python": "attention/tree-sitter-python",
     "java": "tree-sitter-java",
     "go": "tree-sitter-go",
     "javascript": "tree-sitter-javascript",

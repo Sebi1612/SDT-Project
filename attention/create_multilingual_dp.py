@@ -473,10 +473,10 @@ def main():
     )
     cli.add_argument('--embedding_dir', required=True)
     cli.add_argument('--graph_dir', required=True)
-    cli.add_argument('--output_root', default='DirectProbe/pilot_100')
-    cli.add_argument('--layers', nargs='+', type=int, default=[0, 5, 9, 12])
-    cli.add_argument('--target_per_label', type=int, default=50)
-    cli.add_argument('--max_programs', type=int, default=100)
+    cli.add_argument('--output_root', default='DirectProbe/final_3000')
+    cli.add_argument('--layers', nargs='+', type=int, default=[5, 9, 12])
+    cli.add_argument('--target_per_label', type=int)
+    cli.add_argument('--max_programs', type=int)
     cli.add_argument(
         '--require_target', action='store_true',
         help='Fail instead of silently reducing the balanced per-label count.',
@@ -487,6 +487,18 @@ def main():
         help='Optional expected model name; otherwise read from the manifests.',
     )
     args = cli.parse_args()
+    task_defaults = {
+        'distance': (1300, 160),
+        'distance_id': (1300, 450),
+        'siblings': (1500, 100),
+        'siblings_id': (1500, 300),
+        'dfg': (1500, 130),
+    }
+    target_per_label, max_programs = task_defaults[args.task]
+    if args.target_per_label is None:
+        args.target_per_label = target_per_label
+    if args.max_programs is None:
+        args.max_programs = max_programs
     generate_task(
         args.task,
         args.lang,

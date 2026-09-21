@@ -12,7 +12,7 @@ from collections import Counter
 from transformers import RobertaTokenizer
 
 
-SUPPORTED_LANGUAGES = ('python', 'java', 'go', 'javascript')
+SUPPORTED_LANGUAGES = ('java', 'go', 'javascript')
 CODEBERT_VERSION = 'microsoft/codebert-base'
 
 
@@ -95,7 +95,7 @@ def main():
         choices=SUPPORTED_LANGUAGES,
     )
     cli.add_argument(
-        '--dataset_dir', default='attention/exp_data/pilot_100'
+        '--dataset_dir', default='attention/exp_data/final_3000'
     )
     cli.add_argument(
         '--dataset_pattern',
@@ -105,14 +105,11 @@ def main():
             'replaced with each requested language.'
         ),
     )
-    cli.add_argument('--graph_root', default='graph_info/pilot_100')
+    cli.add_argument('--graph_root', default='graph_info/final_3000')
     cli.add_argument(
-        '--results_root', default='analysis_results/attention_pilot_100'
+        '--results_root', default='analysis_results/attention_final_3000'
     )
-    cli.add_argument(
-        '--python_reference_root', default='attention/graph_comparision'
-    )
-    cli.add_argument('--expected_count', default=100, type=int)
+    cli.add_argument('--expected_count', default=3000, type=int)
     cli.add_argument('--device', default='cuda:0')
     cli.add_argument('--seed', default=0, type=int)
     cli.add_argument('--bootstrap_samples', default=1000, type=int)
@@ -142,7 +139,6 @@ def main():
         ),
     )
     cli.add_argument('--skip_graph_generation', action='store_true')
-    cli.add_argument('--skip_python_reference_comparison', action='store_true')
     cli.add_argument(
         '--allow_partial_coverage',
         action='store_true',
@@ -163,22 +159,11 @@ def main():
         )
     if args.skip_ged and args.also_run_fixed_ged:
         raise ValueError('--skip_ged cannot be combined with --also_run_fixed_ged')
-    if (
-        'python' in args.languages
-        and not args.skip_python_reference_comparison
-        and (args.ged_mode != 'legacy' or args.skip_ged)
-    ):
-        raise ValueError(
-            'Python paper-reference comparison requires a legacy GED run; '
-            'otherwise pass --skip_python_reference_comparison'
-        )
-
     script_dir = os.path.dirname(os.path.abspath(__file__))
     repo_root = os.path.dirname(script_dir)
     dataset_dir = resolve(repo_root, args.dataset_dir)
     graph_root = resolve(repo_root, args.graph_root)
     results_root = resolve(repo_root, args.results_root)
-    python_reference_root = resolve(repo_root, args.python_reference_root)
     manifest_name = (
         'section_3_2_dry_run_manifest.json'
         if args.dry_run
@@ -224,12 +209,6 @@ def main():
         'ged_paper_comparable': False if args.skip_ged else args.ged_mode == 'legacy',
         'also_run_fixed_ged': args.also_run_fixed_ged,
         'datasets': datasets,
-        'python_reference_root': (
-            os.path.abspath(python_reference_root)
-            if 'python' in args.languages
-            and not args.skip_python_reference_comparison
-            else None
-        ),
         'commands': [],
     }
     write_manifest(manifest_path, manifest)
@@ -355,19 +334,6 @@ def main():
                         '--expected_programs', str(args.expected_count)
                     ])
                 execute(fixed_summary_command)
-            if (
-                language == 'python'
-                and not args.skip_python_reference_comparison
-            ):
-                execute([
-                    sys.executable,
-                    os.path.join(script_dir, 'compare_python_reference.py'),
-                    '--pilot_summary', summary_path,
-                    '--reference_root', python_reference_root,
-                    '--output', os.path.join(
-                        language_results, 'python_reference_comparison.json'
-                    ),
-                ])
     except Exception as exc:
         manifest['status'] = 'failed'
         manifest['reason'] = f'{type(exc).__name__}: {exc}'
