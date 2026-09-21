@@ -5,7 +5,19 @@ attention/exp_data/*_full.jsonl
 # Python/runtime caches and locally compiled parser libraries.
 __pycache__/
 *.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
 build/*.so
+attention/build/*.so
+
+# Local editor settings and macOS metadata.
+.vscode/
+.idea/
+.DS_Store
 
 # Generated experiment artifacts. Raw representations remain local. The
 # explicitly unignored final result trees are the canonical archived outputs.
@@ -33,6 +45,7 @@ analysis_results/**/logs/
 analysis_results/ged_final_3000/shards/
 analysis_results/presentation*/
 DirectProbe/pilot_100/
+DirectProbe/reproduction_final_3000/
 attention/exp_data/pilot_100/
 
 # Only the minimal, pinned parser sources required by Language.build_library
