@@ -126,6 +126,7 @@ def base_manifests(args, adapter, parser_library, selected, dataset_size):
         "device": args.device,
         "random_model": False,
         "inference_mode": True,
+        "supports_attention": adapter.spec.supports_attention,
         "local_files_only": args.local_files_only,
         "dataset_size": dataset_size,
         "requested_num_codes": args.num_codes,
@@ -218,7 +219,15 @@ def extract(args):
                 "model_tokens": [token.replace(" ", "") for token in code_tokens],
                 "code_tokens": code_tokens,
                 "ast_tokens": ast_tokens,
-                "model_graphs": output.attention,
+                "model_graphs": (
+                    output.attention
+                    if adapter.spec.supports_attention
+                    else None
+                ),
+                "representation_capabilities": {
+                    "attention": adapter.spec.supports_attention,
+                    "hidden_states": True,
+                },
                 "ast_graph": ast_graph,
                 "adapter_metadata": output.metadata,
                 "subtokens": output.subtokens,

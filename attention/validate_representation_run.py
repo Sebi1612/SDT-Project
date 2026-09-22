@@ -36,17 +36,20 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
         expected_transformer_layers = 12
         expected_attention_heads = 12
         expected_hidden_size = 768
+        supports_attention = True
     else:
         try:
             spec = get_model_spec(model_name)
             expected_transformer_layers = spec.expected_transformer_layers
             expected_attention_heads = spec.expected_attention_heads
             expected_hidden_size = spec.expected_hidden_size
+            supports_attention = spec.supports_attention
         except ValueError as exc:
             errors.append(str(exc))
             expected_transformer_layers = None
             expected_attention_heads = None
             expected_hidden_size = None
+            supports_attention = None
 
     for label, manifest in (
         ("graph", graph_manifest),
@@ -106,41 +109,69 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
             if graph.get(key) != embedding.get(key):
                 errors.append(f"{key} mismatch: {artifact_name}")
 
-        attention = np.asarray(graph.get("model_graphs"))
+        attention_value = graph.get("model_graphs")
+        attention = (
+            np.asarray(attention_value)
+            if attention_value is not None
+            else None
+        )
         hidden = np.asarray(embedding.get("hidden_repr"))
         ast_graph = np.asarray(graph.get("ast_graph"))
         tree_dist = np.asarray(embedding.get("tree_dist"))
+
         if expected_transformer_layers is not None:
-            expected_attention = (
-                expected_transformer_layers,
-                expected_attention_heads,
-                token_count,
-                token_count,
-            )
             expected_hidden = (
                 expected_transformer_layers + 1,
                 token_count,
                 expected_hidden_size,
             )
-            if attention.shape != expected_attention:
-                errors.append(
-                    f"Attention shape {attention.shape} != "
-                    f"{expected_attention}: {artifact_name}"
-                )
             if hidden.shape != expected_hidden:
                 errors.append(
                     f"Hidden shape {hidden.shape} != "
                     f"{expected_hidden}: {artifact_name}"
                 )
+
+            if supports_attention:
+                expected_attention = (
+                    expected_transformer_layers,
+                    expected_attention_heads,
+                    token_count,
+                    token_count,
+                )
+                if attention is None:
+                    errors.append(
+                        f"Missing attention: {artifact_name}"
+                    )
+                elif attention.shape != expected_attention:
+                    errors.append(
+                        f"Attention shape {attention.shape} != "
+                        f"{expected_attention}: {artifact_name}"
+                    )
+            elif attention is not None:
+                errors.append(
+                    f"Unexpected attention for hidden-only model: "
+                    f"{artifact_name}"
+                )
+
         if ast_graph.shape != (token_count, token_count):
             errors.append(f"AST shape mismatch: {artifact_name}")
         if tree_dist.shape != (token_count, token_count):
             errors.append(f"Tree-distance shape mismatch: {artifact_name}")
         if len(embedding.get("code_token_info", [])) != token_count:
             errors.append(f"Token-info length mismatch: {artifact_name}")
-        if not np.isfinite(attention).all() or not np.isfinite(hidden).all():
-            errors.append(f"Non-finite representation: {artifact_name}")
-        shapes.add((tuple(attention.shape[:2]), tuple(hidden.shape[::2])))
+        if not np.isfinite(hidden).all():
+            errors.append(f"Non-finite hidden representation: {artifact_name}")
+        if attention is not None and not np.isfinite(attention).all():
+            errors.append(f"Non-finite attention: {artifact_name}")
+
+        attention_shape = (
+            tuple(attention.shape[:2])
+            if attention is not None
+            else None
+        )
+        shapes.add(
+            (attention_shape, tuple(hidden.shape[::2]))
+        )
 
     report = {
         "graph_dir": os.path.abspath(graph_dir),
@@ -152,7 +183,11 @@ def validate(graph_dir, embedding_dir, expected_model=None, expected_language=No
         "failures": len(graph_manifest.get("failures", [])),
         "observed_shapes": [
             {
-                "attention_layers_heads": list(attention_shape),
+                "attention_layers_heads": (
+                    list(attention_shape)
+                    if attention_shape is not None
+                    else None
+                ),
                 "hidden_states_dimension": list(hidden_shape),
             }
             for attention_shape, hidden_shape in sorted(shapes)

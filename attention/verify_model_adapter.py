@@ -18,13 +18,14 @@ from extract_model_representations import (
 )
 from model_adapters import create_model_adapter, get_model_spec, supported_model_names
 from model_adapters.base import align_subtokens
+from model_adapters.mamba import align_mamba_subtokens
 from save_graph_info import build_parser
 
 
 def load_metadata(spec, local_files_only):
     common = {
         "local_files_only": local_files_only,
-        "trust_remote_code": spec.name == "codegen",
+        "trust_remote_code": spec.name in {"codegen", "mamba"},
     }
     config = AutoConfig.from_pretrained(spec.checkpoint, **common)
     if spec.name in {"graphcodebert", "unixcoder", "codet5", "codet5p_220"}:
@@ -80,7 +81,14 @@ def verify(args):
         "heads": spec.expected_attention_heads,
         "hidden": spec.expected_hidden_size,
     }
-    configuration_valid = observed == expected
+    configuration_valid = (
+        observed["layers"] == expected["layers"]
+        and observed["hidden"] == expected["hidden"]
+        and (
+            not spec.supports_attention
+            or observed["heads"] == expected["heads"]
+        )
+    )
     adapter = None
     if args.forward:
         adapter = create_model_adapter(
@@ -97,9 +105,18 @@ def verify(args):
             code_tokens = list(code["code_tokens"])
             ast_artifacts(code["code"], code_tokens, parser)
             subtokens = tokenizer.tokenize(" ".join(code_tokens))
-            groups = align_subtokens(
-                subtokens, code_tokens, spec.subtoken_marker
-            )
+            if spec.name == "mamba":
+                groups, _ = align_mamba_subtokens(
+                    subtokens,
+                    code_tokens,
+                    spec.subtoken_marker,
+                )
+            else:
+                groups = align_subtokens(
+                    subtokens,
+                    code_tokens,
+                    spec.subtoken_marker,
+                )
             if len(groups) != len(code_tokens):
                 raise ValueError("Token alignment count mismatch")
             if len(subtokens) > spec.paper_max_subtokens:
@@ -118,10 +135,18 @@ def verify(args):
             max_subtokens = max(max_subtokens, len(subtokens))
             if adapter is not None:
                 output = adapter.extract(code_tokens)
+                attention_shape = (
+                    tuple(output.attention.shape[:2])
+                    if output.attention is not None
+                    else None
+                )
                 observed_shapes.add(
                     (
-                        tuple(output.attention.shape[:2]),
-                        (output.hidden_repr.shape[0], output.hidden_repr.shape[2]),
+                        attention_shape,
+                        (
+                            output.hidden_repr.shape[0],
+                            output.hidden_repr.shape[2],
+                        ),
                     )
                 )
         except Exception as exc:
@@ -154,7 +179,11 @@ def verify(args):
         "parser_library": os.path.abspath(parser_library),
         "observed_representation_shapes": [
             {
-                "attention_layers_heads": list(attention_shape),
+                "attention_layers_heads": (
+                    list(attention_shape)
+                    if attention_shape is not None
+                    else None
+                ),
                 "hidden_states_dimension": list(hidden_shape),
             }
             for attention_shape, hidden_shape in sorted(observed_shapes)

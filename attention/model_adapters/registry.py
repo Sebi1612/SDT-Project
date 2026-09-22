@@ -89,6 +89,20 @@ MODEL_SPECS: Dict[str, ModelSpec] = {
         expected_attention_heads=16,
         expected_hidden_size=4096,
     ),
+    "mamba": ModelSpec(
+        name="mamba",
+        checkpoint="state-spaces/mamba-370m-hf",
+        family="state-space",
+        analyzed_component="causal state-space backbone",
+        input_protocol="code (no added special tokens)",
+        subtoken_marker="Ġ",
+        prefix_tokens=0,
+        suffix_tokens=0,
+        expected_transformer_layers=48,
+        expected_attention_heads=0,
+        expected_hidden_size=1024,
+        supports_attention=False,
+    ),
 }
 
 ALIASES = {
@@ -131,7 +145,12 @@ def create_model_adapter(
     from .huggingface import ADAPTER_CLASSES
 
     spec = get_model_spec(name)
-    adapter_class = ADAPTER_CLASSES[spec.name]
+    if spec.name == "mamba":
+        from .mamba import MambaAdapter
+
+        adapter_class = MambaAdapter
+    else:
+        adapter_class = ADAPTER_CLASSES[spec.name]
     return adapter_class(
         spec=spec,
         device=device,

@@ -82,3 +82,26 @@ python attention/validate_representation_run.py \
 
 Do not use these commands for CodeBERT. No 3000-program extraction has been
 started by the adapter verification work.
+
+## Mamba hidden-state adapter
+
+Mamba uses `state-spaces/mamba-370m-hf` as a hidden-state-only
+state-space baseline. It has 48 model layers, 49 hidden-state outputs
+including the embedding state, and hidden size 1024.
+
+Mamba does not expose Transformer self-attention. Its graph artifacts
+therefore store `model_graphs=None`, while retaining AST graphs and
+token-aligned hidden representations. No synthetic attention matrix is
+used in the DirectProbe comparisons.
+
+Example preflight:
+
+```bash
+PYTHONPATH=attention python attention/verify_model_adapter.py \
+  --model mamba \
+  --code_file path/to/javascript.jsonl \
+  --lang javascript \
+  --num_codes 1 \
+  --grammar_repo tree-sitter-javascript \
+  --forward \
+  --device cuda:0

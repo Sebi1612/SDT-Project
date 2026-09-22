@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -27,6 +27,7 @@ class ModelSpec:
     expected_transformer_layers: int
     expected_attention_heads: int
     expected_hidden_size: int
+    supports_attention: bool = True
     paper_max_subtokens: int = 500
 
     def to_dict(self) -> Dict[str, Any]:
@@ -44,7 +45,7 @@ class AdapterOutput:
     subtoken_groups: List[List[int]]
     input_tokens: List[str]
     lexical_positions: List[int]
-    attention: np.ndarray
+    attention: Optional[np.ndarray]
     hidden_repr: np.ndarray
     metadata: Dict[str, Any]
 
@@ -178,10 +179,19 @@ def validate_output(output: AdapterOutput, spec: ModelSpec) -> None:
         token_count,
         spec.expected_hidden_size,
     )
-    if output.attention.shape != expected_attention:
+    if spec.supports_attention:
+        if output.attention is None:
+            raise ValueError(
+                f"{spec.name} declares attention support but returned None"
+            )
+        if output.attention.shape != expected_attention:
+            raise ValueError(
+                f"Attention shape {output.attention.shape}, expected "
+                f"{expected_attention} for {spec.name}"
+            )
+    elif output.attention is not None:
         raise ValueError(
-            f"Attention shape {output.attention.shape}, expected "
-            f"{expected_attention} for {spec.name}"
+            f"{spec.name} is hidden-only but returned attention"
         )
     if output.hidden_repr.shape != expected_hidden:
         raise ValueError(
@@ -193,16 +203,20 @@ def validate_output(output: AdapterOutput, spec: ModelSpec) -> None:
     flattened = [index for group in output.subtoken_groups for index in group]
     if flattened != list(range(len(output.subtokens))):
         raise ValueError("Subtoken groups are not a complete ordered partition")
-    if not np.isfinite(output.attention).all():
-        raise ValueError("Attention contains NaN or infinity")
     if not np.isfinite(output.hidden_repr).all():
         raise ValueError("Hidden representations contain NaN or infinity")
-    if output.attention.min() < -1e-6 or output.attention.max() > 1 + 1e-6:
-        raise ValueError("Attention contains a value outside [0, 1]")
-    if spec.family == "decoder-only":
-        future_attention = np.triu(output.attention, k=1)
-        if np.max(np.abs(future_attention), initial=0.0) > 1e-6:
-            raise ValueError("Decoder-only attention is not causal")
+    if output.attention is not None:
+        if not np.isfinite(output.attention).all():
+            raise ValueError("Attention contains NaN or infinity")
+        if (
+            output.attention.min() < -1e-6
+            or output.attention.max() > 1 + 1e-6
+        ):
+            raise ValueError("Attention contains a value outside [0, 1]")
+        if spec.family == "decoder-only":
+            future_attention = np.triu(output.attention, k=1)
+            if np.max(np.abs(future_attention), initial=0.0) > 1e-6:
+                raise ValueError("Decoder-only attention is not causal")
 
 
 class ModelAdapter(ABC):
